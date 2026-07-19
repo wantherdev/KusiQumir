@@ -1,0 +1,94 @@
+<svg width="1200" height="800" viewBox="0 0 1200 800" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="pack2-sky" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#1e3a5f"/>
+      <stop offset="100%" stop-color="#4a7a9f"/>
+    </linearGradient>
+    <linearGradient id="pack2-mountain" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#5a4a3a"/>
+      <stop offset="100%" stop-color="#3a2a1a"/>
+    </linearGradient>
+    <linearGradient id="pack2-trail" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#c4956a"/>
+      <stop offset="100%" stop-color="#a07050"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Sky -->
+  <rect width="1200" height="800" fill="url(#pack2-sky)"/>
+
+  <!-- Stars -->
+  <circle cx="100" cy="50" r="1.5" fill="#fff" opacity="0.5"/>
+  <circle cx="300" cy="80" r="1" fill="#fff" opacity="0.4"/>
+  <circle cx="500" cy="30" r="1.5" fill="#fff" opacity="0.6"/>
+  <circle cx="700" cy="60" r="1" fill="#fff" opacity="0.3"/>
+  <circle cx="900" cy="40" r="1.5" fill="#fff" opacity="0.5"/>
+  <circle cx="1100" cy="70" r="1" fill="#fff" opacity="0.4"/>
+
+  <!-- Moon -->
+  <circle cx="1050" cy="100" r="40" fill="#e8e0f0" opacity="0.9"/>
+  <circle cx="1060" cy="95" r="35" fill="url(#pack2-sky)"/>
+
+  <!-- Mountain silhouettes -->
+  <path d="M0,500 L150,300 L300,420 L500,200 L700,380 L900,250 L1100,350 L1200,300 L1200,800 L0,800 Z" fill="#2a3a4a" opacity="0.6"/>
+
+  <!-- Main mountain -->
+  <path d="M400,800 L600,200 L640,170 L680,200 L880,800 Z" fill="url(#pack2-mountain)"/>
+  <path d="M600,200 L620,180 L640,170 L660,180 L680,200" fill="#e8e0d0" opacity="0.7"/>
+
+  <!-- Mountain pass -->
+  <path d="M600,200 L620,180 L640,170" fill="#f0f0f0" opacity="0.5"/>
+
+  <!-- Trail winding up mountain -->
+  <path d="M200,700 Q300,650 400,680 Q500,600 550,550 Q600,500 620,450 Q640,400 630,350 Q620,300 640,250" stroke="url(#pack2-trail)" stroke-width="6" fill="none" stroke-linecap="round" opacity="0.7"/>
+
+  <!-- Hikers -->
+  <g transform="translate(350,660)">
+    <!-- Person 1 -->
+    <circle cx="0" cy="-25" r="8" fill="#ffd66b"/>
+    <line x1="0" y1="-17" x2="0" y2="10" stroke="#2a2a2a" stroke-width="3"/>
+    <line x1="0" y1="-5" x2="-12" y2="5" stroke="#2a2a2a" stroke-width="2.5"/>
+    <line x1="0" y1="-5" x2="12" y2="5" stroke="#2a2a2a" stroke-width="2.5"/>
+    <line x1="0" y1="10" x2="-8" y2="25" stroke="#2a2a2a" stroke-width="2.5"/>
+    <line x1="0" y1="10" x2="8" y2="25" stroke="#2a2a2a" stroke-width="2.5"/>
+    <!-- Backpack -->
+    <rect x="-12" y="-15" width="8" height="18" rx="3" fill="#00abaa"/>
+    <!-- Walking stick -->
+    <line x1="14" y1="-8" x2="18" y2="28" stroke="#8b6042" stroke-width="2"/>
+  </g>
+
+  <g transform="translate(420,640)">
+    <!-- Person 2 -->
+    <circle cx="0" cy="-25" r="8" fill="#ffd66b"/>
+    <line x1="0" y1="-17" x2="0" y2="10" stroke="#2a2a2a" stroke-width="3"/>
+    <line x1="0" y1="-5" x2="-12" y2="5" stroke="#2a2a2a" stroke-width="2.5"/>
+    <line x1="0" y1="-5" x2="12" y2="5" stroke="#2a2a2a" stroke-width="2.5"/>
+    <line x1="0" y1="10" x2="-8" y2="25" stroke="#2a2a2a" stroke-width="2.5"/>
+    <line x1="0" y1="10" x2="8" y2="25" stroke="#2a2a2a" stroke-width="2.5"/>
+    <!-- Backpack -->
+    <rect x="-12" y="-15" width="8" height="18" rx="3" fill="#556ea3"/>
+    <!-- Walking stick -->
+    <line x1="-14" y1="-8" x2="-18" y2="28" stroke="#8b6042" stroke-width="2"/>
+  </g>
+
+  <!-- Campsite -->
+  <g transform="translate(800,550)">
+    <!-- Tent -->
+    <polygon points="0,40 40,0 80,40" fill="#00abaa" opacity="0.9"/>
+    <polygon points="10,40 40,8 70,40" fill="#009e9d" opacity="0.8"/>
+    <line x1="40" y1="0" x2="40" y2="40" stroke="#fff" stroke-width="1" opacity="0.3"/>
+    <!-- Tent entrance -->
+    <polygon points="30,40 40,25 50,40" fill="#1a3a4a" opacity="0.6"/>
+  </g>
+
+  <!-- Campfire -->
+  <g transform="translate(850,570)">
+    <line x1="-3" y1="0" x2="-8" y2="15" stroke="#8b6042" stroke-width="3"/>
+    <line x1="3" y1="0" x2="8" y2="15" stroke="#8b6042" stroke-width="3"/>
+    <path d="M0,-5 Q-8,5 0,15 Q8,5 0,-5" fill="#ff6644" opacity="0.8"/>
+    <path d="M0,-10 Q-5,0 0,8 Q5,0 0,-10" fill="#ffd66b" opacity="0.6"/>
+  </g>
+
+  <!-- Foreground -->
+  <path d="M0,720 L1200,720 L1200,800 L0,800 Z" fill="#1a2a1a"/>
+</svg>

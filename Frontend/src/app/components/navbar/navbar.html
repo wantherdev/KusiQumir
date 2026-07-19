@@ -1,0 +1,230 @@
+<div
+  class="sticky top-0 z-50 w-full transition-all duration-500 ease-in-out text-[15px]"
+  [ngClass]="isScrolled ? 'top4' : 'top0'"
+>
+  <div class="mx-auto flex max-w-screen-2xl flex-col gap-4 px-4 py-4 sm:px-6 lg:px-8">
+    <div class="flex items-center justify-between gap-3">
+      <!-- Logo -->
+      <a routerLink="/" class="flex items-center gap-3">
+        <div
+          class="w-12 h-12 rounded-full bg-white shadow-sm flex items-center justify-center overflow-hidden"
+        >
+          <img src="/logo1.svg" alt="Kusi Q'umir" class="h-14 w-14 object-contain" />
+        </div>
+        <span class="hidden sm:inline text-lg font-bold">Kusi Q'umir</span>
+      </a>
+
+      <button
+        type="button"
+        class="inline-flex h-11 w-11 items-center justify-center rounded-full border border-slate-200 text-current shadow-sm transition hover:bg-slate-50 md:hidden"
+        (click)="toggleMobileMenu()"
+        aria-label="Abrir menú"
+      >
+        <i class="ri-menu-line text-2xl" *ngIf="!isMobileMenuOpen"></i>
+        <i class="ri-close-line text-2xl" *ngIf="isMobileMenuOpen"></i>
+      </button>
+
+      <nav
+        class="hidden md:flex flex-1 items-center justify-center gap-8 text-base font-semibold text-current"
+      >
+        <div class="relative group">
+          <a
+            routerLink="/destinos"
+            routerLinkActive="text-primary"
+            #dest="routerLinkActive"
+            [attr.aria-current]="dest.isActive ? 'page' : null"
+            class="flex items-center gap-2 rounded-md px-3 py-2 transition hover:text-primary"
+          >
+            <span>Destinos</span>
+            <i class="ri-arrow-down-s-line text-sm"></i>
+          </a>
+          <div
+            class="absolute left-0 top-full mt-2 w-64 rounded-3xl bg-white p-4 shadow-xl opacity-0 invisible transition-all duration-300 group-hover:visible group-hover:opacity-100"
+          >
+            <div class="space-y-2">
+              <a
+                *ngFor="let tour of tours"
+                [routerLink]="'/destinos/tour/' + tour.id"
+                class="block rounded-xl px-3 py-2 text-sm font-semibold text-slate-700 transition hover:bg-primary hover:text-white"
+              >
+                {{ tour.name }}
+              </a>
+            </div>
+          </div>
+        </div>
+
+        <a routerLink="/paquetes" routerLinkActive="text-primary" #paq="routerLinkActive" [attr.aria-current]="paq.isActive ? 'page' : null" class="rounded-md px-3 py-2 transition hover:text-primary"
+          >Paquetes</a
+        >
+        <a routerLink="/experiencias" routerLinkActive="text-primary" #exp="routerLinkActive" [attr.aria-current]="exp.isActive ? 'page' : null" class="rounded-md px-3 py-2 transition hover:text-primary"
+          >Experiencias</a
+        >
+        <a routerLink="/nosotros" routerLinkActive="text-primary" #nos="routerLinkActive" [attr.aria-current]="nos.isActive ? 'page' : null" class="rounded-md px-3 py-2 transition hover:text-primary"
+          >Nosotros</a
+        >
+        <a routerLink="/blog" routerLinkActive="text-primary" #blg="routerLinkActive" [attr.aria-current]="blg.isActive ? 'page' : null" class="rounded-md px-3 py-2 transition hover:text-primary">Blog</a>
+        <a routerLink="/contacto" routerLinkActive="text-primary" #cnt="routerLinkActive" [attr.aria-current]="cnt.isActive ? 'page' : null" class="rounded-md px-3 py-2 transition hover:text-primary">Contacto</a>
+
+        <!-- Client links (any authenticated user) -->
+        <a *ngIf="auth.user()" routerLink="/mis-reservas" routerLinkActive="text-primary" #res="routerLinkActive" [attr.aria-current]="res.isActive ? 'page' : null" class="rounded-md px-3 py-2 transition hover:text-primary">
+          Mis Reservas
+        </a>
+        <a *ngIf="auth.user()" routerLink="/mi-perfil" routerLinkActive="text-primary" #perf="routerLinkActive" [attr.aria-current]="perf.isActive ? 'page' : null" class="rounded-md px-3 py-2 transition hover:text-primary">
+          Mi Perfil
+        </a>
+
+        <!-- Admin dropdown -->
+        <div *ngIf="auth.user()?.role === 'ADMIN'" class="relative group">
+          <button class="flex items-center gap-2 rounded-md px-3 py-2 transition hover:text-primary">
+            <span>Admin</span>
+            <i class="ri-arrow-down-s-line text-sm"></i>
+          </button>
+          <div class="absolute left-0 top-full mt-2 w-48 rounded-3xl bg-white p-4 shadow-xl opacity-0 invisible transition-all duration-300 group-hover:visible group-hover:opacity-100">
+            <div class="space-y-2">
+              <a routerLink="/admin/tours" class="block rounded-xl px-3 py-2 text-sm font-semibold text-slate-700 transition hover:bg-primary hover:text-white">Tours</a>
+              <a routerLink="/admin/paquetes" class="block rounded-xl px-3 py-2 text-sm font-semibold text-slate-700 transition hover:bg-primary hover:text-white">Paquetes</a>
+              <a routerLink="/admin/reservas" class="block rounded-xl px-3 py-2 text-sm font-semibold text-slate-700 transition hover:bg-primary hover:text-white">Reservas</a>
+              <a routerLink="/admin/blog" class="block rounded-xl px-3 py-2 text-sm font-semibold text-slate-700 transition hover:bg-primary hover:text-white">Blog</a>
+              <a routerLink="/admin/experiencias" class="block rounded-xl px-3 py-2 text-sm font-semibold text-slate-700 transition hover:bg-primary hover:text-white">Experiencias</a>
+            </div>
+          </div>
+        </div>
+        <a
+          *ngIf="!auth.user()"
+          routerLink="/login"
+          class="rounded-md px-3 py-2 transition hover:text-primary"
+        >
+          Iniciar sesión
+        </a>
+        <button
+          *ngIf="auth.user()"
+          (click)="logout()"
+          class="rounded-md px-3 py-2 transition hover:text-primary"
+        >
+          Cerrar sesión
+        </button>
+      </nav>
+
+      <div class="hidden md:flex items-center gap-3 text-[1rem]">
+        <a
+          href="https://wa.me/51987654321"
+          class="flex items-center gap-2 rounded-full border border-primary px-4 py-2 text-primary transition hover:bg-primary hover:text-white"
+        >
+          <i class="ri-whatsapp-line"></i>
+          <span class="hidden md:inline">Reserva rápida</span>
+        </a>
+        <a
+          routerLink="/contacto"
+          class="rounded-full border border-primary px-5 py-2 text-primary font-semibold transition hover:bg-primary hover:text-white"
+        >
+          Solicitar Cotización
+        </a>
+      </div>
+    </div>
+
+    <div
+      class="overflow-hidden transition-all duration-300 md:hidden"
+      [ngClass]="isMobileMenuOpen ? 'max-h-[800px] opacity-100 py-4' : 'max-h-0 opacity-0 py-0'"
+    >
+      <div class="rounded-3xl bg-white p-4 shadow-xl ring-1 ring-slate-200">
+        <div class="space-y-1 text-sm font-semibold text-slate-700">
+          <a
+            routerLink="/destinos"
+            class="block rounded-xl px-3 py-2 transition hover:bg-primary hover:text-white"
+            >Destinos</a
+          >
+          <div class="space-y-1 rounded-2xl bg-slate-50 p-3">
+            <a
+              *ngFor="let tour of tours"
+              [routerLink]="'/destinos/tour/' + tour.id"
+              class="block rounded-lg px-3 py-2 text-slate-700 transition hover:bg-primary hover:text-white"
+            >
+              {{ tour.name }}
+            </a>
+          </div>
+          <a
+            routerLink="/paquetes"
+            routerLinkActive="bg-primary/10 text-primary"
+            #paqm="routerLinkActive"
+            [attr.aria-current]="paqm.isActive ? 'page' : null"
+            class="block rounded-xl px-3 py-2 transition hover:bg-primary hover:text-white"
+            >Paquetes</a
+          >
+          <a
+            routerLink="/experiencias"
+            routerLinkActive="bg-primary/10 text-primary"
+            #expm="routerLinkActive"
+            [attr.aria-current]="expm.isActive ? 'page' : null"
+            class="block rounded-xl px-3 py-2 transition hover:bg-primary hover:text-white"
+            >Experiencias</a
+          >
+          <a
+            routerLink="/nosotros"
+            routerLinkActive="bg-primary/10 text-primary"
+            #nosm="routerLinkActive"
+            [attr.aria-current]="nosm.isActive ? 'page' : null"
+            class="block rounded-xl px-3 py-2 transition hover:bg-primary hover:text-white"
+            >Nosotros</a
+          >
+          <a
+            routerLink="/blog"
+            routerLinkActive="bg-primary/10 text-primary"
+            #blgm="routerLinkActive"
+            [attr.aria-current]="blgm.isActive ? 'page' : null"
+            class="block rounded-xl px-3 py-2 transition hover:bg-primary hover:text-white"
+            >Blog</a
+          >
+          <a
+            routerLink="/contacto"
+            routerLinkActive="bg-primary/10 text-primary"
+            #cntm="routerLinkActive"
+            [attr.aria-current]="cntm.isActive ? 'page' : null"
+            class="block rounded-xl px-3 py-2 transition hover:bg-primary hover:text-white"
+            >Contacto</a
+          >
+
+          <a *ngIf="auth.user()" routerLink="/mis-reservas" routerLinkActive="bg-primary/10 text-primary" #resm="routerLinkActive" [attr.aria-current]="resm.isActive ? 'page' : null" class="block rounded-xl px-3 py-2 transition hover:bg-primary hover:text-white">Mis Reservas</a>
+          <a *ngIf="auth.user()" routerLink="/mi-perfil" routerLinkActive="bg-primary/10 text-primary" #perfm="routerLinkActive" [attr.aria-current]="perfm.isActive ? 'page' : null" class="block rounded-xl px-3 py-2 transition hover:bg-primary hover:text-white">Mi Perfil</a>
+
+          <div *ngIf="auth.user()?.role === 'ADMIN'" class="space-y-1">
+            <p class="px-3 py-1 text-xs font-semibold uppercase tracking-wider text-gray-400">Admin</p>
+            <a routerLink="/admin/tours" class="block rounded-xl px-3 py-2 transition hover:bg-primary hover:text-white">Tours</a>
+            <a routerLink="/admin/paquetes" class="block rounded-xl px-3 py-2 transition hover:bg-primary hover:text-white">Paquetes</a>
+            <a routerLink="/admin/reservas" class="block rounded-xl px-3 py-2 transition hover:bg-primary hover:text-white">Reservas</a>
+            <a routerLink="/admin/blog" class="block rounded-xl px-3 py-2 transition hover:bg-primary hover:text-white">Blog</a>
+            <a routerLink="/admin/experiencias" class="block rounded-xl px-3 py-2 transition hover:bg-primary hover:text-white">Experiencias</a>
+          </div>
+          <a
+            *ngIf="!auth.user()"
+            routerLink="/login"
+            class="block rounded-xl px-3 py-2 transition hover:bg-primary hover:text-white"
+            >Iniciar sesión</a
+          >
+          <button
+            *ngIf="auth.user()"
+            (click)="logout()"
+            class="block w-full text-left rounded-xl px-3 py-2 transition hover:bg-primary hover:text-white"
+          >
+            Cerrar sesión
+          </button>
+        </div>
+
+        <div class="mt-4 flex flex-col gap-3 border-t border-slate-200 pt-4">
+          <a
+            href="https://wa.me/51987654321"
+            class="inline-flex items-center justify-center gap-2 rounded-full border border-primary bg-white px-4 py-2 text-primary transition hover:bg-primary hover:text-white"
+          >
+            <i class="ri-whatsapp-line"></i>
+            <span>WhatsApp</span>
+          </a>
+          <a
+            routerLink="/contacto"
+            class="inline-flex items-center justify-center rounded-full border border-primary bg-white px-4 py-2 text-primary font-semibold transition hover:bg-primary hover:text-white"
+          >
+            Cotizar Viaje
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

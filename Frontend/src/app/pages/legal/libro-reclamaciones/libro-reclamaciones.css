@@ -1,0 +1,99 @@
+.reclamos {
+  line-height: 1.6;
+}
+
+.markdown-content {
+  display: flex;
+  flex-direction: column;
+  gap: 0.95rem;
+}
+
+.markdown-heading {
+  margin: 0;
+  font-weight: 700;
+  color: #0f172a;
+  letter-spacing: -0.01em;
+}
+
+.markdown-heading--1 {
+  font-size: 1.35rem;
+  margin-bottom: 0.2rem;
+  color: #0f172a;
+}
+
+.markdown-heading--2 {
+  font-size: 1.08rem;
+  margin-top: 0.2rem;
+  color: #00abaa;
+}
+
+.markdown-heading--3 {
+  font-size: 1rem;
+  color: #556ea3;
+}
+
+.markdown-paragraph {
+  margin: 0;
+  color: #475569;
+  line-height: 1.75;
+}
+
+.markdown-list {
+  margin: 0;
+  padding-left: 1.15rem;
+  display: grid;
+  gap: 0.45rem;
+  color: #475569;
+}
+
+.markdown-list-item {
+  line-height: 1.7;
+}
+
+.markdown-list--ul .markdown-list-item::marker {
+  color: #00abaa;
+}
+
+.markdown-list--ol .markdown-list-item::marker {
+  color: #556ea3;
+  font-weight: 700;
+}
+
+.markdown-blockquote {
+  margin: 0;
+  padding: 0.9rem 1rem;
+  border-left: 4px solid #00abaa;
+  border-radius: 0 0.85rem 0.85rem 0;
+  background: linear-gradient(90deg, rgba(0, 171, 170, 0.08), rgba(85, 110, 163, 0.05));
+  color: #334155;
+  line-height: 1.7;
+}
+
+.markdown-content strong {
+  color: #0f172a;
+}
+
+.libro-form {
+  max-width: 100%;
+}
+
+.libro-form input,
+.libro-form select,
+.libro-form textarea {
+  font-family: inherit;
+}
+
+.libro-form legend,
+.libro-form label {
+  width: 100%;
+}
+
+.libro-form button {
+  transition:
+    transform 0.15s ease,
+    box-shadow 0.15s ease;
+}
+
+.libro-form button:hover {
+  transform: translateY(-1px);
+}

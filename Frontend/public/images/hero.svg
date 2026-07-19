@@ -1,0 +1,126 @@
+<svg width="1200" height="800" viewBox="0 0 1200 800" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#1a1a3e"/>
+      <stop offset="40%" stop-color="#2d2b55"/>
+      <stop offset="70%" stop-color="#4a3f8a"/>
+      <stop offset="100%" stop-color="#7b5ea7"/>
+    </linearGradient>
+    <linearGradient id="sunGlow" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#ffd66b" stop-opacity="1"/>
+      <stop offset="60%" stop-color="#ffb347" stop-opacity="0.6"/>
+      <stop offset="100%" stop-color="#ff8c42" stop-opacity="0"/>
+    </linearGradient>
+    <linearGradient id="mountain1" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#2c3e6b"/>
+      <stop offset="100%" stop-color="#1a2744"/>
+    </linearGradient>
+    <linearGradient id="mountain2" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#3d5a8c"/>
+      <stop offset="100%" stop-color="#2c4060"/>
+    </linearGradient>
+    <linearGradient id="mountain3" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#556ea3"/>
+      <stop offset="100%" stop-color="#3a4f7a"/>
+    </linearGradient>
+    <linearGradient id="mpTerrace" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#00abaa"/>
+      <stop offset="100%" stop-color="#008f8e"/>
+    </linearGradient>
+    <linearGradient id="mist" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#c8d6f0" stop-opacity="0"/>
+      <stop offset="100%" stop-color="#c8d6f0" stop-opacity="0.4"/>
+    </linearGradient>
+    <radialGradient id="sun" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#fff7e0"/>
+      <stop offset="40%" stop-color="#ffd66b"/>
+      <stop offset="100%" stop-color="#ffb347" stop-opacity="0.3"/>
+    </radialGradient>
+    <filter id="glow">
+      <feGaussianBlur stdDeviation="8" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+    <filter id="softShadow">
+      <feDropShadow dx="0" dy="4" stdDeviation="6" flood-color="#1a2744" flood-opacity="0.3"/>
+    </filter>
+  </defs>
+
+  <!-- Sky -->
+  <rect width="1200" height="800" fill="url(#sky)"/>
+
+  <!-- Stars -->
+  <circle cx="120" cy="60" r="1.5" fill="#fff" opacity="0.6"/>
+  <circle cx="280" cy="90" r="1" fill="#fff" opacity="0.4"/>
+  <circle cx="450" cy="40" r="1.5" fill="#fff" opacity="0.5"/>
+  <circle cx="600" cy="70" r="1" fill="#fff" opacity="0.3"/>
+  <circle cx="780" cy="50" r="1.5" fill="#fff" opacity="0.6"/>
+  <circle cx="920" cy="85" r="1" fill="#fff" opacity="0.4"/>
+  <circle cx="1050" cy="55" r="1.5" fill="#fff" opacity="0.5"/>
+  <circle cx="180" cy="130" r="1" fill="#fff" opacity="0.3"/>
+  <circle cx="520" cy="110" r="1" fill="#fff" opacity="0.4"/>
+  <circle cx="850" cy="120" r="1" fill="#fff" opacity="0.35"/>
+
+  <!-- Sun/Moon glow -->
+  <circle cx="900" cy="160" r="120" fill="url(#sunGlow)" opacity="0.3"/>
+  <circle cx="900" cy="160" r="50" fill="url(#sun)" filter="url(#glow)"/>
+
+  <!-- Far mountains -->
+  <path d="M0,500 L80,350 L160,420 L280,280 L380,380 L480,250 L580,350 L680,220 L780,320 L880,200 L980,300 L1080,240 L1200,350 L1200,800 L0,800 Z" fill="url(#mountain1)" opacity="0.7"/>
+
+  <!-- Mid mountains -->
+  <path d="M0,550 L100,400 L200,480 L350,340 L480,430 L600,320 L720,420 L850,300 L950,380 L1080,320 L1200,420 L1200,800 L0,800 Z" fill="url(#mountain2)" opacity="0.85"/>
+
+  <!-- Machu Picchu mountain (Huayna Picchu) -->
+  <path d="M450,800 L520,350 L560,310 L600,350 L670,800 Z" fill="url(#mountain3)"/>
+  <path d="M520,350 L540,320 L560,310 L580,320 L600,350" fill="#6b83b5" opacity="0.6"/>
+
+  <!-- Mountain snow caps -->
+  <path d="M520,350 L540,320 L560,310 L550,325 L530,340 Z" fill="#e8eaf6" opacity="0.7"/>
+  <path d="M560,310 L580,320 L600,350 L585,330 L570,315 Z" fill="#e8eaf6" opacity="0.5"/>
+
+  <!-- MP Terraces -->
+  <g filter="url(#softShadow)">
+    <rect x="480" y="420" width="180" height="12" rx="2" fill="url(#mpTerrace)" opacity="0.9"/>
+    <rect x="490" y="440" width="160" height="12" rx="2" fill="#009e9d" opacity="0.85"/>
+    <rect x="500" y="460" width="140" height="12" rx="2" fill="#008f8e" opacity="0.8"/>
+    <rect x="510" y="480" width="120" height="12" rx="2" fill="#007f7e" opacity="0.75"/>
+    <rect x="520" y="500" width="100" height="12" rx="2" fill="#006f6e" opacity="0.7"/>
+  </g>
+
+  <!-- MP Stone structures -->
+  <rect x="530" y="395" width="20" height="25" rx="2" fill="#8b9dc3" opacity="0.9"/>
+  <rect x="555" y="390" width="25" height="30" rx="2" fill="#7b8db3" opacity="0.85"/>
+  <rect x="585" y="398" width="18" height="22" rx="2" fill="#8b9dc3" opacity="0.8"/>
+  <rect x="510" y="400" width="16" height="20" rx="2" fill="#9baac3" opacity="0.75"/>
+
+  <!-- Clouds/mist -->
+  <ellipse cx="200" cy="520" rx="180" ry="30" fill="url(#mist)" opacity="0.5"/>
+  <ellipse cx="700" cy="480" rx="200" ry="25" fill="url(#mist)" opacity="0.4"/>
+  <ellipse cx="1000" cy="550" rx="160" ry="28" fill="url(#mist)" opacity="0.45"/>
+  <ellipse cx="400" cy="560" rx="140" ry="20" fill="url(#mist)" opacity="0.35"/>
+
+  <!-- Near mountains/valley -->
+  <path d="M0,650 L150,520 L300,600 L450,530 L600,610 L750,540 L900,600 L1050,550 L1200,620 L1200,800 L0,800 Z" fill="#1a2744" opacity="0.9"/>
+
+  <!-- Foreground vegetation -->
+  <path d="M0,720 Q100,680 200,710 Q300,680 400,720 Q500,690 600,720 Q700,685 800,715 Q900,690 1000,720 Q1100,695 1200,720 L1200,800 L0,800 Z" fill="#0d1b2a"/>
+
+  <!-- Trees silhouettes -->
+  <path d="M50,720 L60,680 L70,720 Z" fill="#1a3050"/>
+  <path d="M80,715 L95,660 L110,715 Z" fill="#1a3050"/>
+  <path d="M1050,700 L1065,650 L1080,700 Z" fill="#1a3050"/>
+  <path d="M1080,710 L1095,665 L1110,710 Z" fill="#1a3050"/>
+  <path d="M1130,705 L1145,660 L1160,705 Z" fill="#1a3050"/>
+
+  <!-- Light rays from sun -->
+  <line x1="900" y1="160" x2="600" y2="400" stroke="#ffd66b" stroke-width="1" opacity="0.08"/>
+  <line x1="900" y1="160" x2="700" y2="380" stroke="#ffd66b" stroke-width="1" opacity="0.06"/>
+  <line x1="900" y1="160" x2="800" y2="350" stroke="#ffd66b" stroke-width="1" opacity="0.05"/>
+  <line x1="900" y1="160" x2="500" y2="420" stroke="#ffd66b" stroke-width="0.5" opacity="0.04"/>
+
+  <!-- Bottom gradient overlay for text readability -->
+  <rect y="600" width="1200" height="200" fill="url(#mist)" opacity="0.15"/>
+</svg>

@@ -1,0 +1,135 @@
+import { Component, OnInit } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { Tour, TourPayload, TravelApiService } from '../../../services/travel-api.service';
+import { Skeleton } from '../../../components/skeleton/skeleton';
+import { ConfirmDialog } from '../../../components/confirm-dialog/confirm-dialog';
+
+@Component({
+  selector: 'app-tours-dashboard',
+  standalone: true,
+  imports: [CommonModule, ReactiveFormsModule, Skeleton, ConfirmDialog],
+  templateUrl: './tours-dashboard.html',
+  styleUrls: ['./tours-dashboard.css'],
+})
+export class ToursDashboard implements OnInit {
+  tours: Tour[] = [];
+  isLoading = false;
+  isModalOpen = false;
+  selectedTourId: string | null = null;
+  tourForm: FormGroup;
+  errorMessage = '';
+  successMessage = '';
+
+  constructor(
+    private readonly travelApi: TravelApiService,
+    private readonly fb: FormBuilder,
+  ) {
+    this.tourForm = this.fb.group({
+      name: ['', [Validators.required, Validators.minLength(3)]],
+      description: ['', [Validators.required, Validators.minLength(10)]],
+      price: [0, [Validators.required, Validators.min(0)]],
+      duration: ['', Validators.required],
+      location: [''],
+      difficulty: [''],
+      images: [''],
+      availability: [true],
+    });
+  }
+
+  get isEditMode(): boolean {
+    return this.selectedTourId !== null;
+  }
+
+  ngOnInit(): void {
+    this.loadTours();
+  }
+
+  loadTours(): void {
+    this.isLoading = true;
+    this.errorMessage = '';
+    this.travelApi.getTours().subscribe({
+      next: (response) => {
+        this.tours = response.items;
+        this.isLoading = false;
+      },
+      error: () => {
+        this.errorMessage = 'No se pudieron cargar los tours.';
+        this.isLoading = false;
+      },
+    });
+  }
+
+  openModal(tour?: Tour): void {
+    this.selectedTourId = tour?.id ?? null;
+    this.errorMessage = '';
+    this.tourForm.reset({
+      name: tour?.name ?? '',
+      description: tour?.description ?? '',
+      price: tour?.price ?? 0,
+      duration: tour?.duration ?? '',
+      location: tour?.location ?? '',
+      difficulty: tour?.difficulty ?? '',
+      images: tour?.images ?? '',
+      availability: tour?.availability ?? true,
+    });
+    this.isModalOpen = true;
+  }
+
+  closeModal(): void {
+    this.isModalOpen = false;
+    this.selectedTourId = null;
+    this.tourForm.reset();
+  }
+
+  saveTour(): void {
+    if (this.tourForm.invalid) {
+      this.tourForm.markAllAsTouched();
+      return;
+    }
+
+    this.isLoading = true;
+    const payload = this.tourForm.getRawValue() as TourPayload;
+    const request = this.selectedTourId
+      ? this.travelApi.updateTour(this.selectedTourId, payload)
+      : this.travelApi.createTour(payload);
+
+    request.subscribe({
+      next: () => {
+        this.successMessage = this.isEditMode ? 'Tour actualizado.' : 'Tour creado.';
+        this.closeModal();
+        this.loadTours();
+      },
+      error: (error) => {
+        this.errorMessage = error.error?.message || 'No se pudo guardar el tour.';
+        this.isLoading = false;
+      },
+    });
+  }
+
+  trackByFn(index: number, item: any): any {
+    return item.id ?? index;
+  }
+
+  showConfirm = false;
+  pendingDeleteId = "";
+
+  confirmDelete(id: string): void {
+    this.pendingDeleteId = id;
+    this.showConfirm = true;
+  }
+
+  deleteTour(): void {
+    this.isLoading = true;
+    this.travelApi.deleteTour(this.pendingDeleteId).subscribe({
+      next: () => {
+        this.successMessage = 'Tour eliminado.';
+        this.loadTours();
+      },
+      error: (error) => {
+        this.errorMessage = error.error?.message || 'No se pudo eliminar el tour.';
+        this.isLoading = false;
+      },
+    });
+  }
+}

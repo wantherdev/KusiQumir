@@ -1,0 +1,10 @@
+.top0 {
+  color: #556ea3;
+  background-color: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(8px);
+}
+.top4 {
+  color: #556ea3;
+  background-color: white;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.164);
+}

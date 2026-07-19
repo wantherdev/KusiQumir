@@ -1,0 +1,110 @@
+<div class="min-h-screen bg-slate-50 px-4 py-8 sm:px-6 lg:px-8">
+  <div class="mx-auto max-w-7xl">
+    <div class="mb-8 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+      <div>
+        <h1 class="text-3xl font-bold text-slate-900">Paquetes</h1>
+        <p class="mt-2 text-sm text-slate-600">Crea y administra paquetes que agrupan varios tours.</p>
+      </div>
+      <button (click)="openModal()" class="rounded-2xl bg-primary px-4 py-2 text-sm font-medium text-white hover:bg-primary-dark">
+        Nuevo paquete
+      </button>
+    </div>
+
+    <p *ngIf="successMessage" class="mb-4 rounded-2xl border border-green-200 bg-green-50 p-4 text-sm text-green-800">{{ successMessage }}</p>
+    <p *ngIf="errorMessage" class="mb-4 rounded-2xl border border-red-200 bg-red-50 p-4 text-sm text-red-800">{{ errorMessage }}</p>
+
+    <div *ngIf="isLoading" class="space-y-2">
+      <app-skeleton *ngFor="let _ of [].constructor(4)" variant="table-row" [rows]="1" [cols]="5" />
+    </div>
+    <div class="overflow-x-auto overflow-hidden rounded-2xl bg-white shadow">
+      <p *ngIf="packages.length === 0" class="p-12 text-center text-slate-500">No hay paquetes registrados.</p>
+      <table *ngIf="packages.length" class="min-w-full divide-y divide-slate-200">
+        <thead class="bg-slate-50"><tr>
+          <th class="px-6 py-3 text-left text-xs font-medium uppercase text-slate-500">Paquete</th>
+          <th class="px-6 py-3 text-left text-xs font-medium uppercase text-slate-500">Tours</th>
+          <th class="px-6 py-3 text-left text-xs font-medium uppercase text-slate-500">Precio</th>
+          <th class="px-6 py-3 text-left text-xs font-medium uppercase text-slate-500">Días</th>
+          <th class="px-6 py-3 text-left text-xs font-medium uppercase text-slate-500">Destacado</th>
+          <th class="px-6 py-3 text-right text-xs font-medium uppercase text-slate-500">Acciones</th>
+        </tr></thead>
+        <tbody class="divide-y divide-slate-200"><tr *ngFor="let pkg of packages; trackBy: trackByFn">
+          <td class="px-6 py-4"><p class="font-medium text-slate-900">{{ pkg.name }}</p><p class="text-sm text-slate-500">{{ pkg.description?.slice(0,60) }}{{ (pkg.description?.length ?? 0) > 60 ? '...' : '' }}</p></td>
+          <td class="px-6 py-4 text-sm text-slate-700">{{ pkg.tours?.length ?? 0 }} tour(es)</td>
+          <td class="px-6 py-4 text-sm font-medium text-slate-900">${{ pkg.price }}</td>
+          <td class="px-6 py-4 text-sm text-slate-700">{{ pkg.durationDays ?? '-' }}</td>
+          <td class="px-6 py-4 text-sm">{{ pkg.featured ? 'Sí' : 'No' }}</td>
+          <td class="px-6 py-4 text-right text-sm">
+            <button (click)="openModal(pkg)" class="mr-4 text-primary hover:text-primary-dark">Editar</button>
+            <button (click)="confirmDelete(pkg.id)" class="text-red-600 hover:text-red-900">Eliminar</button>
+          </td>
+        </tr></tbody>
+      </table>
+    </div>
+  </div>
+
+  <div *ngIf="isModalOpen" class="fixed inset-0 z-50 overflow-y-auto bg-slate-900/50 p-4">
+    <div class="mx-auto mt-12 max-w-2xl rounded-2xl bg-white p-6 shadow-xl">
+      <div class="mb-5 flex items-center justify-between">
+        <h2 class="text-xl font-semibold">{{ isEditMode ? 'Editar paquete' : 'Nuevo paquete' }}</h2>
+        <button (click)="closeModal()" aria-label="Cerrar" class="text-2xl text-slate-400">&times;</button>
+      </div>
+      <form [formGroup]="pkgForm" (ngSubmit)="save()" class="space-y-4">
+        <div>
+          <label class="block text-sm font-medium">Nombre *</label>
+          <input formControlName="name" class="mt-1 w-full rounded-2xl border border-slate-200 px-4 py-3 text-sm outline-none transition focus:border-primary focus:ring-2 focus:ring-primary/10" />
+        </div>
+        <div>
+          <label class="block text-sm font-medium">Descripción *</label>
+          <textarea formControlName="description" rows="3" class="mt-1 w-full rounded-2xl border border-slate-200 px-4 py-3 text-sm outline-none transition focus:border-primary focus:ring-2 focus:ring-primary/10"></textarea>
+        </div>
+        <div class="grid gap-4 sm:grid-cols-3">
+          <div><label class="block text-sm font-medium">Precio *</label><input type="number" min="0" formControlName="price" class="mt-1 w-full rounded-2xl border border-slate-200 px-4 py-3 text-sm outline-none transition focus:border-primary focus:ring-2 focus:ring-primary/10" /></div>
+          <div><label class="block text-sm font-medium">Duración (días)</label><input type="number" min="1" formControlName="durationDays" class="mt-1 w-full rounded-2xl border border-slate-200 px-4 py-3 text-sm outline-none transition focus:border-primary focus:ring-2 focus:ring-primary/10" /></div>
+          <div><label class="block text-sm font-medium">Descuento ($)</label><input type="number" min="0" formControlName="discount" class="mt-1 w-full rounded-2xl border border-slate-200 px-4 py-3 text-sm outline-none transition focus:border-primary focus:ring-2 focus:ring-primary/10" /></div>
+        </div>
+        <div>
+          <label class="block text-sm font-medium">URL de imagen</label>
+          <input formControlName="imageUrl" class="mt-1 w-full rounded-2xl border border-slate-200 px-4 py-3 text-sm outline-none transition focus:border-primary focus:ring-2 focus:ring-primary/10" />
+        </div>
+        <div>
+          <label class="block text-sm font-medium">Incluye</label>
+          <input formControlName="included" placeholder="Separado por comas" class="mt-1 w-full rounded-2xl border border-slate-200 px-4 py-3 text-sm outline-none transition focus:border-primary focus:ring-2 focus:ring-primary/10" />
+        </div>
+        <div>
+          <label class="block text-sm font-medium">No incluye</label>
+          <input formControlName="excluded" placeholder="Separado por comas" class="mt-1 w-full rounded-2xl border border-slate-200 px-4 py-3 text-sm outline-none transition focus:border-primary focus:ring-2 focus:ring-primary/10" />
+        </div>
+        <label class="flex items-center gap-2 text-sm">
+          <input type="checkbox" formControlName="featured" /> Paquete destacado
+        </label>
+
+        <div>
+          <label class="block text-sm font-medium mb-2">Tours incluidos *</label>
+          <div *ngIf="tours.length === 0" class="text-sm text-slate-500">No hay tours disponibles. Crea tours primero.</div>
+          <div class="grid gap-2 sm:grid-cols-2 max-h-48 overflow-y-auto border rounded-2xl p-3">
+            <label *ngFor="let t of tours; trackBy: trackByFn" class="flex items-center gap-2 text-sm cursor-pointer">
+              <input type="checkbox" [checked]="selectedTourIds.has(t.id)" (change)="toggleTour(t.id)" />
+              {{ t.name }}
+            </label>
+          </div>
+        </div>
+
+        <div class="flex justify-end gap-3 pt-2">
+          <button type="button" (click)="closeModal()" class="rounded-2xl border border-slate-300 px-4 py-2">Cancelar</button>
+          <button type="submit" [disabled]="isLoading" class="rounded-2xl bg-primary px-4 py-2 text-white disabled:opacity-50">
+            {{ isLoading ? 'Guardando...' : 'Guardar' }}
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<app-confirm-dialog
+  [visible]="showConfirm"
+  title="Eliminar paquete"
+  message="¿Estás seguro de eliminar este paquete?"
+  confirmLabel="Eliminar"
+  (confirmed)="deletePackage()"
+  (cancelled)="showConfirm = false"
+></app-confirm-dialog>

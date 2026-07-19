@@ -1,0 +1,50 @@
+{
+  "name": "kusiqumir-page",
+  "version": "0.0.0",
+  "scripts": {
+    "ng": "ng",
+    "start": "pnpm frontend:start",
+    "frontend:start": "ng serve --host 0.0.0.0 --port 4200 --allowed-hosts",
+    "frontend:build": "ng build",
+    "frontend:watch": "ng build --watch --configuration development",
+    "frontend:test": "ng test",
+    "backend:start": "cd backend && pnpm start:dev",
+    "backend:build": "cd backend && pnpm build",
+    "backend:prisma:generate": "cd backend && pnpm prisma generate",
+    "backend:prisma:studio": "cd backend && pnpm prisma studio",
+    "backend:prisma:seed": "cd backend && pnpm prisma db seed",
+    "serve:ssr:kusiqumir_page": "node dist/kusiqumir_page/server/server.mjs"
+  },
+  "private": true,
+  "packageManager": "pnpm@9.15.0+sha512.76e2379760a4328ec4415815bcd6628dee727af3779aaa4c914e3944156c4299921a89f976381ee107d41f12cfa4b66681ca9c718f0668fa0831ed4c6d8ba56c",
+  "dependencies": {
+    "@angular/common": "^22.0.0",
+    "@angular/compiler": "^22.0.0",
+    "@angular/core": "^22.0.0",
+    "@angular/forms": "^22.0.0",
+    "@angular/platform-browser": "^22.0.0",
+    "@angular/platform-server": "^22.0.0",
+    "@angular/router": "^22.0.0",
+    "@angular/ssr": "^22.0.7",
+    "@sentry/angular": "^10.66.0",
+    "express": "^5.1.0",
+    "http-proxy-middleware": "^4.2.0",
+    "rxjs": "~7.8.0",
+    "tslib": "^2.3.0"
+  },
+  "devDependencies": {
+    "@angular/build": "^22.0.7",
+    "@angular/cli": "^22.0.7",
+    "@angular/compiler-cli": "^22.0.0",
+    "@tailwindcss/postcss": "^4.1.12",
+    "@types/express": "^5.0.1",
+    "@types/http-proxy-middleware": "^1.0.0",
+    "@types/node": "^20.17.19",
+    "jsdom": "^28.0.0",
+    "postcss": "^8.5.3",
+    "prettier": "^3.8.1",
+    "tailwindcss": "^4.1.12",
+    "typescript": "~6.0.2",
+    "vitest": "^4.0.8"
+  }
+}

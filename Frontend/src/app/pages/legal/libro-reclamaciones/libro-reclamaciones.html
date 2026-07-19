@@ -1,0 +1,217 @@
+<section class="py-16 bg-slate-50">
+  <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+    <article
+      class="relative overflow-hidden rounded-[2rem] border border-slate-200 bg-white shadow-2xl shadow-slate-200/40"
+    >
+      <div class="pointer-events-none absolute inset-x-0 top-20 flex justify-center opacity-10">
+        <span
+          class="text-6xl font-black uppercase tracking-[0.8em] text-slate-300/75"
+          style="transform: rotate(-12deg)"
+          >KUSI Q'UMIR</span
+        >
+      </div>
+      <header
+        class="relative overflow-hidden rounded-b-[2rem] bg-linear-to-r from-[#00abaa] to-[#556ea3] px-6 py-12 sm:px-12"
+      >
+        <div
+          class="absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(255,255,255,0.18),transparent_28%),radial-gradient(circle_at_bottom_right,rgba(255,255,255,0.14),transparent_24%)]"
+        ></div>
+        <div class="relative">
+          <p class="text-sm font-semibold uppercase tracking-[0.32em] text-white/80">
+            Atención al cliente
+          </p>
+          <h1 class="mt-4 text-3xl sm:text-4xl font-bold text-white">Libro de Reclamaciones</h1>
+          <p class="mt-4 max-w-3xl text-sm sm:text-base text-white/90 leading-7">
+            Si desea presentar una queja o reclamo, puede hacerlo a través de este formulario y
+            nuestro equipo le responderá en el menor tiempo posible.
+          </p>
+        </div>
+      </header>
+      <div class="relative px-6 py-10 sm:px-10">
+        <div class="rounded-[1.75rem] border border-slate-200 bg-slate-50 p-6 shadow-sm">
+          <p class="text-sm font-semibold uppercase tracking-[0.28em] text-slate-500">
+            Reclamos accesibles
+          </p>
+          <h2 class="mt-4 text-2xl font-semibold text-slate-900">Atención rápida y estructurada</h2>
+          <p class="mt-4 text-sm leading-7 text-slate-700">
+            Le ofrecemos un proceso claro para registrar su reclamo y hacer seguimiento con
+            transparencia y profesionalismo.
+          </p>
+        </div>
+        <div class="mt-10">
+          <div class="space-y-8">
+            <div class="rounded-[1.75rem] border border-slate-200 bg-white p-6 shadow-sm">
+              <div class="mb-5 flex items-center gap-3">
+                <div
+                  class="flex h-11 w-11 items-center justify-center rounded-2xl bg-primary/10 text-primary"
+                >
+                  <i class="ri-shield-check-line text-xl"></i>
+                </div>
+                <div>
+                  <p class="text-sm font-semibold uppercase tracking-[0.25em] text-primary">
+                    Información clave
+                  </p>
+                  <h2 class="text-xl font-semibold text-slate-900">
+                    Tu reclamo, guiado y protegido
+                  </h2>
+                </div>
+              </div>
+              <div
+                class="rounded-[1.4rem] border border-slate-200 bg-slate-50 p-5 shadow-inner shadow-slate-100/70"
+              >
+                <div [innerHTML]="content"></div>
+              </div>
+            </div>
+            <div class="rounded-[1.75rem] border border-slate-200 bg-white p-6 shadow-sm">
+              <h2 class="text-2xl font-semibold text-slate-900">
+                Cómo funciona el libro de reclamaciones virtual
+              </h2>
+              <p class="mt-4 text-sm leading-7 text-slate-700">
+                Complete el formulario y envíe su reclamo en línea. Recibirá un número de caso o
+                constancia de recepción dentro de las primeras 24 horas hábiles.
+              </p>
+              <ul class="mt-6 space-y-3 text-sm leading-7 text-slate-700 list-disc list-inside">
+                <li>
+                  Atendemos reclamos de servicios turísticos en Cusco, transporte, alojamiento y
+                  excursiones.
+                </li>
+                <li>
+                  Los casos se gestionan conforme a la Ley del Sistema de Protección al Consumidor.
+                </li>
+                <li>
+                  Podrá hacer seguimiento a su reclamo desde nuestro canal de atención al cliente.
+                </li>
+              </ul>
+            </div>
+          </div>
+          <form #claimForm="ngForm" (ngSubmit)="submit(claimForm)" class="rounded-[1.75rem] border border-slate-200 bg-white p-8 shadow-sm libro-form">
+            <h2 class="text-2xl font-semibold text-slate-900">Registro de reclamo</h2>
+            <p class="mt-3 text-sm leading-7 text-slate-700">
+              Complete todos los campos obligatorios para presentar su reclamo virtual.
+            </p>
+
+            <p *ngIf="success" class="mt-4 rounded-xl border border-green-200 bg-green-50 px-4 py-3 text-sm text-green-800">Reclamo enviado correctamente. Recibirás un número de caso en las próximas 24 horas.</p>
+            <p *ngIf="error" class="mt-4 rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-800">{{ error }}</p>
+
+            <ng-container *ngIf="!success">
+              <fieldset class="mt-8 space-y-6">
+                <legend class="sr-only">Datos del reclamante</legend>
+                <div class="grid gap-4 sm:grid-cols-2">
+                  <label class="block">
+                    <span class="text-sm font-medium text-slate-700">Nombre completo <span class="text-red-500">*</span></span>
+                    <input type="text" name="nombre" [(ngModel)]="form.nombre" #nombreCtrl="ngModel" required minlength="3" placeholder="Juan Pérez"
+                      class="mt-2 w-full rounded-3xl border bg-slate-50 px-4 py-3 text-sm text-slate-900 outline-none transition focus:border-primary focus:ring-4 focus:ring-[#00abaa]/20"
+                      [class.border-slate-300]="!nombreCtrl.invalid || !nombreCtrl.touched" [class.border-red-300]="nombreCtrl.invalid && nombreCtrl.touched" />
+                    <span *ngIf="nombreCtrl.invalid && nombreCtrl.touched" class="mt-1 text-xs text-red-500">Mínimo 3 caracteres</span>
+                  </label>
+                  <label class="block">
+                    <span class="text-sm font-medium text-slate-700">Documento de identidad <span class="text-red-500">*</span></span>
+                    <input type="text" name="documento" [(ngModel)]="form.documento" #docCtrl="ngModel" required placeholder="DNI 12345678"
+                      class="mt-2 w-full rounded-3xl border bg-slate-50 px-4 py-3 text-sm text-slate-900 outline-none transition focus:border-primary focus:ring-4 focus:ring-[#00abaa]/20"
+                      [class.border-slate-300]="!docCtrl.invalid || !docCtrl.touched" [class.border-red-300]="docCtrl.invalid && docCtrl.touched" />
+                    <span *ngIf="docCtrl.invalid && docCtrl.touched" class="mt-1 text-xs text-red-500">Campo obligatorio</span>
+                  </label>
+                </div>
+                <div class="grid gap-4 sm:grid-cols-2">
+                  <label class="block">
+                    <span class="text-sm font-medium text-slate-700">Correo electrónico <span class="text-red-500">*</span></span>
+                    <input type="email" name="correo" [(ngModel)]="form.correo" #correoCtrl="ngModel" required email placeholder="correo@ejemplo.com"
+                      class="mt-2 w-full rounded-3xl border bg-slate-50 px-4 py-3 text-sm text-slate-900 outline-none transition focus:border-primary focus:ring-4 focus:ring-[#00abaa]/20"
+                      [class.border-slate-300]="!correoCtrl.invalid || !correoCtrl.touched" [class.border-red-300]="correoCtrl.invalid && correoCtrl.touched" />
+                    <span *ngIf="correoCtrl.invalid && correoCtrl.touched" class="mt-1 text-xs text-red-500">Ingresa un correo válido</span>
+                  </label>
+                  <label class="block">
+                    <span class="text-sm font-medium text-slate-700">Teléfono / WhatsApp <span class="text-red-500">*</span></span>
+                    <input type="tel" name="telefono" [(ngModel)]="form.telefono" #telCtrl="ngModel" required placeholder="+51 9 1234 5678"
+                      class="mt-2 w-full rounded-3xl border bg-slate-50 px-4 py-3 text-sm text-slate-900 outline-none transition focus:border-primary focus:ring-4 focus:ring-[#00abaa]/20"
+                      [class.border-slate-300]="!telCtrl.invalid || !telCtrl.touched" [class.border-red-300]="telCtrl.invalid && telCtrl.touched" />
+                    <span *ngIf="telCtrl.invalid && telCtrl.touched" class="mt-1 text-xs text-red-500">Campo obligatorio</span>
+                  </label>
+                </div>
+              </fieldset>
+
+              <fieldset class="mt-10 space-y-6">
+                <legend class="text-base font-semibold text-slate-900">Datos del servicio</legend>
+                <div class="grid gap-4 sm:grid-cols-2">
+                  <label class="block">
+                    <span class="text-sm font-medium text-slate-700">Nombre del tour o servicio <span class="text-red-500">*</span></span>
+                    <input type="text" name="servicio" [(ngModel)]="form.servicio" #servCtrl="ngModel" required placeholder="Tour Valle Sagrado"
+                      class="mt-2 w-full rounded-3xl border bg-slate-50 px-4 py-3 text-sm text-slate-900 outline-none transition focus:border-primary focus:ring-4 focus:ring-[#00abaa]/20"
+                      [class.border-slate-300]="!servCtrl.invalid || !servCtrl.touched" [class.border-red-300]="servCtrl.invalid && servCtrl.touched" />
+                    <span *ngIf="servCtrl.invalid && servCtrl.touched" class="mt-1 text-xs text-red-500">Campo obligatorio</span>
+                  </label>
+                  <label class="block">
+                    <span class="text-sm font-medium text-slate-700">Código de reserva</span>
+                    <input type="text" name="reserva" [(ngModel)]="form.reserva" placeholder="KQ-2026-045"
+                      class="mt-2 w-full rounded-3xl border border-slate-300 bg-slate-50 px-4 py-3 text-sm text-slate-900 outline-none transition focus:border-primary focus:ring-4 focus:ring-[#00abaa]/20" />
+                  </label>
+                </div>
+                <label class="block">
+                  <span class="text-sm font-medium text-slate-700">Fecha del servicio <span class="text-red-500">*</span></span>
+                  <input type="date" name="fechaServicio" [(ngModel)]="form.fechaServicio" #fechaCtrl="ngModel" required
+                    class="mt-2 w-full rounded-3xl border bg-slate-50 px-4 py-3 text-sm text-slate-900 outline-none transition focus:border-primary focus:ring-4 focus:ring-[#00abaa]/20"
+                    [class.border-slate-300]="!fechaCtrl.invalid || !fechaCtrl.touched" [class.border-red-300]="fechaCtrl.invalid && fechaCtrl.touched" />
+                  <span *ngIf="fechaCtrl.invalid && fechaCtrl.touched" class="mt-1 text-xs text-red-500">Campo obligatorio</span>
+                </label>
+              </fieldset>
+
+              <fieldset class="mt-10 space-y-6">
+                <legend class="text-base font-semibold text-slate-900">Detalle del reclamo</legend>
+                <label class="block">
+                  <span class="text-sm font-medium text-slate-700">Motivo del reclamo <span class="text-red-500">*</span></span>
+                  <select name="motivo" [(ngModel)]="form.motivo" #motivoCtrl="ngModel" required
+                    class="mt-2 w-full rounded-3xl border bg-slate-50 px-4 py-3 text-sm text-slate-900 outline-none transition focus:border-primary focus:ring-4 focus:ring-[#00abaa]/20"
+                    [class.border-slate-300]="!motivoCtrl.invalid || !motivoCtrl.touched" [class.border-red-300]="motivoCtrl.invalid && motivoCtrl.touched">
+                    <option value="">Seleccione un motivo</option>
+                    <option value="servicio_no_prestado">Servicio no prestado</option>
+                    <option value="cambio_itinerario">Cambio de itinerario</option>
+                    <option value="calidad_transporte">Calidad de transporte</option>
+                    <option value="alojamiento">Alojamiento</option>
+                    <option value="atencion_cliente">Atención al cliente</option>
+                    <option value="otros">Otros</option>
+                  </select>
+                  <span *ngIf="motivoCtrl.invalid && motivoCtrl.touched" class="mt-1 text-xs text-red-500">Selecciona un motivo</span>
+                </label>
+                <label class="block">
+                  <span class="text-sm font-medium text-slate-700">Descripción del reclamo <span class="text-red-500">*</span></span>
+                  <textarea name="descripcion" rows="6" [(ngModel)]="form.descripcion" #descCtrl="ngModel" required minlength="10"
+                    placeholder="Describa con detalle lo sucedido"
+                    class="mt-2 w-full rounded-3xl border bg-slate-50 px-4 py-3 text-sm text-slate-900 outline-none transition focus:border-primary focus:ring-primary"
+                    [class.border-slate-300]="!descCtrl.invalid || !descCtrl.touched" [class.border-red-300]="descCtrl.invalid && descCtrl.touched"></textarea>
+                  <span *ngIf="descCtrl.invalid && descCtrl.touched" class="mt-1 text-xs text-red-500">Mínimo 10 caracteres</span>
+                </label>
+                <label class="block">
+                  <span class="text-sm font-medium text-slate-700">Documentos de respaldo</span>
+                  <input type="text" name="documentos" [(ngModel)]="form.documentos" placeholder="Factura, voucher, correo, contrato"
+                    class="mt-2 w-full rounded-3xl border border-slate-300 bg-slate-50 px-4 py-3 text-sm text-slate-900 outline-none transition focus:border-primary focus:ring-4 focus:ring-[#00abaa]/20" />
+                </label>
+              </fieldset>
+
+              <fieldset class="mt-10 space-y-4">
+                <legend class="sr-only">Preferencia de seguimiento</legend>
+                <label class="flex items-center gap-3">
+                  <input type="checkbox" name="permitirContacto" [(ngModel)]="form.permitirContacto"
+                    class="h-5 w-5 rounded border-slate-300 text-primary focus:ring-primary" />
+                  <span class="text-sm text-slate-700">Acepto recibir seguimiento por correo o WhatsApp.</span>
+                </label>
+                <p class="text-xs leading-5 text-slate-500">
+                  Los datos proporcionados serán tratados conforme a la normativa peruana de
+                  protección de datos personales y solo para gestionar su reclamo.
+                </p>
+              </fieldset>
+
+              <button type="submit" [disabled]="claimForm.invalid || submitting"
+                class="mt-8 inline-flex w-full items-center justify-center rounded-full bg-linear-to-r from-[#00abaa] to-[#556ea3] px-6 py-3 text-sm font-semibold uppercase tracking-[0.2em] text-white shadow-lg shadow-[#00abaa]/20 transition hover:brightness-110 focus:outline-none focus:ring-primary disabled:opacity-50">
+                {{ submitting ? 'Enviando...' : 'Enviar reclamo' }}
+              </button>
+            </ng-container>
+            <p class="mt-4 text-sm leading-6 text-slate-500">
+              Después de enviar su solicitud, se le asignará un número de caso para seguimiento. En
+              caso de no recibir respuesta en 30 días calendario, puede acudir a INDECOPI.
+            </p>
+          </form>
+        </div>
+      </div>
+    </article>
+  </div>
+</section>

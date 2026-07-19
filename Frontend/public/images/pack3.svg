@@ -1,0 +1,71 @@
+<svg width="1200" height="800" viewBox="0 0 1200 800" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="pack3-sky" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#0ea5e9"/>
+      <stop offset="100%" stop-color="#38bdf8"/>
+    </linearGradient>
+    <linearGradient id="pack3-ocean" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#0284c7"/>
+      <stop offset="100%" stop-color="#0369a1"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Sky -->
+  <rect width="1200" height="800" fill="url(#pack3-sky)"/>
+
+  <!-- Sun -->
+  <circle cx="600" cy="100" r="60" fill="#ffd66b" opacity="0.9"/>
+  <circle cx="600" cy="100" r="85" fill="#ffd66b" opacity="0.1"/>
+
+  <!-- Clouds -->
+  <ellipse cx="200" cy="120" rx="100" ry="30" fill="#fff" opacity="0.5"/>
+  <ellipse cx="1000" cy="140" rx="90" ry="25" fill="#fff" opacity="0.45"/>
+
+  <!-- Coastal mountains (Lima) -->
+  <path d="M0,400 L100,300 L250,380 L400,280 L500,350 L600,300 L700,380 L800,320 L900,400 L1000,350 L1100,420 L1200,380 L1200,500 L0,500 Z" fill="#5a7a4a" opacity="0.6"/>
+
+  <!-- Ocean -->
+  <rect y="500" width="1200" height="300" fill="url(#pack3-ocean)"/>
+  <!-- Waves -->
+  <path d="M0,520 Q150,510 300,525 Q450,540 600,525 Q750,510 900,525 Q1050,540 1200,525 L1200,540 Q1050,555 900,540 Q750,525 600,540 Q450,555 300,540 Q150,525 0,540 Z" fill="#0ea5e9" opacity="0.3"/>
+  <path d="M0,560 Q150,550 300,565 Q450,580 600,565 Q750,550 900,565 Q1050,580 1200,565 L1200,580 Q1050,595 900,580 Q750,565 600,580 Q450,595 300,580 Q150,565 0,580 Z" fill="#0284c7" opacity="0.2"/>
+
+  <!-- Lima cityscape silhouette -->
+  <g opacity="0.7">
+    <rect x="150" y="380" width="30" height="60" rx="2" fill="#e8e0d0"/>
+    <rect x="190" y="360" width="25" height="80" rx="2" fill="#f0ebe0"/>
+    <rect x="225" y="375" width="28" height="65" rx="2" fill="#e8e0d0"/>
+    <rect x="260" y="350" width="35" height="90" rx="2" fill="#f5f0e8"/>
+    <rect x="300" y="370" width="22" height="70" rx="2" fill="#e8e0d0"/>
+    <rect x="330" y="355" width="30" height="85" rx="2" fill="#f0ebe0"/>
+  </g>
+
+  <!-- Cusco mountains -->
+  <path d="M700,500 L800,320 L840,290 L880,320 L980,500 Z" fill="#6b5238"/>
+  <path d="M800,320 L820,300 L840,290 L860,300 L880,320" fill="#e8e0d0" opacity="0.6"/>
+
+  <!-- MP on mountain -->
+  <rect x="780" y="360" width="100" height="6" rx="1" fill="#00abaa" opacity="0.7"/>
+  <rect x="785" y="370" width="90" height="6" rx="1" fill="#009e9d" opacity="0.65"/>
+  <rect x="790" y="380" width="80" height="6" rx="1" fill="#008f8e" opacity="0.6"/>
+
+  <!-- Arequipa volcano -->
+  <path d="M1000,500 L1100,340 L1130,320 L1160,340 L1200,500 Z" fill="#7a6a5a" opacity="0.7"/>
+  <path d="M1100,340 L1115,328 L1130,320 L1145,328 L1160,340" fill="#e8e8e8" opacity="0.5"/>
+
+  <!-- Airplane trail -->
+  <path d="M100,200 Q300,180 500,200 Q700,220 900,200 Q1000,190 1100,200" stroke="#fff" stroke-width="2" fill="none" opacity="0.3" stroke-dasharray="8,4"/>
+  <!-- Airplane -->
+  <g transform="translate(900,195) rotate(5)">
+    <path d="M-15,0 L15,0 M-5,-8 L5,0 M-5,8 L5,0" stroke="#fff" stroke-width="2" fill="none"/>
+  </g>
+
+  <!-- Nazca lines hint -->
+  <g transform="translate(400,550)" opacity="0.15">
+    <path d="M0,0 L30,-20 L60,0 L30,20 Z" stroke="#fff" stroke-width="1.5" fill="none"/>
+    <path d="M70,0 L100,-15 L130,0 L100,15 Z" stroke="#fff" stroke-width="1.5" fill="none"/>
+  </g>
+
+  <!-- Foreground -->
+  <path d="M0,720 L1200,720 L1200,800 L0,800 Z" fill="#0c4a6e"/>
+</svg>

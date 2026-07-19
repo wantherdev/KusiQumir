@@ -1,0 +1,4 @@
+/* simple login page styling */
+:host {
+  display: block;
+}

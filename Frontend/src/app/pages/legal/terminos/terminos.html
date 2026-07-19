@@ -1,0 +1,53 @@
+<section class="py-16 bg-slate-50">
+  <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+    <article
+      class="relative overflow-hidden rounded-[2rem] border border-slate-200 bg-white shadow-2xl shadow-slate-200/40"
+    >
+      <div class="pointer-events-none absolute inset-x-0 top-24 flex justify-center opacity-10">
+        <span
+          class="text-6xl font-black uppercase tracking-[0.8em] text-slate-300/80"
+          style="transform: rotate(-12deg)"
+          >KUSI Q'UMIR</span
+        >
+      </div>
+      <header
+        class="relative overflow-hidden rounded-b-[2rem] bg-linear-to-r from-amber-600 to-amber-500 px-6 py-12 sm:px-12"
+      >
+        <div
+          class="absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(255,255,255,0.22),transparent_28%),radial-gradient(circle_at_bottom_right,rgba(251,191,36,0.15),transparent_24%)]"
+        ></div>
+        <div class="relative">
+          <p class="text-sm font-semibold uppercase tracking-[0.32em] text-amber-50/90">
+            Documentación legal
+          </p>
+          <h1 class="mt-4 text-3xl sm:text-4xl font-bold text-white">Términos y Condiciones</h1>
+          <p class="mt-4 max-w-3xl text-sm sm:text-base text-amber-50/90 leading-7">
+            Estos términos regulan la contratación de nuestros servicios turísticos y establecen las
+            obligaciones de Kusi Q'umir y del cliente de forma clara, profesional y alineada con la
+            regulación peruana aplicable.
+          </p>
+        </div>
+      </header>
+      <div class="relative px-6 py-10 sm:px-10">
+        <div class="rounded-[1.75rem] border border-slate-200 bg-slate-50 p-6 shadow-sm">
+          <p class="text-sm font-semibold uppercase tracking-[0.28em] text-slate-500">
+            Cumplimiento y confianza
+          </p>
+          <h2 class="mt-4 text-2xl font-semibold text-slate-900">
+            Transparencia clara y profesional
+          </h2>
+          <p class="mt-4 text-sm leading-7 text-slate-700">
+            Este documento está diseñado para que la información legal sea accesible, ordenada y
+            visualmente cómoda de leer.
+          </p>
+        </div>
+
+        <div class="mt-10 rounded-[1.75rem] border border-slate-200 bg-slate-50 p-6 shadow-sm">
+          <div class="prose prose-slate max-w-none space-y-10">
+            <div [innerHTML]="content"></div>
+          </div>
+        </div>
+      </div>
+    </article>
+  </div>
+</section>

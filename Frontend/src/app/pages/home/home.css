@@ -1,0 +1,11 @@
+.hero-bg {
+  background-image:
+    linear-gradient(rgba(0, 0, 0, 0.45), rgba(0, 0, 0, 0.45)), url('/images/hero.webp?v=2');
+  background-size: cover;
+  background-position: center;
+  background-attachment: fixed;
+  height: 104vh;
+}
+.text-shadow {
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+}

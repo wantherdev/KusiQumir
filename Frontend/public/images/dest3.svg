@@ -1,0 +1,78 @@
+<svg width="1200" height="800" viewBox="0 0 1200 800" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="areq-sky" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#3a7bd5"/>
+      <stop offset="100%" stop-color="#89CFF0"/>
+    </linearGradient>
+    <linearGradient id="areq-volcano" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#f5f5f5"/>
+      <stop offset="30%" stop-color="#8b7355"/>
+      <stop offset="100%" stop-color="#5a4a3a"/>
+    </linearGradient>
+    <linearGradient id="areq-canyon" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#c4956a"/>
+      <stop offset="100%" stop-color="#8b6042"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Sky -->
+  <rect width="1200" height="800" fill="url(#areq-sky)"/>
+
+  <!-- Sun -->
+  <circle cx="200" cy="120" r="50" fill="#ffd66b" opacity="0.9"/>
+  <circle cx="200" cy="120" r="70" fill="#ffd66b" opacity="0.15"/>
+
+  <!-- Clouds -->
+  <ellipse cx="600" cy="100" rx="110" ry="30" fill="#fff" opacity="0.5"/>
+  <ellipse cx="650" cy="90" rx="80" ry="25" fill="#fff" opacity="0.6"/>
+
+  <!-- Misti volcano (background) -->
+  <path d="M300,800 L500,200 L540,180 L580,200 L780,800 Z" fill="url(#areq-volcano)"/>
+  <path d="M500,200 L520,185 L540,180 L560,185 L580,200" fill="#fff" opacity="0.8"/>
+  <path d="M510,192 L530,183 L540,180 L548,185 L530,195 Z" fill="#fff" opacity="0.6"/>
+
+  <!-- Chachani volcano (side) -->
+  <path d="M700,800 L900,280 L940,260 L980,280 L1200,800 Z" fill="#7a6a5a" opacity="0.7"/>
+  <path d="M900,280 L920,268 L940,260 L960,268 L980,280" fill="#e8e8e8" opacity="0.5"/>
+
+  <!-- Arequipa city (white city) -->
+  <g>
+    <!-- Buildings -->
+    <rect x="100" y="500" width="40" height="60" rx="2" fill="#f5f0e8"/>
+    <rect x="100" y="500" width="40" height="60" rx="2" fill="#e8e0d0" opacity="0.5"/>
+    <rect x="150" y="480" width="35" height="80" rx="2" fill="#f0ebe0"/>
+    <rect x="195" y="510" width="30" height="50" rx="2" fill="#f5f0e8"/>
+    <rect x="235" y="490" width="38" height="70" rx="2" fill="#e8e0d0"/>
+    <rect x="280" y="505" width="32" height="55" rx="2" fill="#f0ebe0"/>
+
+    <!-- Cathedral -->
+    <rect x="340" y="440" width="80" height="120" rx="3" fill="#f5f0e8"/>
+    <polygon points="340,440 380,380 420,440" fill="#e8e0d0"/>
+    <rect x="370" y="380" width="20" height="60" rx="1" fill="#f0ebe0"/>
+    <circle cx="380" cy="395" r="8" fill="#ffd66b" opacity="0.8"/>
+    <!-- Cathedral doors -->
+    <rect x="365" y="520" width="12" height="20" rx="6" fill="#5a4a3a"/>
+    <rect x="383" y="520" width="12" height="20" rx="6" fill="#5a4a3a"/>
+
+    <!-- More buildings -->
+    <rect x="430" y="510" width="28" height="50" rx="2" fill="#f5f0e8"/>
+    <rect x="465" y="495" width="35" height="65" rx="2" fill="#e8e0d0"/>
+    <rect x="510" y="505" width="30" height="55" rx="2" fill="#f0ebe0"/>
+  </g>
+
+  <!-- Colca Canyon -->
+  <path d="M600,800 L650,500 L700,600 L750,480 L800,580 L850,500 L900,600 L950,520 L1000,800 Z" fill="url(#areq-canyon)"/>
+  <path d="M650,500 L675,540 L700,600 L725,540 L750,480" fill="#a07050" opacity="0.5"/>
+
+  <!-- Canyon depth -->
+  <path d="M700,600 L720,650 L750,480" fill="#6b4a32" opacity="0.4"/>
+  <path d="M800,580 L820,630 L850,500" fill="#6b4a32" opacity="0.3"/>
+
+  <!-- Condor silhouette -->
+  <path d="M650,350 Q670,340 690,350 Q710,340 730,350" stroke="#2a2a2a" stroke-width="3" fill="none" opacity="0.6"/>
+  <path d="M680,348 L690,355 L700,348" stroke="#2a2a2a" stroke-width="2" fill="none" opacity="0.6"/>
+
+  <!-- Foreground -->
+  <path d="M0,680 L1200,680 L1200,800 L0,800 Z" fill="#5a4a3a"/>
+  <path d="M0,700 Q200,680 400,700 Q600,680 800,700 Q1000,680 1200,700 L1200,800 L0,800 Z" fill="#3d3028"/>
+</svg>

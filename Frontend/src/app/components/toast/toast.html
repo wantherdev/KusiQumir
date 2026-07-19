@@ -1,0 +1,15 @@
+<div class="pointer-events-none fixed inset-0 z-50 flex items-end justify-end p-4 sm:items-start">
+  <div class="pointer-events-auto flex flex-col gap-2">
+    <div
+      *ngFor="let toast of notification.toasts; trackBy: trackByFn"
+      role="alert"
+      class="flex items-center gap-3 rounded-2xl px-5 py-3 text-sm font-medium text-white shadow-lg transition-all duration-300"
+      [class.bg-emerald-600]="toast.type === 'success'"
+      [class.bg-red-600]="toast.type === 'error'"
+      [class.bg-slate-700]="toast.type === 'info'"
+    >
+      <span>{{ toast.message }}</span>
+      <button type="button" class="ml-2 text-white/70 hover:text-white" (click)="notification.remove(toast.id)">&times;</button>
+    </div>
+  </div>
+</div>

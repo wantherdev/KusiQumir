@@ -1,0 +1,85 @@
+<svg width="1200" height="800" viewBox="0 0 1200 800" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="selva-sky" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#2d5a27"/>
+      <stop offset="100%" stop-color="#4a8a3f"/>
+    </linearGradient>
+    <linearGradient id="selva-water" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#2a7a8a"/>
+      <stop offset="100%" stop-color="#1a5a6a"/>
+    </linearGradient>
+    <linearGradient id="selva-tree" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#2d7a28"/>
+      <stop offset="100%" stop-color="#1a5a18"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Sky through canopy -->
+  <rect width="1200" height="800" fill="#3a7a35"/>
+
+  <!-- Dense canopy layers -->
+  <path d="M0,0 L1200,0 L1200,200 Q1000,250 800,180 Q600,280 400,200 Q200,300 0,220 Z" fill="#1a5a18" opacity="0.9"/>
+  <path d="M0,100 Q200,150 400,120 Q600,180 800,130 Q1000,200 1200,150 L1200,300 Q1000,350 800,280 Q600,380 400,300 Q200,400 0,320 Z" fill="#2d7a28" opacity="0.8"/>
+
+  <!-- Light rays through canopy -->
+  <polygon points="500,0 520,400 480,400" fill="#ffd66b" opacity="0.06"/>
+  <polygon points="700,0 720,350 680,350" fill="#ffd66b" opacity="0.05"/>
+  <polygon points="300,0 320,300 280,300" fill="#ffd66b" opacity="0.04"/>
+
+  <!-- River -->
+  <path d="M0,450 Q150,420 300,460 Q450,500 600,470 Q750,440 900,480 Q1050,520 1200,490 L1200,560 Q1050,590 900,550 Q750,510 600,540 Q450,570 300,530 Q150,490 0,520 Z" fill="url(#selva-water)" opacity="0.8"/>
+  <!-- Water reflections -->
+  <path d="M100,480 Q150,475 200,482" stroke="#5ac0d0" stroke-width="1.5" fill="none" opacity="0.4"/>
+  <path d="M400,500 Q450,495 500,502" stroke="#5ac0d0" stroke-width="1.5" fill="none" opacity="0.3"/>
+  <path d="M800,490 Q850,485 900,492" stroke="#5ac0d0" stroke-width="1.5" fill="none" opacity="0.35"/>
+
+  <!-- Trees left -->
+  <rect x="50" y="300" width="20" height="250" fill="#3d2a1a"/>
+  <path d="M20,320 Q60,200 100,320" fill="url(#selva-tree)"/>
+  <path d="M30,280 Q60,180 90,280" fill="#2d7a28"/>
+  <path d="M40,250 Q60,160 80,250" fill="#3d8a38"/>
+
+  <!-- Trees right -->
+  <rect x="1050" y="280" width="22" height="270" fill="#3d2a1a"/>
+  <path d="M1020,300 Q1060,180 1100,300" fill="url(#selva-tree)"/>
+  <path d="M1030,260 Q1060,150 1090,260" fill="#2d7a28"/>
+  <path d="M1040,230 Q1060,140 1080,230" fill="#3d8a38"/>
+
+  <!-- Hanging vines -->
+  <path d="M200,0 Q210,100 195,200 Q185,300 200,400" stroke="#2d7a28" stroke-width="3" fill="none" opacity="0.6"/>
+  <path d="M210,0 Q220,80 205,180 Q195,280 210,380" stroke="#3d8a38" stroke-width="2" fill="none" opacity="0.5"/>
+  <path d="M900,0 Q910,120 895,240 Q885,360 900,450" stroke="#2d7a28" stroke-width="3" fill="none" opacity="0.55"/>
+  <path d="M910,0 Q920,90 905,200 Q895,310 910,420" stroke="#3d8a38" stroke-width="2" fill="none" opacity="0.45"/>
+
+  <!-- Exotic flowers -->
+  <circle cx="180" cy="350" r="8" fill="#ff4444" opacity="0.8"/>
+  <circle cx="175" cy="345" r="5" fill="#ff6666" opacity="0.7"/>
+  <circle cx="1020" cy="320" r="7" fill="#ff8844" opacity="0.8"/>
+  <circle cx="1015" cy="315" r="4" fill="#ffaa66" opacity="0.7"/>
+  <circle cx="350" cy="280" r="6" fill="#ff44aa" opacity="0.7"/>
+  <circle cx="800" cy="300" r="5" fill="#ff6644" opacity="0.6"/>
+
+  <!-- Butterfly -->
+  <g transform="translate(600,350) rotate(-10)">
+    <path d="M0,0 Q-15,-15 -5,-25 Q5,-15 0,0" fill="#ff8844" opacity="0.8"/>
+    <path d="M0,0 Q15,-15 5,-25 Q-5,-15 0,0" fill="#ffaa66" opacity="0.7"/>
+    <path d="M0,0 Q-10,10 -3,18 Q3,10 0,0" fill="#ff6644" opacity="0.6"/>
+    <path d="M0,0 Q10,10 3,18 Q-3,10 0,0" fill="#ff8844" opacity="0.5"/>
+  </g>
+
+  <!-- Canopy middle layer -->
+  <path d="M0,500 Q200,450 400,500 Q600,450 800,500 Q1000,450 1200,500 L1200,600 Q1000,560 800,600 Q600,560 400,600 Q200,560 0,600 Z" fill="#1a5a18" opacity="0.7"/>
+
+  <!-- Forest floor -->
+  <path d="M0,620 L1200,620 L1200,800 L0,800 Z" fill="#2a4a25"/>
+
+  <!-- Fallen logs/undergrowth -->
+  <rect x="100" y="660" width="200" height="12" rx="6" fill="#5a3a20" opacity="0.6"/>
+  <rect x="800" y="680" width="180" height="10" rx="5" fill="#5a3a20" opacity="0.5"/>
+
+  <!-- Mushrooms -->
+  <ellipse cx="300" cy="670" rx="8" ry="4" fill="#ff6644" opacity="0.7"/>
+  <rect x="298" y="670" width="4" height="8" fill="#e8d8c0" opacity="0.6"/>
+  <ellipse cx="700" cy="675" rx="6" ry="3" fill="#ff8844" opacity="0.6"/>
+  <rect x="698" y="675" width="4" height="6" fill="#e8d8c0" opacity="0.5"/>
+</svg>
