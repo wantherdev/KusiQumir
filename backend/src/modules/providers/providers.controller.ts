@@ -25,6 +25,7 @@ export class ProvidersController {
   constructor(private readonly providersService: ProvidersService) {}
 
   @Get()
+  @Roles("ADMIN")
   @ApiOperation({ summary: "Listar proveedores" })
   findAll() {
     return this.providersService.findAll();
@@ -38,6 +39,7 @@ export class ProvidersController {
   }
 
   @Get(":id")
+  @Roles("ADMIN")
   @ApiOperation({ summary: "Obtener proveedor por ID" })
   findOne(@Param("id") id: string) {
     return this.providersService.findOne(id);

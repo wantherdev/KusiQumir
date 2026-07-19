@@ -20,8 +20,9 @@ export class WhatsAppService {
   private readonly businessPhone: string;
 
   constructor(config: ConfigService) {
-    this.businessPhone =
-      config.get<string>("WHATSAPP_PHONE") ?? "51999000000";
+    const phone = config.get<string>("WHATSAPP_PHONE");
+    if (!phone) throw new Error("WHATSAPP_PHONE env var is required");
+    this.businessPhone = phone;
   }
 
   formatBookingMessage(booking: BookingDetails): string {

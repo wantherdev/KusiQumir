@@ -10,8 +10,10 @@ services:
       - ssl-certs:/etc/ssl/certs
       - certbot-www:/var/www/certbot
     depends_on:
-      - frontend
-      - backend
+      frontend:
+        condition: service_healthy
+      backend:
+        condition: service_healthy
     networks:
       - default
 

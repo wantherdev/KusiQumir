@@ -35,6 +35,12 @@ class UpdateArticleDto {
   @IsOptional() @IsEnum(["DRAFT", "PUBLISHED"]) status?: string;
 }
 
+class FindAllArticlesQuery {
+  @IsOptional() @IsString() take?: string;
+  @IsOptional() @IsString() cursor?: string;
+  @IsOptional() @IsString() category?: string;
+}
+
 @ApiTags("articles")
 @UseInterceptors(CacheInterceptor)
 @Controller()
@@ -44,7 +50,7 @@ export class ArticlesController {
   @Public()
   @Get("articles")
   @ApiOperation({ summary: "Listar artículos publicados" })
-  findAll(@Query() query: Record<string, string>) {
+  findAll(@Query() query: FindAllArticlesQuery) {
     return this.articlesService.findAllPublic(query);
   }
 

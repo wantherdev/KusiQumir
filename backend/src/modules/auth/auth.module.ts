@@ -18,7 +18,7 @@ import { CsrfModule } from "../csrf/csrf.module";
       inject: [ConfigService],
       useFactory: (config: ConfigService) => ({
         secret: config.get<string>("JWT_SECRET"),
-        signOptions: { expiresIn: "1h" },
+        signOptions: { expiresIn: (config.get<string>("JWT_EXPIRES_IN") || "1h") as any },
       }),
     }),
   ],

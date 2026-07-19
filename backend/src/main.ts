@@ -28,7 +28,14 @@ async function bootstrap() {
   });
 
   app.setGlobalPrefix("api/v1");
-  app.use(helmet());
+  app.use(helmet({
+    contentSecurityPolicy: false,
+    hsts: { maxAge: 31536000, includeSubDomains: true, preload: true },
+    referrerPolicy: { policy: "strict-origin-when-cross-origin" },
+    frameguard: { action: "sameorigin" },
+    noSniff: true,
+    xssFilter: true,
+  }));
   app.use(compression());
   app.use(cookieParser());
   app.enableCors({

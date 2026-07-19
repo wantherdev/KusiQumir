@@ -15,5 +15,7 @@ RUN corepack enable && corepack prepare pnpm@latest --activate
 COPY package.json pnpm-lock.yaml ./
 RUN pnpm install --frozen-lockfile --prod
 COPY --from=builder /app/dist ./dist
+RUN chown -R node:node /app && chmod -R g-w /app
+USER node
 EXPOSE 4000
 CMD ["node", "dist/kusiqumir_page/server/server.mjs"]

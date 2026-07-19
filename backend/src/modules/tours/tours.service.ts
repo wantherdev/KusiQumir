@@ -37,7 +37,7 @@ export class ToursService {
   constructor(private readonly prisma: PrismaService) {}
 
   async findAllPublic(query: {
-    take?: number;
+    take?: string;
     cursor?: string;
     availability?: string;
     difficulty?: string;

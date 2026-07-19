@@ -41,6 +41,16 @@ class UpdateTourDto {
   @IsOptional() @IsString() providerId?: string;
 }
 
+class FindAllToursQuery {
+  @IsOptional() @IsString() take?: string;
+  @IsOptional() @IsString() cursor?: string;
+  @IsOptional() @IsString() availability?: string;
+  @IsOptional() @IsString() difficulty?: string;
+  @IsOptional() @IsString() location?: string;
+  @IsOptional() @IsString() minPrice?: string;
+  @IsOptional() @IsString() maxPrice?: string;
+}
+
 @ApiTags("tours")
 @UseInterceptors(CacheInterceptor)
 @Controller("tours")
@@ -57,7 +67,7 @@ export class ToursController {
   @ApiQuery({ name: "location", required: false })
   @ApiQuery({ name: "minPrice", required: false })
   @ApiQuery({ name: "maxPrice", required: false })
-  findAll(@Query() query: Record<string, string>) {
+  findAll(@Query() query: FindAllToursQuery) {
     return this.toursService.findAllPublic(query);
   }
 

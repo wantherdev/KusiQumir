@@ -57,36 +57,61 @@
           </div>
         </div>
 
-        <form class="rounded-[2rem] border border-slate-200 bg-white p-8 shadow-sm" (ngSubmit)="submit()">
+        <form class="rounded-[2rem] border border-slate-200 bg-white p-8 shadow-sm" (ngSubmit)="submit()" #reservaForm="ngForm">
           <div class="space-y-4">
             <label class="block">
               <span class="mb-1 block text-sm font-semibold text-slate-700">Viajeros <span class="text-red-500">*</span></span>
-              <input type="number" min="1" max="20" [(ngModel)]="travelers" name="travelers"
-                class="w-full rounded-2xl border border-slate-200 px-4 py-3" required />
+              <input type="number" min="1" max="20" [(ngModel)]="travelers" name="travelers" #travelersInput="ngModel" required
+                class="w-full rounded-2xl border px-4 py-3 outline-none transition focus:ring-2"
+                [class.border-red-300]="travelersInput.invalid && travelersInput.touched"
+                [class.border-slate-200]="!travelersInput.invalid || !travelersInput.touched" />
+              <span *ngIf="travelersInput.invalid && travelersInput.touched" class="mt-1 block text-xs text-red-500">
+                Debe haber al menos 1 viajero
+              </span>
             </label>
 
             <label class="block">
               <span class="mb-1 block text-sm font-semibold text-slate-700">Nombre completo <span class="text-red-500">*</span></span>
-              <input type="text" [(ngModel)]="customerName" name="customerName"
-                placeholder="Tu nombre" class="w-full rounded-2xl border border-slate-200 px-4 py-3" required />
+              <input type="text" [(ngModel)]="customerName" name="customerName" #customerNameInput="ngModel" required
+                placeholder="Tu nombre" class="w-full rounded-2xl border px-4 py-3 outline-none transition focus:ring-2"
+                [class.border-red-300]="customerNameInput.invalid && customerNameInput.touched"
+                [class.border-slate-200]="!customerNameInput.invalid || !customerNameInput.touched" />
+              <span *ngIf="customerNameInput.invalid && customerNameInput.touched" class="mt-1 block text-xs text-red-500">
+                El nombre es obligatorio
+              </span>
             </label>
 
             <label class="block">
               <span class="mb-1 block text-sm font-semibold text-slate-700">Email <span class="text-red-500">*</span></span>
-              <input type="email" [(ngModel)]="customerEmail" name="customerEmail"
-                placeholder="tucorreo@ejemplo.com" class="w-full rounded-2xl border border-slate-200 px-4 py-3" required />
+              <input type="email" [(ngModel)]="customerEmail" name="customerEmail" #customerEmailInput="ngModel" required email
+                placeholder="tucorreo@ejemplo.com" class="w-full rounded-2xl border px-4 py-3 outline-none transition focus:ring-2"
+                [class.border-red-300]="customerEmailInput.invalid && customerEmailInput.touched"
+                [class.border-slate-200]="!customerEmailInput.invalid || !customerEmailInput.touched" />
+              <span *ngIf="customerEmailInput.invalid && customerEmailInput.touched" class="mt-1 block text-xs text-red-500">
+                Ingresa un correo electrónico válido
+              </span>
             </label>
 
             <label class="block">
-              <span class="mb-1 block text-sm font-semibold text-slate-700">Teléfono</span>
-              <input type="tel" [(ngModel)]="customerPhone" name="customerPhone"
-                placeholder="+51 999 999 999" class="w-full rounded-2xl border border-slate-200 px-4 py-3" />
+              <span class="mb-1 block text-sm font-semibold text-slate-700">Teléfono <span class="text-red-500">*</span></span>
+              <input type="tel" [(ngModel)]="customerPhone" name="customerPhone" #customerPhoneInput="ngModel" required minlength="9"
+                placeholder="+51 999 999 999" class="w-full rounded-2xl border px-4 py-3 outline-none transition focus:ring-2"
+                [class.border-red-300]="customerPhoneInput.invalid && customerPhoneInput.touched"
+                [class.border-slate-200]="!customerPhoneInput.invalid || !customerPhoneInput.touched" />
+              <span *ngIf="customerPhoneInput.invalid && customerPhoneInput.touched" class="mt-1 block text-xs text-red-500">
+                Ingresa un teléfono válido (mín. 9 dígitos)
+              </span>
             </label>
 
             <label class="block">
-              <span class="mb-1 block text-sm font-semibold text-slate-700">Fecha deseada</span>
-              <input type="date" [(ngModel)]="startDate" name="startDate"
-                class="w-full rounded-2xl border border-slate-200 px-4 py-3" />
+              <span class="mb-1 block text-sm font-semibold text-slate-700">Fecha deseada <span class="text-red-500">*</span></span>
+              <input type="date" [(ngModel)]="startDate" name="startDate" #startDateInput="ngModel" required
+                class="w-full rounded-2xl border px-4 py-3 outline-none transition focus:ring-2"
+                [class.border-red-300]="startDateInput.invalid && startDateInput.touched"
+                [class.border-slate-200]="!startDateInput.invalid || !startDateInput.touched" />
+              <span *ngIf="startDateInput.invalid && startDateInput.touched" class="mt-1 block text-xs text-red-500">
+                Selecciona una fecha de inicio
+              </span>
             </label>
 
             <label class="block">
@@ -98,7 +123,7 @@
 
           <p *ngIf="error" class="mt-4 rounded-xl bg-red-50 px-4 py-3 text-sm text-red-600">{{ error }}</p>
 
-          <button type="submit" [disabled]="submitting"
+          <button type="submit" [disabled]="submitting || (reservaForm.invalid && reservaForm.submitted)"
             class="mt-6 w-full rounded-full bg-primary px-6 py-4 font-semibold text-white transition hover:bg-primary-dark disabled:opacity-50">
             {{ submitting ? 'Enviando...' : 'Enviar reserva' }}
           </button>

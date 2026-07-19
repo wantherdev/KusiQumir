@@ -149,7 +149,7 @@ export class BookingsService {
     const booking = await this.prisma.booking.create({
       data: bookingData,
       include: this.bookingInclude,
-    });
+    }) as any;
 
     const itemName = booking.tour?.name ?? booking.package?.name ?? "";
     const waLink = this.whatsapp.generateWaLink({

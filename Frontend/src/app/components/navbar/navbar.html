@@ -18,6 +18,7 @@
         type="button"
         class="inline-flex h-11 w-11 items-center justify-center rounded-full border border-slate-200 text-current shadow-sm transition hover:bg-slate-50 md:hidden"
         (click)="toggleMobileMenu()"
+        [attr.aria-expanded]="isMobileMenuOpen"
         aria-label="Abrir menú"
       >
         <i class="ri-menu-line text-2xl" *ngIf="!isMobileMenuOpen"></i>
@@ -39,7 +40,7 @@
             <i class="ri-arrow-down-s-line text-sm"></i>
           </a>
           <div
-            class="absolute left-0 top-full mt-2 w-64 rounded-3xl bg-white p-4 shadow-xl opacity-0 invisible transition-all duration-300 group-hover:visible group-hover:opacity-100"
+            class="absolute left-0 top-full mt-2 w-64 rounded-3xl bg-white p-4 shadow-xl opacity-0 invisible transition-all duration-300 group-hover:visible group-hover:opacity-100 group-focus-within:visible group-focus-within:opacity-100"
           >
             <div class="space-y-2">
               <a
@@ -79,7 +80,7 @@
             <span>Admin</span>
             <i class="ri-arrow-down-s-line text-sm"></i>
           </button>
-          <div class="absolute left-0 top-full mt-2 w-48 rounded-3xl bg-white p-4 shadow-xl opacity-0 invisible transition-all duration-300 group-hover:visible group-hover:opacity-100">
+          <div class="absolute left-0 top-full mt-2 w-48 rounded-3xl bg-white p-4 shadow-xl opacity-0 invisible transition-all duration-300 group-hover:visible group-hover:opacity-100 group-focus-within:visible group-focus-within:opacity-100">
             <div class="space-y-2">
               <a routerLink="/admin/tours" class="block rounded-xl px-3 py-2 text-sm font-semibold text-slate-700 transition hover:bg-primary hover:text-white">Tours</a>
               <a routerLink="/admin/paquetes" class="block rounded-xl px-3 py-2 text-sm font-semibold text-slate-700 transition hover:bg-primary hover:text-white">Paquetes</a>

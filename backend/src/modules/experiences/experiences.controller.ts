@@ -39,6 +39,13 @@ class UpdateExperienceDto {
   @IsOptional() @IsEnum(["DRAFT", "PUBLISHED"]) status?: string;
 }
 
+class FindAllExperiencesQuery {
+  @IsOptional() @IsString() take?: string;
+  @IsOptional() @IsString() cursor?: string;
+  @IsOptional() @IsString() featured?: string;
+  @IsOptional() @IsString() location?: string;
+}
+
 @ApiTags("experiences")
 @UseInterceptors(CacheInterceptor)
 @Controller()
@@ -48,7 +55,7 @@ export class ExperiencesController {
   @Public()
   @Get("experiences")
   @ApiOperation({ summary: "Listar experiencias publicadas" })
-  findAll(@Query() query: Record<string, string>) {
+  findAll(@Query() query: FindAllExperiencesQuery) {
     return this.experiencesService.findAllPublic(query);
   }
 

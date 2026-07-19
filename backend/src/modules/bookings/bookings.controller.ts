@@ -45,6 +45,15 @@ class CreateBookingDto {
   notes?: string;
 }
 
+class FindAllBookingsQuery {
+  @IsOptional() @IsString() take?: string;
+  @IsOptional() @IsString() cursor?: string;
+  @IsOptional() @IsString() status?: string;
+  @IsOptional() @IsString() customerId?: string;
+  @IsOptional() @IsString() dateFrom?: string;
+  @IsOptional() @IsString() dateTo?: string;
+}
+
 @ApiTags("bookings")
 @ApiBearerAuth()
 @UseGuards(JwtAuthGuard, RolesGuard)
@@ -59,7 +68,7 @@ export class BookingsController {
   @ApiQuery({ name: "cursor", required: false })
   @ApiQuery({ name: "status", required: false })
   @ApiQuery({ name: "customerId", required: false })
-  findAllAdmin(@Query() query: Record<string, string>) {
+  findAllAdmin(@Query() query: FindAllBookingsQuery) {
     return this.bookingsService.findAllAdmin(query);
   }
 

@@ -27,6 +27,7 @@ export class GuidesController {
   constructor(private readonly guidesService: GuidesService) {}
 
   @Get()
+  @Roles("ADMIN")
   @ApiOperation({ summary: "Listar guías turísticos" })
   findAll() {
     return this.guidesService.findAll();
@@ -40,6 +41,7 @@ export class GuidesController {
   }
 
   @Get(":id")
+  @Roles("ADMIN")
   @ApiOperation({ summary: "Obtener guía por ID" })
   findOne(@Param("id") id: string) {
     return this.guidesService.findOne(id);

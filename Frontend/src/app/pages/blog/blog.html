@@ -31,7 +31,7 @@
         [routerLink]="['/blog', article.slug]"
         class="page-card group block overflow-hidden rounded-[1.75rem] bg-white transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl"
       >
-        <img [src]="article.coverImage || '/images/placeholder.svg'" [alt]="article.imageAlt || article.title" class="h-48 w-full object-cover" loading="lazy" />
+        <img [src]="article.coverImage || '/images/placeholder.svg'" [alt]="article.imageAlt || article.title" width="400" height="192" class="h-48 w-full object-cover" loading="lazy" />
         <div class="p-8">
           <div class="flex items-center gap-2 text-sm text-slate-500">
             <span class="rounded-full bg-amber-50 px-3 py-1 font-medium text-primary">

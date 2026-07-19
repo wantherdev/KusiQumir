@@ -34,6 +34,7 @@ export class MisReservas implements OnInit {
   }
 
   load(): void {
+    this.showConfirm = false;
     this.isLoading = true;
     this.api.getMyBookings().subscribe({
       next: (res) => { this.items = res; this.isLoading = false; },

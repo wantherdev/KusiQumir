@@ -46,7 +46,9 @@ export class DestinoRedirect implements OnInit {
           return;
         }
       } catch {
-        /* fall through to listing */
+        console.error('Error al cargar destinos para redirección');
+        await this.router.navigate(['/destinos'], { replaceUrl: true });
+        return;
       }
     }
     await this.router.navigate(['/destinos'], { replaceUrl: true });
