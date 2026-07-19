@@ -19,7 +19,7 @@ export class BookingsService {
   ) {}
 
   private bookingInclude = {
-    tour: { select: { id: true, name: true, price: true, duration: true, images: true } },
+    tour: { select: { id: true, name: true, adultPrice: true, coverImage: true, slug: true, durationText: true } },
     package: { select: { id: true, name: true, price: true } },
     customer: { select: { id: true, name: true, email: true } },
   } satisfies Prisma.BookingInclude;
@@ -131,10 +131,10 @@ export class BookingsService {
     let unitPrice = 0;
     if (payload.tourId) {
       const tour = await this.prisma.tour.findFirst({
-        where: { id: payload.tourId, deletedAt: null, availability: true },
+        where: { id: payload.tourId, status: "published" },
       });
       if (!tour) throw new NotFoundException("Tour no disponible");
-      unitPrice = tour.price;
+      unitPrice = tour.adultPrice ?? 0;
       bookingData.tour = { connect: { id: tour.id } };
     } else if (payload.packageId) {
       const pkg = await this.prisma.package.findUnique({ where: { id: payload.packageId } });

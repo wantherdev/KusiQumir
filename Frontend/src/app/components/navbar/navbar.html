@@ -33,35 +33,35 @@
             routerLinkActive="text-primary"
             #dest="routerLinkActive"
             [attr.aria-current]="dest.isActive ? 'page' : null"
-            class="flex items-center gap-2 rounded-md px-3 py-2 transition hover:text-primary"
-          >
+            class="flex items-center gap-2 rounded-md px-3 py-2 transition hover:text-primary">
             <span>Destinos</span>
             <i aria-hidden="true" class="ri-arrow-down-s-line text-sm"></i>
           </a>
           <div
-            class="absolute left-0 top-full mt-2 w-64 rounded-3xl bg-white p-4 shadow-xl opacity-0 invisible transition-all duration-300 group-hover:visible group-hover:opacity-100 group-focus-within:visible group-focus-within:opacity-100"
+            class="absolute left-0 top-full mt-2 w-72 rounded-3xl bg-white p-4 shadow-xl opacity-0 invisible transition-all duration-300 group-hover:visible group-hover:opacity-100"
           >
-            <div class="space-y-2">
-              <a
-                *ngFor="let tour of tours"
-                [routerLink]="'/destinos/tour/' + tour.id"
-                class="block rounded-xl px-3 py-2 text-sm font-semibold text-slate-700 transition hover:bg-primary hover:text-white"
-              >
-                {{ tour.name }}
-              </a>
+            <div class="max-h-[70vh] space-y-5 overflow-y-auto">
+              <div *ngFor="let group of tourGroups">
+                <div class="mb-2 flex items-center gap-2 px-1">
+                  <i [attr.aria-hidden]="true" class="text-base text-primary {{ group.icon }}"></i>
+                  <span class="text-xs font-bold uppercase tracking-wider text-slate-400">{{ group.label }}</span>
+                </div>
+                <div class="space-y-1 border-l-2 border-primary/15 pl-2">
+                  <a
+                    *ngFor="let tour of group.tours"
+                    [routerLink]="'/destinos/tour/' + tour.id"
+                    class="block rounded-xl px-3 py-2 text-sm font-semibold text-slate-700 transition hover:bg-primary hover:text-white">
+                    {{ tour.name }}
+                  </a>
+                </div>
+              </div>
             </div>
           </div>
         </div>
 
-         <a routerLink="/paquetes" routerLinkActive="text-primary" #paq="routerLinkActive" [attr.aria-current]="paq.isActive ? 'page' : null" class="rounded-md px-3 py-2 transition hover:text-primary"
-
-         >Paquetes</a>
-         <a routerLink="/experiencias" routerLinkActive="text-primary" #exp="routerLinkActive" [attr.aria-current]="exp.isActive ? 'page' : null" class="rounded-md px-3 py-2 transition hover:text-primary"
-
-         >Experiencias</a>
-         <a routerLink="/nosotros" routerLinkActive="text-primary" #nos="routerLinkActive" [attr.aria-current]="nos.isActive ? 'page' : null" class="rounded-md px-3 py-2 transition hover:text-primary"
-
-         >Nosotros</a>
+         <a routerLink="/paquetes" routerLinkActive="text-primary" #paq="routerLinkActive" [attr.aria-current]="paq.isActive ? 'page' : null" class="rounded-md px-3 py-2 transition hover:text-primary">Paquetes</a>
+         <a routerLink="/experiencias" routerLinkActive="text-primary" #exp="routerLinkActive" [attr.aria-current]="exp.isActive ? 'page' : null" class="rounded-md px-3 py-2 transition hover:text-primary">Experiencias</a>
+         <a routerLink="/nosotros" routerLinkActive="text-primary" #nos="routerLinkActive" [attr.aria-current]="nos.isActive ? 'page' : null" class="rounded-md px-3 py-2 transition hover:text-primary">Nosotros</a>
          <a routerLink="/blog" routerLinkActive="text-primary" #blg="routerLinkActive" [attr.aria-current]="blg.isActive ? 'page' : null" class="rounded-md px-3 py-2 transition hover:text-primary">Blog</a>
          <a routerLink="/contacto" routerLinkActive="text-primary" #cnt="routerLinkActive" [attr.aria-current]="cnt.isActive ? 'page' : null" class="rounded-md px-3 py-2 transition hover:text-primary">Contacto</a>
 
@@ -76,7 +76,7 @@
             <span>Admin</span>
             <i aria-hidden="true" class="ri-arrow-down-s-line text-sm"></i>
           </button>
-          <div class="absolute left-0 top-full mt-2 w-48 rounded-3xl bg-white p-4 shadow-xl opacity-0 invisible transition-all duration-300 group-hover:visible group-hover:opacity-100 group-focus-within:visible group-focus-within:opacity-100">
+          <div class="absolute left-0 top-full mt-2 w-48 rounded-3xl bg-white p-4 shadow-xl opacity-0 invisible transition-all duration-300 group-hover:visible group-hover:opacity-100">
             <div class="space-y-2">
               <a routerLink="/admin/tours" class="block rounded-xl px-3 py-2 text-sm font-semibold text-slate-700 transition hover:bg-primary hover:text-white">Tours</a>
               <a routerLink="/admin/paquetes" class="block rounded-xl px-3 py-2 text-sm font-semibold text-slate-700 transition hover:bg-primary hover:text-white">Paquetes</a>
@@ -99,8 +99,7 @@
         </a>
         <a
           routerLink="/contacto"
-          class="rounded-full border border-primary px-5 py-2 text-primary font-semibold transition hover:bg-primary hover:text-white"
-          >
+          class="rounded-full border border-primary px-5 py-2 text-primary font-semibold transition hover:bg-primary hover:text-white">
           Solicitar Cotización
         </a>
       </div>
@@ -114,15 +113,12 @@
         <div class="space-y-1 text-sm font-semibold text-slate-700">
           <a
             routerLink="/destinos"
-            class="block rounded-xl px-3 py-2 transition hover:bg-primary hover:text-white"
-
-          >Destinos</a>
+            class="block rounded-xl px-3 py-2 transition hover:bg-primary hover:text-white">Destinos</a>
           <div class="space-y-1 rounded-2xl bg-slate-50 p-3">
             <a
               *ngFor="let tour of tours"
               [routerLink]="'/destinos/tour/' + tour.id"
-              class="block rounded-lg px-3 py-2 text-slate-700 transition hover:bg-primary hover:text-white"
-            >
+              class="block rounded-lg px-3 py-2 text-slate-700 transition hover:bg-primary hover:text-white">
               {{ tour.name }}
             </a>
           </div>
@@ -131,41 +127,31 @@
             routerLinkActive="bg-primary/10 text-primary"
             #paqm="routerLinkActive"
             [attr.aria-current]="paqm.isActive ? 'page' : null"
-            class="block rounded-xl px-3 py-2 transition hover:bg-primary hover:text-white"
-
-          >Paquetes</a>
+            class="block rounded-xl px-3 py-2 transition hover:bg-primary hover:text-white">Paquetes</a>
            <a
               routerLink="/experiencias"
               routerLinkActive="bg-primary/10 text-primary"
               #expm="routerLinkActive"
               [attr.aria-current]="expm.isActive ? 'page' : null"
-              class="block rounded-xl px-3 py-2 transition hover:bg-primary hover:text-white"
-
-          >Experiencias</a>
+              class="block rounded-xl px-3 py-2 transition hover:bg-primary hover:text-white">Experiencias</a>
            <a
               routerLink="/nosotros"
               routerLinkActive="bg-primary/10 text-primary"
               #nosm="routerLinkActive"
               [attr.aria-current]="nosm.isActive ? 'page' : null"
-              class="block rounded-xl px-3 py-2 transition hover:bg-primary hover:text-white"
-
-          >Nosotros</a>
+              class="block rounded-xl px-3 py-2 transition hover:bg-primary hover:text-white">Nosotros</a>
            <a
               routerLink="/blog"
               routerLinkActive="bg-primary/10 text-primary"
               #blgm="routerLinkActive"
               [attr.aria-current]="blgm.isActive ? 'page' : null"
-              class="block rounded-xl px-3 py-2 transition hover:bg-primary hover:text-white"
-
-          >Blog</a>
+              class="block rounded-xl px-3 py-2 transition hover:bg-primary hover:text-white">Blog</a>
            <a
              routerLink="/contacto"
              routerLinkActive="bg-primary/10 text-primary"
              #cntm="routerLinkActive"
              [attr.aria-current]="cntm.isActive ? 'page' : null"
-              class="block rounded-xl px-3 py-2 transition hover:bg-primary hover:text-white"
-
-          >Contacto</a>
+              class="block rounded-xl px-3 py-2 transition hover:bg-primary hover:text-white">Contacto</a>
 
           <a routerLink="/mis-reservas" routerLinkActive="bg-primary/10 text-primary" #resm="routerLinkActive" [attr.aria-current]="resm.isActive ? 'page' : null" class="block rounded-xl px-3 py-2 transition hover:bg-primary hover:text-white">Mis Reservas</a>
 
@@ -190,8 +176,7 @@
           </a>
           <a
             routerLink="/contacto"
-            class="inline-flex items-center justify-center rounded-full border border-primary bg-white px-4 py-2 text-primary font-semibold transition hover:bg-primary hover:text-white"
-            >
+            class="inline-flex items-center justify-center rounded-full border border-primary bg-white px-4 py-2 text-primary font-semibold transition hover:bg-primary hover:text-white">
             Cotizar Viaje
           </a>
         </div>

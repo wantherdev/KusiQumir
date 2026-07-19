@@ -1,6 +1,7 @@
 import { Component, HostListener, inject, PLATFORM_ID, ChangeDetectionStrategy } from '@angular/core';
 import { NgClass, NgFor, NgIf, isPlatformBrowser } from '@angular/common';
-import { Router, RouterLink, RouterLinkActive } from '@angular/router';
+import { Router, RouterLink, RouterLinkActive, NavigationEnd } from '@angular/router';
+import { filter } from 'rxjs/operators';
 
 import { AuthService } from '../../services/auth.service';
 import { Tour } from '../../services/travel-api.service';
@@ -26,6 +27,11 @@ export class Navbar {
     private readonly tourState: TourStateService,
   ) {
     this.tours = this.tourState.getTours();
+    this.router.events
+      .pipe(filter((e): e is NavigationEnd => e instanceof NavigationEnd))
+      .subscribe(() => {
+        this.isMobileMenuOpen = false;
+      });
   }
 
   tourSlug(name: string): string {
@@ -39,6 +45,33 @@ export class Navbar {
       .replace(/-+$/, '')
       .replace(/-{2,}/g, '-')
       .trim();
+  }
+
+  private daysOf(duration: string | null | undefined): number {
+    if (!duration) return 99;
+    const lowered = duration.toLowerCase();
+    if (lowered.includes('medio') || lowered.includes('1/2') || lowered.includes('mediat')) return 0.5;
+    const match = lowered.match(/(\d+)\s*d/i);
+    if (match) return parseInt(match[1], 10);
+    return 99;
+  }
+
+  get tourGroups(): { label: string; icon: string; tours: Tour[] }[] {
+    const order: { label: string; icon: string; max: number }[] = [
+      { label: 'Medio día', icon: 'ri-sun-line', max: 0.5 },
+      { label: '1 día', icon: 'ri-sun-foggy-line', max: 1 },
+      { label: '2 días', icon: 'ri-calendar-2-line', max: 2 },
+      { label: '3+ días', icon: 'ri-calendar-line', max: 99 },
+    ];
+    const buckets: Tour[][] = order.map(() => []);
+    for (const t of this.tours) {
+      const d = this.daysOf(t.duration);
+      const idx = order.findIndex((o) => d <= o.max);
+      buckets[idx === -1 ? buckets.length - 1 : idx].push(t);
+    }
+    return order
+      .map((o, i) => ({ label: o.label, icon: o.icon, tours: buckets[i] }))
+      .filter((g) => g.tours.length > 0);
   }
 
   @HostListener('window:scroll', [])

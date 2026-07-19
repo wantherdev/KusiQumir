@@ -42,12 +42,12 @@ describe("ToursService", () => {
       expect(result.nextCursor).toBeNull();
     });
 
-    it("should filter by availability", async () => {
+    it("should filter by status", async () => {
       mockPrisma.tour.findMany.mockResolvedValue([]);
-      await service.findAllPublic({ availability: "true" });
+      await service.findAllPublic({ status: "published" });
       expect(mockPrisma.tour.findMany).toHaveBeenCalledWith(
         expect.objectContaining({
-          where: expect.objectContaining({ availability: true }),
+          where: expect.objectContaining({ status: "published" }),
         }),
       );
     });
@@ -71,10 +71,18 @@ describe("ToursService", () => {
   describe("create", () => {
     it("should create a tour", async () => {
       const payload = {
+        slug: "test-tour",
         name: "New Tour",
         description: "A great tour",
-        price: 100,
-        duration: "3 días",
+        category: "Adventure",
+        tourType: "Private",
+        durationDays: 3,
+        durationHours: 0,
+        durationText: "3 días",
+        country: "Perú",
+        region: "Cusco",
+        city: "Cusco",
+        adultPrice: 100,
       };
       const created = { id: "1", ...payload };
       mockPrisma.tour.create.mockResolvedValue(created);
@@ -97,14 +105,14 @@ describe("ToursService", () => {
   });
 
   describe("remove", () => {
-    it("should soft delete a tour", async () => {
+    it("should archive a tour (change status to archived)", async () => {
       const tour = { id: "1", name: "Test" };
       mockPrisma.tour.findFirst.mockResolvedValue(tour);
       mockPrisma.tour.findUnique.mockResolvedValue(tour);
-      mockPrisma.tour.update.mockResolvedValue({ ...tour, deletedAt: new Date() });
+      mockPrisma.tour.update.mockResolvedValue({ ...tour, status: "archived" });
 
       const result = await service.remove("1");
-      expect(result.deletedAt).toBeDefined();
+      expect(result.status).toBe("archived");
     });
   });
 });

@@ -41,7 +41,7 @@ export class ExperiencesService {
   async findBySlug(slug: string) {
     const experience = await this.prisma.experience.findFirst({
       where: { slug, status: "PUBLISHED", publishedAt: { lte: new Date() } },
-      select: { id: true, slug: true, title: true, summary: true, content: true, coverImage: true, imageAlt: true, location: true, duration: true, tourId: true, featured: true, status: true, publishedAt: true, sortOrder: true, createdAt: true, updatedAt: true, tour: { select: { id: true, name: true, price: true, duration: true } } },
+      select: { id: true, slug: true, title: true, summary: true, content: true, coverImage: true, imageAlt: true, location: true, duration: true, tourId: true, featured: true, status: true, publishedAt: true, sortOrder: true, createdAt: true, updatedAt: true, tour: { select: { id: true, name: true, adultPrice: true, durationText: true } } },
     });
     if (!experience) throw new NotFoundException("Experiencia no encontrada");
     return experience;

@@ -9,14 +9,14 @@ export class PackagesService {
   findAll() {
     return this.prisma.package.findMany({
       orderBy: { createdAt: "desc" },
-      select: { id: true, name: true, description: true, price: true, featured: true, durationDays: true, discount: true, imageUrl: true, included: true, excluded: true, createdAt: true, tours: { select: { id: true, name: true, price: true, duration: true } } },
+      select: { id: true, name: true, description: true, price: true, featured: true, durationDays: true, discount: true, imageUrl: true, included: true, excluded: true, createdAt: true, tours: { select: { id: true, name: true, adultPrice: true, durationText: true } } },
     });
   }
 
   findOne(id: string) {
     return this.prisma.package.findUnique({
       where: { id },
-      select: { id: true, name: true, description: true, price: true, featured: true, durationDays: true, discount: true, imageUrl: true, included: true, excluded: true, createdAt: true, tours: { select: { id: true, name: true, price: true, duration: true } } },
+      select: { id: true, name: true, description: true, price: true, featured: true, durationDays: true, discount: true, imageUrl: true, included: true, excluded: true, createdAt: true, tours: { select: { id: true, name: true, adultPrice: true, durationText: true } } },
     });
   }
 
@@ -47,7 +47,7 @@ export class PackagesService {
           connect: payload.tours.map((tourId) => ({ id: tourId })),
         },
       },
-      select: { id: true, name: true, description: true, price: true, featured: true, durationDays: true, discount: true, imageUrl: true, included: true, excluded: true, createdAt: true, tours: { select: { id: true, name: true, price: true, duration: true } } },
+      select: { id: true, name: true, description: true, price: true, featured: true, durationDays: true, discount: true, imageUrl: true, included: true, excluded: true, createdAt: true, tours: { select: { id: true, name: true, adultPrice: true, durationText: true } } },
     });
   }
 
@@ -87,7 +87,7 @@ export class PackagesService {
     return this.prisma.package.update({
       where: { id },
       data: data as any,
-      select: { id: true, name: true, description: true, price: true, featured: true, durationDays: true, discount: true, imageUrl: true, included: true, excluded: true, createdAt: true, tours: { select: { id: true, name: true, price: true, duration: true } } },
+      select: { id: true, name: true, description: true, price: true, featured: true, durationDays: true, discount: true, imageUrl: true, included: true, excluded: true, createdAt: true, tours: { select: { id: true, name: true, adultPrice: true, durationText: true } } },
     });
   }
 

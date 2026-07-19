@@ -25,15 +25,15 @@ describe('Paquetes', () => {
 
     fixture = TestBed.createComponent(Paquetes);
     component = fixture.componentInstance;
-    component.packages = fallbackPackages;
+    component.packages.set(fallbackPackages);
     fixture.detectChanges();
   });
 
   it('filters packages by search and featured status', () => {
-    component.searchTerm = 'Salkantay';
-    component.selectedMode = 'featured';
+    component.searchTerm.set('Salkantay');
+    component.selectedMode.set('featured');
 
-    const visiblePackages = component.getVisiblePackages();
+    const visiblePackages = component.visiblePackages();
 
     expect(visiblePackages).toEqual([fallbackPackages[2]]);
   });
