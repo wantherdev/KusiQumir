@@ -34,7 +34,7 @@ if [ -z "$POSTGRES_PASSWORD" ] || [ "${#POSTGRES_PASSWORD}" -lt 8 ]; then
 fi
 
 echo "[deploy] Iniciando deploy a $ENV..."
-docker compose $COMPOSE_FILES up -d --build --remove-orphans
+docker compose $COMPOSE_FILES up -d --build --remove-orphans --wait
 docker compose $COMPOSE_FILES exec -T postgres pg_isready -U kusiqumir || true
 
 # Invalidar CDN si está configurado

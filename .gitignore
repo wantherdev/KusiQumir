@@ -1,2 +1,6 @@
 .env
 backups/
+node_modules/
+dist/
+*.db
+*.db-journal
