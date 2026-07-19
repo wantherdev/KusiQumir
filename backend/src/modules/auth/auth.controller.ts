@@ -7,6 +7,7 @@ import { AuthService } from "./auth.service";
 import { JwtAuthGuard } from "./jwt-auth.guard";
 import { Public } from "./public.decorator";
 import { CsrfService } from "../csrf/csrf.service";
+import { AuthenticatedRequest } from "../../common/authenticated-request";
 import { IsEmail, IsNotEmpty, MinLength } from "class-validator";
 
 class LoginDto {
@@ -54,7 +55,7 @@ export class AuthController {
   @Public()
   @Post("register")
   @ApiOperation({ summary: "Registrar nuevo usuario" })
-  @Throttle({ short: { limit: 3, ttl: 60000 } })
+  @Throttle({ default: { limit: 5, ttl: 60000 } })
   register(@Body() body: RegisterDto) {
     return this.authService.register(body.email, body.password);
   }
@@ -62,7 +63,7 @@ export class AuthController {
   @Public()
   @Post("login")
   @ApiOperation({ summary: "Login de usuario" })
-  @Throttle({ short: { limit: 5, ttl: 60000 } })
+  @Throttle({ default: { limit: 5, ttl: 60000 } })
   async login(@Body() body: LoginDto, @Res({ passthrough: true }) res: Response) {
     const result = await this.authService.login(body.email, body.password);
 
@@ -71,7 +72,7 @@ export class AuthController {
       sameSite: "lax",
       secure: this.configService.get("NODE_ENV") === "production",
       path: "/",
-      maxAge: 7 * 24 * 60 * 60 * 1000,
+      maxAge: this.configService.get<number>('JWT_COOKIE_MAX_AGE', 7 * 24 * 60 * 60 * 1000),
     });
 
     return {
@@ -84,8 +85,8 @@ export class AuthController {
   @UseGuards(JwtAuthGuard)
   @Get("me")
   @ApiOperation({ summary: "Obtener usuario actual" })
-  me(@Req() req: Request) {
-    return (req as any).user;
+  me(@Req() req: AuthenticatedRequest) {
+    return req.user;
   }
 
   @Public()

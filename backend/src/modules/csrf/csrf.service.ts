@@ -19,6 +19,9 @@ export class CsrfService implements OnModuleInit {
       getSessionIdentifier: (req) => req.ip ?? "unknown",
       cookieName: "csrf-token",
       cookieOptions: {
+        // httpOnly: false — SPA needs to read the token from the cookie
+        // for the double-submit cookie pattern. In a future iteration this
+        // could be replaced with a SameSite=Strict + CSRF token header pattern.
         httpOnly: false,
         sameSite: "lax",
         secure: this.config.get("NODE_ENV") === "production",

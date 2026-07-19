@@ -6,7 +6,9 @@ export class GuidesService {
   constructor(private readonly prisma: PrismaService) {}
 
   findAll() {
-    return this.prisma.guide.findMany();
+    return this.prisma.guide.findMany({
+      select: { id: true, name: true, languages: true, credential: true },
+    });
   }
 
   findOne(id: string) {

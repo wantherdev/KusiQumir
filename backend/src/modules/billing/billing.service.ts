@@ -6,7 +6,9 @@ export class BillingService {
   constructor(private readonly prisma: PrismaService) {}
 
   getInvoices() {
-    return this.prisma.invoice.findMany();
+    return this.prisma.invoice.findMany({
+      select: { id: true, amount: true, status: true, createdAt: true },
+    });
   }
 
   getInvoice(id: string) {

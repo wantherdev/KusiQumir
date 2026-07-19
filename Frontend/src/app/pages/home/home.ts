@@ -47,7 +47,7 @@ export class Home implements OnInit {
     this.isLoading = false;
   }
 
-  trackByFn(index: number, item: any): any {
+  trackByFn(index: number, item: Tour | TravelPackage): string | number {
     return item.id ?? index;
   }
 }

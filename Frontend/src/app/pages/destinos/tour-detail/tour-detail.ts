@@ -38,7 +38,7 @@ export class TourDetail implements OnInit {
     this.meta.updateTag({ name: 'description', content: desc });
     this.meta.updateTag({ property: 'og:title', content: `${name} | Kusi Q'umir` });
     this.meta.updateTag({ property: 'og:description', content: desc });
-    this.meta.updateTag({ property: 'og:type', content: 'article' });
+    this.meta.updateTag({ property: 'og:type', content: 'product' });
     this.meta.updateTag({
       name: 'twitter:title',
       content: `${name} | Kusi Q'umir`,

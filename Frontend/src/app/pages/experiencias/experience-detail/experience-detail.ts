@@ -79,7 +79,7 @@ export class ExperienceDetail implements OnInit {
     this.meta.updateTag({ name: 'description', content: d });
     this.meta.updateTag({ property: 'og:title', content: t });
     this.meta.updateTag({ property: 'og:description', content: d });
-    this.meta.updateTag({ property: 'og:type', content: 'article' });
+    this.meta.updateTag({ property: 'og:type', content: 'product' });
     this.meta.updateTag({ name: 'twitter:title', content: t });
     this.meta.updateTag({ name: 'twitter:description', content: d });
   }

@@ -1,4 +1,4 @@
-import { ApplicationConfig, provideBrowserGlobalErrorListeners, APP_INITIALIZER, inject } from '@angular/core';
+import { ApplicationConfig, isDevMode, provideBrowserGlobalErrorListeners, APP_INITIALIZER, inject } from '@angular/core';
 import { provideHttpClient, withFetch, withInterceptors, HttpClient } from '@angular/common/http';
 import { provideRouter } from '@angular/router';
 import { tap, catchError, retry } from 'rxjs/operators';
@@ -27,7 +27,7 @@ export const appConfig: ApplicationConfig = {
               retry(2),
               tap((res) => setCsrfToken(res.csrfToken)),
               catchError(() => {
-                console.warn('[CSRF] No se pudo obtener el token. Las mutaciones pueden fallar con 403.');
+                if (isDevMode()) console.warn('[CSRF] No se pudo obtener el token. Las mutaciones pueden fallar con 403.');
                 return of(undefined);
               }),
             ),
@@ -45,7 +45,7 @@ export const appConfig: ApplicationConfig = {
             http.get<PaginatedResponse<Tour>>('/api/tours').pipe(
               tap((res) => state.setTours(res.items)),
               catchError(() => {
-                console.warn('[Navbar] No se pudieron precargar los tours.');
+                if (isDevMode()) console.warn('[Navbar] No se pudieron precargar los tours.');
                 return of(undefined);
               }),
             ),

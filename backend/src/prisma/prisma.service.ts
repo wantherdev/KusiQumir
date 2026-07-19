@@ -3,6 +3,7 @@ import {
   OnModuleInit,
   OnModuleDestroy,
   Logger,
+  InternalServerErrorException,
 } from "@nestjs/common";
 import { PrismaClient } from "@prisma/client";
 
@@ -25,7 +26,10 @@ export class PrismaService
           `Intento ${attempt}/${this.maxRetries} de conectar a BD falló`,
           error instanceof Error ? error.message : undefined,
         );
-        if (attempt === this.maxRetries) throw error;
+        if (attempt === this.maxRetries)
+          throw new InternalServerErrorException(
+            "Error al conectar con la base de datos",
+          );
         await new Promise((r) => setTimeout(r, 1000 * attempt));
       }
     }

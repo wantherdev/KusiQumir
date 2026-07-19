@@ -10,6 +10,7 @@ import { BookingsService } from "./bookings.service";
 import { JwtAuthGuard } from "../auth/jwt-auth.guard";
 import { RolesGuard } from "../auth/roles.guard";
 import { Roles } from "../auth/roles.decorator";
+import { AuthenticatedRequest } from "../../common/authenticated-request";
 
 class CreateBookingDto {
   @ValidateIf((o) => !o.packageId)
@@ -75,28 +76,28 @@ export class BookingsController {
   @Get("me")
   @Roles("ADMIN", "CLIENTE")
   @ApiOperation({ summary: "Mis reservas" })
-  findAllMy(@Request() req: any) {
+  findAllMy(@Request() req: AuthenticatedRequest) {
     return this.bookingsService.findAllMy(req.user.email);
   }
 
   @Post()
   @Roles("ADMIN", "CLIENTE")
   @ApiOperation({ summary: "Crear reserva" })
-  create(@Body() body: CreateBookingDto, @Request() req: any) {
+  create(@Body() body: CreateBookingDto, @Request() req: AuthenticatedRequest) {
     return this.bookingsService.create(body, req.user);
   }
 
   @Get(":id")
   @Roles("ADMIN", "CLIENTE")
   @ApiOperation({ summary: "Obtener reserva por ID" })
-  findOne(@Param("id") id: string, @Request() req: any) {
+  findOne(@Param("id") id: string, @Request() req: AuthenticatedRequest) {
     return this.bookingsService.findOne(id, req.user);
   }
 
   @Post(":id/cancel")
   @Roles("ADMIN", "CLIENTE")
   @ApiOperation({ summary: "Cancelar reserva" })
-  cancel(@Param("id") id: string, @Request() req: any) {
+  cancel(@Param("id") id: string, @Request() req: AuthenticatedRequest) {
     return this.bookingsService.cancel(id, req.user);
   }
 

@@ -10,7 +10,9 @@ export class LegalService {
   constructor(private readonly prisma: PrismaService) {}
 
   getDocuments() {
-    return this.prisma.document.findMany();
+    return this.prisma.document.findMany({
+      select: { id: true, title: true, version: true, type: true, createdAt: true },
+    });
   }
 
   async acceptDocument(

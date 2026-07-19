@@ -6,7 +6,9 @@ export class OperationsService {
   constructor(private readonly prisma: PrismaService) {}
 
   findAll() {
-    return this.prisma.operation.findMany();
+    return this.prisma.operation.findMany({
+      select: { id: true, status: true, transport: true, pickupTime: true, createdAt: true },
+    });
   }
 
   findOne(id: string) {

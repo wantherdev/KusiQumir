@@ -139,7 +139,7 @@ export class PackagesDashboard implements OnInit {
     });
   }
 
-  trackByFn(index: number, item: any): any {
+  trackByFn(index: number, item: TravelPackage | Tour): string | number {
     return item.id ?? index;
   }
 }

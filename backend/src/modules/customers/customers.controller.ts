@@ -5,6 +5,7 @@ import { CustomersService } from "./customers.service";
 import { JwtAuthGuard } from "../auth/jwt-auth.guard";
 import { RolesGuard } from "../auth/roles.guard";
 import { Roles } from "../auth/roles.decorator";
+import { AuthenticatedRequest } from "../../common/authenticated-request";
 
 class CreateCustomerDto {
   @IsNotEmpty()
@@ -63,14 +64,14 @@ export class CustomersController {
   @Get("me")
   @Roles("ADMIN", "CLIENTE")
   @ApiOperation({ summary: "Mi perfil de cliente" })
-  findMyProfile(@Req() req: any) {
+  findMyProfile(@Req() req: AuthenticatedRequest) {
     return this.customersService.findByEmail(req.user.email);
   }
 
   @Patch("me")
   @Roles("ADMIN", "CLIENTE")
   @ApiOperation({ summary: "Actualizar mi perfil de cliente" })
-  updateMyProfile(@Body() body: UpdateMyProfileDto, @Req() req: any) {
+  updateMyProfile(@Body() body: UpdateMyProfileDto, @Req() req: AuthenticatedRequest) {
     return this.customersService.updateByEmail(req.user.email, body);
   }
 

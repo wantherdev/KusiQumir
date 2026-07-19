@@ -59,7 +59,7 @@ export class BookingsDashboard implements OnInit {
     });
   }
 
-  trackByFn(index: number, item: any): any {
+  trackByFn(index: number, item: Booking): string | number {
     return item.id ?? index;
   }
 

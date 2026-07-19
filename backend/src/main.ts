@@ -39,7 +39,7 @@ async function bootstrap() {
   app.use(compression());
   app.use(cookieParser());
   app.enableCors({
-    origin: configService.get<string>("CORS_ORIGIN")!.split(","),
+    origin: (configService.get<string>("CORS_ORIGIN") || "http://localhost:4200").split(","),
     methods: ["GET", "POST", "PUT", "PATCH", "DELETE"],
     credentials: true,
   });
@@ -53,7 +53,7 @@ async function bootstrap() {
     }),
   );
 
-  const port = configService.get<number>("PORT")!;
+  const port = configService.get<number>("PORT") || 3000;
 
   if (configService.get<string>("NODE_ENV") !== "production") {
     const config = new DocumentBuilder()

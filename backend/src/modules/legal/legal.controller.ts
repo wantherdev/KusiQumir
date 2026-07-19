@@ -13,6 +13,7 @@ import { LegalService } from "./legal.service";
 import { JwtAuthGuard } from "../auth/jwt-auth.guard";
 import { RolesGuard } from "../auth/roles.guard";
 import { Roles } from "../auth/roles.decorator";
+import { AuthenticatedRequest } from "../../common/authenticated-request";
 
 class AcceptDocumentDto {
   @IsNotEmpty()
@@ -44,14 +45,14 @@ export class LegalController {
   @Post("accept")
   @Roles("CLIENTE")
   @ApiOperation({ summary: "Aceptar documento legal" })
-  acceptDocument(@Body() body: AcceptDocumentDto, @Request() req: any) {
+  acceptDocument(@Body() body: AcceptDocumentDto, @Request() req: AuthenticatedRequest) {
     return this.legalService.acceptDocument(body, req.user);
   }
 
   @Get("acceptances/:id")
   @Roles("ADMIN")
   @ApiOperation({ summary: "Obtener aceptación por ID" })
-  getAcceptance(@Param("id") id: string, @Request() req: any) {
+  getAcceptance(@Param("id") id: string, @Request() req: AuthenticatedRequest) {
     return this.legalService.getAcceptance(id, req.user);
   }
 }

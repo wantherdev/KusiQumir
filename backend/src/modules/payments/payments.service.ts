@@ -11,10 +11,13 @@ export class PaymentsService {
 
   async findAll(user?: { userId: string; email?: string; role?: string }) {
     if (!user || user.role === "ADMIN") {
-      return this.prisma.payment.findMany();
+      return this.prisma.payment.findMany({
+        select: { id: true, amount: true, status: true, createdAt: true },
+      });
     }
 
     return this.prisma.payment.findMany({
+      select: { id: true, amount: true, status: true, createdAt: true },
       where: { booking: { customer: { email: user.email } } },
     });
   }

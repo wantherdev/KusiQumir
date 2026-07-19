@@ -125,6 +125,18 @@ export interface TravelPackage {
   createdAt?: string;
 }
 
+export interface UserProfile {
+  id: string;
+  name: string;
+  email: string;
+  nationality?: string | null;
+  passport?: string | null;
+  phone?: string | null;
+  preferences?: string | null;
+}
+
+export type UserProfilePayload = Pick<UserProfile, 'name' | 'phone' | 'nationality' | 'passport' | 'preferences'>;
+
 @Injectable({ providedIn: 'root' })
 export class TravelApiService {
   constructor(
@@ -259,21 +271,21 @@ export class TravelApiService {
   }
 
   // --- Contact ---
-  sendContact(payload: { name: string; email: string; phone?: string; message: string }): Observable<any> {
-    return this.http.post(`${this.apiUrl}/contact`, payload);
+  sendContact(payload: { name: string; email: string; phone?: string; message: string }): Observable<{ message: string }> {
+    return this.http.post<{ message: string }>(`${this.apiUrl}/contact`, payload);
   }
 
-  sendClaim(payload: Record<string, any>): Observable<any> {
-    return this.http.post(`${this.apiUrl}/claims`, payload);
+  sendClaim(payload: Record<string, unknown>): Observable<{ message: string }> {
+    return this.http.post<{ message: string }>(`${this.apiUrl}/claims`, payload);
   }
 
   // --- Customer Profile ---
-  getMyProfile(): Observable<{ id: string; name: string; email: string; nationality?: string | null; passport?: string | null; phone?: string | null; preferences?: string | null }> {
-    return this.http.get<any>(`${this.apiUrl}/customers/me`);
+  getMyProfile(): Observable<UserProfile> {
+    return this.http.get<UserProfile>(`${this.apiUrl}/customers/me`);
   }
 
-  updateMyProfile(payload: { name?: string; phone?: string; nationality?: string; passport?: string; preferences?: string }): Observable<any> {
-    return this.http.patch(`${this.apiUrl}/customers/me`, payload);
+  updateMyProfile(payload: Partial<UserProfilePayload>): Observable<UserProfile> {
+    return this.http.patch<UserProfile>(`${this.apiUrl}/customers/me`, payload);
   }
 
   // Admin methods for packages management

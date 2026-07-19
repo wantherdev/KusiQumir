@@ -17,6 +17,13 @@ services:
     networks:
       - default
 
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost/healthcheck.html || exit 1"]
+      interval: 15s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
+
   postgres:
     volumes:
       - ./backups:/backups

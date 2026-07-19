@@ -15,4 +15,5 @@ if (environment.sentryDsn) {
   });
 }
 
+// TODO: Register Service Worker — install @angular/service-worker and add navigator.serviceWorker.register()
 bootstrapApplication(App, appConfig).catch((err) => console.error(err));

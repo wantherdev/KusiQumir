@@ -36,7 +36,7 @@ if [ ! -f .env ]; then
 fi
 
 echo "[deploy] Cargando variables de .env"
-export $(grep -v '^#' .env | xargs)
+set -a; source .env; set +a
 
 # Validar CORS_ORIGIN — cada origen debe empezar con http:// o https://
 if [ -n "$CORS_ORIGIN" ]; then
@@ -125,4 +125,4 @@ if [ -n "$CLOUDFRONT_DISTRIBUTION_ID" ] && command -v aws >/dev/null 2>&1; then
   echo "[deploy] Invalidation enviada a CloudFront"
 fi
 
-echo "[deploy] Deploy completado a $ENV"
+echo "[deploy] Deploy completado exitosamente a $ENV"

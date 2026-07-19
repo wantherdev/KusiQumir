@@ -1,6 +1,6 @@
 import { Component, OnInit, inject, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, NgForm } from '@angular/forms';
 import { Meta, Title } from '@angular/platform-browser';
 import { firstValueFrom } from 'rxjs';
 import { TravelApiService } from '../../services/travel-api.service';
@@ -153,7 +153,7 @@ export class Contacto implements OnInit {
     this.meta.updateTag({ name: 'twitter:description', content: 'Contáctanos para planificar tu viaje a Perú.' });
   }
 
-  async onSubmit(form: any): Promise<void> {
+  async onSubmit(form: NgForm): Promise<void> {
     if (form.invalid) return;
     this.submitting = true;
     try {

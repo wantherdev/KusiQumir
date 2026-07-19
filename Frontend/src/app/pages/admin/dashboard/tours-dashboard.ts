@@ -113,7 +113,7 @@ export class ToursDashboard implements OnInit {
     });
   }
 
-  trackByFn(index: number, item: any): any {
+  trackByFn(index: number, item: Tour): string | number {
     return item.id ?? index;
   }
 

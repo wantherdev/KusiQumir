@@ -88,7 +88,7 @@ export class ArticlesDashboard implements OnInit {
     });
   }
 
-  trackByFn(index: number, item: any): any {
+  trackByFn(index: number, item: Article): string | number {
     return item.id ?? index;
   }
 

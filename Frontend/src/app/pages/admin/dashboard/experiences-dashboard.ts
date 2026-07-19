@@ -94,7 +94,7 @@ export class ExperiencesDashboard implements OnInit {
     });
   }
 
-  trackByFn(index: number, item: any): any {
+  trackByFn(index: number, item: Experience): string | number {
     return item.id ?? index;
   }
 

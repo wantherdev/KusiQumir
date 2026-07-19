@@ -6,7 +6,9 @@ export class ProvidersService {
   constructor(private readonly prisma: PrismaService) {}
 
   findAll() {
-    return this.prisma.provider.findMany();
+    return this.prisma.provider.findMany({
+      select: { id: true, name: true, type: true, contact: true },
+    });
   }
 
   findOne(id: string) {
