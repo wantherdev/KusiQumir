@@ -45,7 +45,7 @@ export class TourDetail implements OnInit {
       content: `${name} | Kusi Q'umir`,
     });
     this.meta.updateTag({ name: 'twitter:description', content: desc });
-    const image = tour.imageUrl || '/images/og-default.jpg';
+    const image = tour.images || '/images/og-default.jpg';
     this.meta.updateTag({ property: 'og:image', content: image });
     this.meta.updateTag({ name: 'twitter:image', content: image });
   }

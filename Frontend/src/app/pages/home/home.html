@@ -5,9 +5,9 @@
       <p
         class="mb-4 inline-block rounded-full border border-white/40 bg-white/10 px-4 py-2 text-sm font-semibold uppercase tracking-[0.25em] text-white"
       >
-        Agencia de viajes profesional en Cusco
+        i18n="@@home-hero-tagline">Agencia de viajes profesional en Cusco
       </p>
-      <h1 class="text-5xl lg:text-6xl font-bold text-white mb-6 text-shadow leading-tight">
+      <h1 class="text-5xl lg:text-6xl font-bold text-white mb-6 text-shadow leading-tight" i18n="@@home-hero-title">
         Viajes seguros, auténticos y hechos a medida en Perú
       </h1>
       <p class="text-xl text-white mb-8 text-shadow leading-relaxed">
@@ -20,11 +20,12 @@
           href="/paquetes"
           class="bg-primary text-white px-8 py-4 font-semibold text-lg rounded-md hover:bg-primary-dark transition-colors whitespace-nowrap cursor-pointer text-center"
         >
-          Ver Paquetes
+          i18n="@@home-ver-paquetes">Ver Paquetes
         </a>
         <a
           href="#contacto"
           class="bg-secondary text-white px-8 py-4 font-semibold text-lg rounded-md hover:bg-secondary-dark transition-colors whitespace-nowrap cursor-pointer text-center"
+          i18n="@@home-solicitar-cotizacion"
         >
           Solicitar Cotización
         </a>
@@ -65,9 +66,9 @@
     <div class="grid grid-cols-1 lg:grid-cols-[1.1fr_0.9fr] gap-10">
       <div>
         <p class="text-sm font-semibold uppercase tracking-[0.25em] text-primary mb-4">
-          Confianza profesional
+          i18n="@@home-why-tagline">Confianza profesional
         </p>
-        <h2 class="text-4xl font-bold text-gray-900 mb-6">
+        <h2 class="text-4xl font-bold text-gray-900 mb-6" i18n="@@home-why-title">
           Tu viaje planificado con rigor y pasión local
         </h2>
         <p class="text-lg text-gray-600 mb-8">
@@ -134,9 +135,9 @@
         />
       </div>
       <p class="text-sm font-semibold uppercase tracking-[0.2em] text-secondary">
-        Asesoría directa
-      </p>
-      <h3 class="text-3xl font-bold mt-4">Habla con un experto</h3>
+          i18n="@@home-contact-tagline">Asesoría directa
+        </p>
+        <h3 class="text-3xl font-bold mt-4" i18n="@@home-contact-title">Habla con un experto</h3>
       <p class="mt-4 text-lg text-slate-300">
         Cuéntanos tus fechas, intereses y presupuesto. Recibirás una propuesta personalizada, clara
         y sin compromiso.
@@ -172,9 +173,9 @@
   <div class="max-w-7xl mx-auto px-4">
     <div class="text-center mb-16">
       <p class="text-sm font-semibold uppercase tracking-[0.25em] text-primary mb-4">
-        Destinos icónicos
+        i18n="@@home-destinos-tagline">Destinos icónicos
       </p>
-      <h2 class="text-4xl font-bold text-gray-900 mb-4">Lugares imprescindibles para tu viaje</h2>
+      <h2 class="text-4xl font-bold text-gray-900 mb-4" i18n="@@home-destinos-title">Lugares imprescindibles para tu viaje</h2>
       <p class="text-xl text-gray-600 max-w-3xl mx-auto">
         Descubre rutas emblemáticas, paisajes impresionantes y cultura ancestral en los principales
         destinos del Perú.
@@ -182,8 +183,8 @@
       <a
         routerLink="/destinos"
         class="mt-6 inline-flex items-center justify-center rounded-full bg-primary px-6 py-3 font-semibold text-white transition hover:bg-primary-dark"
-        >Explorar destinos</a
-      >
+        i18n="@@home-explorar-destinos">Explorar destinos</a
+       >
     </div>
 
     <div *ngIf="isLoading" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
@@ -220,7 +221,7 @@
       </div>
     </div>
 
-    <div *ngIf="!isLoading && !tours.length" class="text-center text-gray-600 mt-6">
+    <div *ngIf="!isLoading && !tours.length" class="text-center text-gray-600 mt-6" i18n="@@home-destinos-error">
       No se pudieron cargar los destinos en este momento.
     </div>
   </div>
@@ -231,9 +232,9 @@
   <div class="max-w-7xl mx-auto px-4">
     <div class="text-center mb-16">
       <p class="text-sm font-semibold uppercase tracking-[0.25em] text-primary mb-4">
-        Paquetes seleccionados
+        i18n="@@home-paquetes-tagline">Paquetes seleccionados
       </p>
-      <h2 class="text-4xl font-bold text-gray-900 mb-4">
+      <h2 class="text-4xl font-bold text-gray-900 mb-4" i18n="@@home-paquetes-title">
         Itinerarios hechos para viajeros exigentes
       </h2>
       <p class="text-xl text-gray-600 max-w-3xl mx-auto">
@@ -299,7 +300,7 @@
       </div>
     </div>
 
-    <div *ngIf="!isLoading && !featuredPackages.length" class="text-center text-gray-600 mt-6">
+    <div *ngIf="!isLoading && !featuredPackages.length" class="text-center text-gray-600 mt-6" i18n="@@home-paquetes-error">
       No se pudieron cargar los paquetes en este momento.
     </div>
   </div>
@@ -310,9 +311,9 @@
   <div class="max-w-7xl mx-auto px-4">
     <div class="text-center mb-16">
       <p class="text-sm font-semibold uppercase tracking-[0.25em] text-primary mb-4">
-        Experiencias recomendadas
+        i18n="@@home-experiencias-tagline">Experiencias recomendadas
       </p>
-      <h2 class="text-4xl font-bold text-gray-900 mb-4">
+      <h2 class="text-4xl font-bold text-gray-900 mb-4" i18n="@@home-experiencias-title">
         Ideas prácticas para viajar sin sorpresas
       </h2>
       <p class="text-xl text-gray-600 max-w-3xl mx-auto">
@@ -322,8 +323,8 @@
       <a
         href="/experiencias"
         class="mt-6 inline-flex items-center justify-center rounded-full bg-primary px-6 py-3 font-semibold text-white hover:bg-primary-dark transition"
-        >Ver todas las experiencias</a
-      >
+        i18n="@@home-ver-experiencias">Ver todas las experiencias</a
+       >
     </div>
 
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
@@ -412,9 +413,9 @@
   <div class="max-w-7xl mx-auto px-4">
     <div class="text-center mb-16">
       <p class="text-sm font-semibold uppercase tracking-[0.25em] text-primary mb-4">
-        Testimonios reales
+        i18n="@@home-testimonios-tagline">Testimonios reales
       </p>
-      <h2 class="text-4xl font-bold text-gray-900 mb-4">Viajeros que confiaron en nosotros</h2>
+      <h2 class="text-4xl font-bold text-gray-900 mb-4" i18n="@@home-testimonios-title">Viajeros que confiaron en nosotros</h2>
       <p class="text-xl text-gray-600 max-w-3xl mx-auto">
         Experiencias auténticas y valoraciones reales que respaldan nuestro servicio.
       </p>
@@ -510,8 +511,8 @@
       <a
         href="#contacto"
         class="inline-flex items-center justify-center rounded-full bg-primary px-8 py-4 text-white font-semibold hover:bg-primary-dark transition"
-        >Solicitar asesoría personalizada</a
-      >
+        i18n="@@home-asesoria-personalizada">Solicitar asesoría personalizada</a
+       >
     </div>
   </div>
 </section>
@@ -529,7 +530,7 @@
         loading="lazy"
       />
     </div>
-    <h2 class="text-4xl font-bold text-white mb-6">¿Listo para descubrir el Perú auténtico?</h2>
+    <h2 class="text-4xl font-bold text-white mb-6" i18n="@@home-cta-title">¿Listo para descubrir el Perú auténtico?</h2>
     <p class="text-xl text-orange-100 mb-8 leading-relaxed">
       Te ayudamos a diseñar un viaje tranquilo, profesional y con experiencias locales únicas.
       Empieza con una consulta personalizada.
@@ -538,13 +539,13 @@
       <a
         href="#contacto"
         class="inline-flex items-center justify-center rounded-full bg-white px-8 py-4 text-primary font-semibold hover:bg-slate-100 transition"
-        >Cotizar mi viaje gratis</a
-      >
+        i18n="@@home-cotizar-gratis">Cotizar mi viaje gratis</a
+       >
       <a
         href="https://wa.me/{{ whatsappNumber }}"
         class="inline-flex items-center justify-center rounded-full bg-secondary px-8 py-4 text-white font-semibold hover:bg-secondary-dark transition"
-        ><i aria-hidden="true" class="ri-whatsapp-line mr-2"></i> Consultar por WhatsApp</a
-      >
+        ><i aria-hidden="true" class="ri-whatsapp-line mr-2"></i> <span i18n="@@home-consultar-whatsapp">Consultar por WhatsApp</span></a
+       >
     </div>
     <div
       class="flex flex-col sm:flex-row items-center justify-center gap-6 text-orange-100 text-sm"

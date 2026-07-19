@@ -18,6 +18,7 @@ export class Navbar {
   isMobileMenuOpen = false;
   tours: Tour[] = [];
   whatsappNumber = '51987654321';
+  lang: 'es' | 'en' = 'es';
   private readonly platformId = inject(PLATFORM_ID);
 
   constructor(
@@ -26,6 +27,9 @@ export class Navbar {
     private readonly tourState: TourStateService,
   ) {
     this.tours = this.tourState.getTours();
+    if (isPlatformBrowser(this.platformId)) {
+      this.lang = (localStorage.getItem('lang') as 'es' | 'en') ?? (navigator.language.startsWith('en') ? 'en' : 'es');
+    }
   }
 
   tourSlug(name: string): string {
@@ -55,5 +59,12 @@ export class Navbar {
   logout() {
     this.auth.logout();
     this.router.navigate(['/']);
+  }
+
+  switchLang(lang: 'es' | 'en') {
+    if (!isPlatformBrowser(this.platformId)) return;
+    this.lang = lang;
+    localStorage.setItem('lang', lang);
+    window.location.reload();
   }
 }
