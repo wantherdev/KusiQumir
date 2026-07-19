@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
 @Component({
@@ -6,6 +6,7 @@ import { CommonModule } from '@angular/common';
   standalone: true,
   imports: [CommonModule],
   templateUrl: './skeleton.html',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class Skeleton {
   @Input() variant: 'card' | 'text' | 'table-row' | 'hero' = 'text';

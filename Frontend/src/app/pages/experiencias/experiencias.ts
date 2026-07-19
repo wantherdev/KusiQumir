@@ -1,4 +1,4 @@
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, OnInit, inject, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { Meta, Title } from '@angular/platform-browser';
@@ -76,6 +76,7 @@ const fallbackExperiences: Experience[] = [
   imports: [CommonModule, RouterLink],
   templateUrl: './experiencias.html',
   styleUrl: '../page.css',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class Experiencias implements OnInit {
   private readonly route = inject(ActivatedRoute);

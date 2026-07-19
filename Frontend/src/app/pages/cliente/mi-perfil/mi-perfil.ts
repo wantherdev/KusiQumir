@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
@@ -22,6 +22,7 @@ interface CustomerProfile {
   standalone: true,
   imports: [CommonModule, FormsModule, RouterLink, Skeleton],
   templateUrl: './mi-perfil.html',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class MiPerfil implements OnInit {
   profile: CustomerProfile | null = null;
@@ -42,6 +43,7 @@ export class MiPerfil implements OnInit {
     private readonly api: TravelApiService,
     public auth: AuthService,
     private readonly notification: NotificationService,
+    private readonly cdr: ChangeDetectorRef,
   ) {}
 
   ngOnInit(): void {
@@ -59,6 +61,7 @@ export class MiPerfil implements OnInit {
         this.form.passport = res.passport ?? '';
         this.form.preferences = res.preferences ?? '';
         this.isLoading = false;
+        this.cdr.markForCheck();
       },
       error: (err) => {
         this.isLoading = false;
@@ -67,6 +70,7 @@ export class MiPerfil implements OnInit {
         } else {
           this.errorMessage = 'Error al cargar perfil.';
         }
+        this.cdr.markForCheck();
       },
     });
   }
@@ -84,11 +88,13 @@ export class MiPerfil implements OnInit {
       next: (res) => {
         this.profile = res;
         this.isSaving = false;
+        this.cdr.markForCheck();
         this.notification.show('Perfil actualizado correctamente', 'success');
       },
       error: () => {
         this.isSaving = false;
         this.errorMessage = 'Error al guardar el perfil.';
+        this.cdr.markForCheck();
       },
     });
   }

@@ -1,4 +1,4 @@
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, OnInit, inject, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { Meta, Title } from '@angular/platform-browser';
@@ -9,6 +9,7 @@ import { Tour } from '../../../services/travel-api.service';
   imports: [CommonModule, RouterLink],
   templateUrl: './tour-detail.html',
   styleUrl: '../../page.css',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class TourDetail implements OnInit {
   private readonly route = inject(ActivatedRoute);

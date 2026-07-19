@@ -1,4 +1,4 @@
-import { Component, HostListener, inject, PLATFORM_ID, signal } from '@angular/core';
+import { Component, HostListener, inject, PLATFORM_ID, signal, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { NavigationEnd, Router, RouterOutlet } from '@angular/router';
 import { filter } from 'rxjs/operators';
@@ -12,6 +12,7 @@ import { Toast } from './components/toast/toast';
   imports: [CommonModule, RouterOutlet, Navbar, Footer, Toast],
   templateUrl: './app.html',
   styleUrl: './app.css',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class App {
   protected readonly title = signal('KusiQumir');

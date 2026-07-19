@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { Title, Meta, DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import { renderMarkdown } from '../../../shared/markdown';
 
@@ -6,6 +6,7 @@ import { renderMarkdown } from '../../../shared/markdown';
   selector: 'app-politica-privacidad',
   templateUrl: './politica-privacidad.html',
   styleUrl: './politica-privacidad.css',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class Politica implements OnInit {
   readonly markdown = `

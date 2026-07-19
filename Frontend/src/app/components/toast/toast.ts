@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { NotificationService } from '../../services/notification.service';
 
@@ -7,6 +7,7 @@ import { NotificationService } from '../../services/notification.service';
   standalone: true,
   imports: [CommonModule],
   templateUrl: './toast.html',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class Toast {
   constructor(readonly notification: NotificationService) {}

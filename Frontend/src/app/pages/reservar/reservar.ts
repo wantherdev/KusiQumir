@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, RouterLink } from '@angular/router';
@@ -17,6 +17,7 @@ type BookingType = 'tour' | 'package';
   imports: [CommonModule, FormsModule, RouterLink],
   templateUrl: './reservar.html',
   styleUrl: '../page.css',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class Reservar implements OnInit {
   type: BookingType = 'tour';
@@ -38,6 +39,7 @@ export class Reservar implements OnInit {
     private readonly route: ActivatedRoute,
     private readonly travelApi: TravelApiService,
     private readonly notification: NotificationService,
+    private readonly cdr: ChangeDetectorRef,
   ) {}
 
   async ngOnInit(): Promise<void> {
@@ -48,6 +50,7 @@ export class Reservar implements OnInit {
 
     if (!this.itemId) {
       this.isLoading = false;
+      this.cdr.markForCheck();
       return;
     }
 
@@ -61,6 +64,7 @@ export class Reservar implements OnInit {
       this.error = 'No se pudo cargar la información del producto.';
     } finally {
       this.isLoading = false;
+      this.cdr.markForCheck();
     }
   }
 
@@ -100,6 +104,7 @@ export class Reservar implements OnInit {
       this.notification.show('Error al enviar la reserva.', 'error');
     } finally {
       this.submitting = false;
+      this.cdr.markForCheck();
     }
   }
 }

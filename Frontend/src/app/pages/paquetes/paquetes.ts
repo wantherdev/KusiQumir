@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, signal, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
@@ -14,14 +14,14 @@ import { TravelApiService, TravelPackage } from '../../services/travel-api.servi
   styleUrl: '../page.css',
 })
 export class Paquetes implements OnInit {
-  packages: TravelPackage[] = [];
-  selectedPackageId: string | null = null;
-  isLoading = true;
-  errorMessage = '';
-  isSubmitting = false;
-  message = '';
-  searchTerm = '';
-  selectedMode: 'all' | 'featured' | 'standard' = 'all';
+  readonly packages = signal<TravelPackage[]>([]);
+  readonly selectedPackageId = signal<string | null>(null);
+  readonly isLoading = signal(true);
+  readonly errorMessage = signal('');
+  readonly isSubmitting = signal(false);
+  readonly message = signal('');
+  readonly searchTerm = signal('');
+  readonly selectedMode = signal<'all' | 'featured' | 'standard'>('all');
   reservationForm = {
     fullName: '',
     email: '',
@@ -30,6 +30,37 @@ export class Paquetes implements OnInit {
     startDate: '',
     notes: '',
   };
+
+  readonly visiblePackages = computed(() => {
+    const term = this.searchTerm().trim().toLowerCase();
+    return this.packages().filter((pkg) => {
+      const toursText = (pkg.tours ?? [])
+        .map((t) => t.name ?? '')
+        .join(' ');
+      const searchableText = `${pkg.name} ${toursText}`.toLowerCase();
+      const matchesSearch = !term || searchableText.includes(term);
+      const matchesMode =
+        this.selectedMode() === 'all' ||
+        (this.selectedMode() === 'featured' ? Boolean(pkg.featured) : !pkg.featured);
+      return matchesSearch && matchesMode;
+    });
+  });
+
+  readonly selectedPackage = computed(() =>
+    this.packages().find((pkg) => pkg.id === this.selectedPackageId()) ?? null,
+  );
+
+  readonly includedItems = computed(() =>
+    this.selectedPackage()?.included
+      ? this.selectedPackage()!.included!.split(',').map((s) => s.trim())
+      : [],
+  );
+
+  readonly excludedItems = computed(() =>
+    this.selectedPackage()?.excluded
+      ? this.selectedPackage()!.excluded!.split(',').map((s) => s.trim())
+      : [],
+  );
 
   constructor(
     private readonly travelApiService: TravelApiService,
@@ -56,61 +87,34 @@ export class Paquetes implements OnInit {
     });
     this.travelApiService.getPackages().subscribe({
       next: (packages) => {
-        this.packages = packages;
-        this.selectedPackageId = this.packages[0]?.id ?? null;
-        this.isLoading = false;
+        this.packages.set(packages);
+        this.selectedPackageId.set(this.packages()[0]?.id ?? null);
+        this.isLoading.set(false);
       },
       error: () => {
-        this.isLoading = false;
-        this.errorMessage = 'No se pudieron cargar los paquetes. Intenta de nuevo más tarde.';
+        this.isLoading.set(false);
+        this.errorMessage.set('No se pudieron cargar los paquetes. Intenta de nuevo más tarde.');
       },
     });
-  }
-
-  getVisiblePackages(): TravelPackage[] {
-    const term = this.searchTerm.trim().toLowerCase();
-    return this.packages.filter((pkg) => {
-      const toursText = (pkg.tours ?? [])
-        .map((t) => t.name ?? '')
-        .join(' ');
-      const searchableText = `${pkg.name} ${toursText}`.toLowerCase();
-      const matchesSearch = !term || searchableText.includes(term);
-      const matchesMode =
-        this.selectedMode === 'all' ||
-        (this.selectedMode === 'featured' ? Boolean(pkg.featured) : !pkg.featured);
-      return matchesSearch && matchesMode;
-    });
-  }
-
-  getSelectedPackage(): TravelPackage | null {
-    return this.packages.find((pkg) => pkg.id === this.selectedPackageId) ?? null;
-  }
-
-  splitList(value: string | null | undefined): string[] {
-    return value ? value.split(',').map((s) => s.trim()) : [];
-  }
-
-  trackByFn(index: number, item: any): any {
-    return item.id ?? index;
   }
 
   selectPackage(packageId: string): void {
-    this.selectedPackageId = packageId;
-    this.message = '';
+    this.selectedPackageId.set(packageId);
+    this.message.set('');
   }
 
   submitReservation(): void {
-    if (!this.selectedPackageId) {
-      this.message = 'Selecciona un paquete antes de reservar.';
+    if (!this.selectedPackageId()) {
+      this.message.set('Selecciona un paquete antes de reservar.');
       return;
     }
 
-    this.isSubmitting = true;
-    this.message = '';
+    this.isSubmitting.set(true);
+    this.message.set('');
 
     this.travelApiService
       .createBooking({
-        packageId: this.selectedPackageId!,
+        packageId: this.selectedPackageId()!,
         travelers: this.reservationForm.travelers,
         customerName: this.reservationForm.fullName,
         customerEmail: this.reservationForm.email,
@@ -120,7 +124,7 @@ export class Paquetes implements OnInit {
       })
       .subscribe({
         next: () => {
-          this.isSubmitting = false;
+          this.isSubmitting.set(false);
           this.notification.show('Reserva enviada con éxito. Nos pondremos en contacto pronto.', 'success');
           this.reservationForm = {
             fullName: '',
@@ -130,10 +134,10 @@ export class Paquetes implements OnInit {
             startDate: '',
             notes: '',
           };
-          this.selectedPackageId = null;
+          this.selectedPackageId.set(null);
         },
         error: () => {
-          this.isSubmitting = false;
+          this.isSubmitting.set(false);
           this.notification.show('No se pudo enviar la reserva. Intenta nuevamente.', 'error');
         },
       });

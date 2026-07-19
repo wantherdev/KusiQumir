@@ -1,4 +1,4 @@
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, OnInit, inject, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { Meta, Title } from '@angular/platform-browser';
@@ -26,6 +26,7 @@ const toArticle = (fb: BlogArticle): Article => ({
   imports: [CommonModule, RouterLink],
   templateUrl: './blog.html',
   styleUrl: '../page.css',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class Blog implements OnInit {
   private readonly route = inject(ActivatedRoute);

@@ -1,4 +1,4 @@
-import { Component, OnInit, inject, SecurityContext } from '@angular/core';
+import { Component, OnInit, inject, SecurityContext, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Title, Meta, DomSanitizer } from '@angular/platform-browser';
@@ -12,6 +12,7 @@ import { NotificationService } from '../../../services/notification.service';
   imports: [CommonModule, FormsModule],
   templateUrl: './libro-reclamaciones.html',
   styleUrl: './libro-reclamaciones.css',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class LibroReclamaciones implements OnInit {
   private readonly api = inject(TravelApiService);
@@ -19,6 +20,7 @@ export class LibroReclamaciones implements OnInit {
   private readonly titleService = inject(Title);
   private readonly metaService = inject(Meta);
   private readonly sanitizer = inject(DomSanitizer);
+  private readonly cdr = inject(ChangeDetectorRef);
 
   readonly markdown = `
 ## Información útil para su reclamo
@@ -131,6 +133,7 @@ incluya todos los datos del paquete y la fecha del viaje.
       this.error = 'Error al enviar el reclamo. Intenta de nuevo o escríbenos a info@kusiqumir.com.';
     } finally {
       this.submitting = false;
+      this.cdr.markForCheck();
     }
   }
 }

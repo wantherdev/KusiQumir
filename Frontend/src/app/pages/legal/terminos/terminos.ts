@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { Title, Meta, DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import { renderMarkdown } from '../../../shared/markdown';
 
@@ -6,6 +6,7 @@ import { renderMarkdown } from '../../../shared/markdown';
   selector: 'app-terminos',
   templateUrl: './terminos.html',
   styleUrl: './terminos.css',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class Terminos implements OnInit {
   readonly markdown = `

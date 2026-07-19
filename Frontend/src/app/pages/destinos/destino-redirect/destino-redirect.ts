@@ -1,4 +1,4 @@
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, OnInit, inject, ChangeDetectionStrategy } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { firstValueFrom } from 'rxjs';
 import { TravelApiService } from '../../../services/travel-api.service';
@@ -22,6 +22,7 @@ const SLUG_KEYWORDS: Record<string, string[]> = {
     </section>
   `,
   styleUrl: '../../page.css',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class DestinoRedirect implements OnInit {
   private readonly route = inject(ActivatedRoute);

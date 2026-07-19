@@ -1,15 +1,23 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { Booking, TravelApiService } from '../../../services/travel-api.service';
 import { Skeleton } from '../../../components/skeleton/skeleton';
 import { ConfirmDialog } from '../../../components/confirm-dialog/confirm-dialog';
 
+const STATUS_COLORS: Record<string, string> = {
+  PENDIENTE: 'bg-yellow-100 text-yellow-800',
+  CONFIRMADA: 'bg-green-100 text-green-800',
+  COMPLETADA: 'bg-blue-100 text-blue-800',
+  CANCELADA: 'bg-red-100 text-red-800',
+};
+
 @Component({
   selector: 'app-mis-reservas',
   standalone: true,
   imports: [CommonModule, RouterLink, Skeleton, ConfirmDialog],
   templateUrl: './mis-reservas.html',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class MisReservas implements OnInit {
   items: Booking[] = [];
@@ -49,13 +57,7 @@ export class MisReservas implements OnInit {
     return item.id ?? index;
   }
 
-  statusColor(status: string): string {
-    switch (status) {
-      case 'PENDIENTE': return 'bg-yellow-100 text-yellow-800';
-      case 'CONFIRMADA': return 'bg-green-100 text-green-800';
-      case 'COMPLETADA': return 'bg-blue-100 text-blue-800';
-      case 'CANCELADA': return 'bg-red-100 text-red-800';
-      default: return 'bg-gray-100 text-gray-800';
-    }
+  getStatusColor(status: string): string {
+    return STATUS_COLORS[status] || 'bg-gray-100 text-gray-800';
   }
 }

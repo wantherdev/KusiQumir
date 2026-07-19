@@ -1,10 +1,11 @@
-import { Component, Input, Output, EventEmitter, HostListener, ElementRef, ViewChild, SimpleChanges, OnChanges } from '@angular/core';
+import { Component, Input, Output, EventEmitter, HostListener, ElementRef, ViewChild, SimpleChanges, OnChanges, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-confirm-dialog',
   standalone: true,
   imports: [CommonModule],
+  changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <div *ngIf="visible" class="fixed inset-0 z-[100] flex items-center justify-center p-4" role="dialog" aria-modal="true" [attr.aria-label]="title" [attr.aria-describedby]="'confirm-msg-' + uid">
       <div class="fixed inset-0 bg-black/50" (click)="cancel()"></div>

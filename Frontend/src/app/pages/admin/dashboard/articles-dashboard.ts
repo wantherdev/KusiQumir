@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Article, ArticlePayload, TravelApiService } from '../../../services/travel-api.service';
@@ -10,6 +10,7 @@ import { ConfirmDialog } from '../../../components/confirm-dialog/confirm-dialog
   standalone: true,
   imports: [CommonModule, ReactiveFormsModule, Skeleton, ConfirmDialog],
   templateUrl: './articles-dashboard.html',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ArticlesDashboard implements OnInit {
   articles: Article[] = [];
@@ -23,6 +24,7 @@ export class ArticlesDashboard implements OnInit {
   constructor(
     private readonly api: TravelApiService,
     private readonly fb: FormBuilder,
+    private readonly cdr: ChangeDetectorRef,
   ) {
     this.form = this.fb.group({
       title: ['', Validators.required],
@@ -45,8 +47,8 @@ export class ArticlesDashboard implements OnInit {
   load(): void {
     this.isLoading = true;
     this.api.getArticlesAdmin().subscribe({
-      next: (items) => { this.articles = items; this.isLoading = false; },
-      error: () => { this.errorMessage = 'Error al cargar artículos.'; this.isLoading = false; },
+      next: (items) => { this.articles = items; this.isLoading = false; this.cdr.markForCheck(); },
+      error: () => { this.errorMessage = 'Error al cargar artículos.'; this.isLoading = false; this.cdr.markForCheck(); },
     });
   }
 
@@ -81,8 +83,8 @@ export class ArticlesDashboard implements OnInit {
       ? this.api.updateArticle(this.selectedId, payload)
       : this.api.createArticle(payload);
     req.subscribe({
-      next: () => { this.successMessage = 'Artículo guardado.'; this.close(); this.load(); },
-      error: (err) => { this.errorMessage = err.error?.message || 'Error al guardar.'; this.isLoading = false; },
+      next: () => { this.successMessage = 'Artículo guardado.'; this.close(); this.load(); this.cdr.markForCheck(); },
+      error: (err) => { this.errorMessage = err.error?.message || 'Error al guardar.'; this.isLoading = false; this.cdr.markForCheck(); },
     });
   }
 
@@ -100,8 +102,8 @@ export class ArticlesDashboard implements OnInit {
 
   delete(): void {
     this.api.deleteArticle(this.pendingDeleteId).subscribe({
-      next: () => { this.successMessage = 'Artículo eliminado.'; this.load(); },
-      error: () => { this.errorMessage = 'Error al eliminar.'; },
+      next: () => { this.successMessage = 'Artículo eliminado.'; this.load(); this.cdr.markForCheck(); },
+      error: () => { this.errorMessage = 'Error al eliminar.'; this.cdr.markForCheck(); },
     });
   }
 }

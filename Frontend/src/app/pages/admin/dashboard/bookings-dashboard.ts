@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Booking, TravelApiService } from '../../../services/travel-api.service';
 import { Skeleton } from '../../../components/skeleton/skeleton';
@@ -9,6 +9,7 @@ import { ConfirmDialog } from '../../../components/confirm-dialog/confirm-dialog
   standalone: true,
   imports: [CommonModule, Skeleton, ConfirmDialog],
   templateUrl: './bookings-dashboard.html',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class BookingsDashboard implements OnInit {
   items: Booking[] = [];
@@ -17,7 +18,10 @@ export class BookingsDashboard implements OnInit {
   successMessage = '';
   statusFilter = '';
 
-  constructor(private readonly api: TravelApiService) {}
+  constructor(
+    private readonly api: TravelApiService,
+    private readonly cdr: ChangeDetectorRef,
+  ) {}
 
   ngOnInit(): void {
     this.load();
@@ -28,15 +32,15 @@ export class BookingsDashboard implements OnInit {
     const params: Record<string, string> = {};
     if (this.statusFilter) params['status'] = this.statusFilter;
     this.api.getBookings(params).subscribe({
-      next: (res) => { this.items = res.items; this.isLoading = false; },
-      error: () => { this.errorMessage = 'Error al cargar reservas.'; this.isLoading = false; },
+      next: (res) => { this.items = res.items; this.isLoading = false; this.cdr.markForCheck(); },
+      error: () => { this.errorMessage = 'Error al cargar reservas.'; this.isLoading = false; this.cdr.markForCheck(); },
     });
   }
 
   updateStatus(id: string, status: string): void {
     this.api.updateBookingStatus(id, status).subscribe({
-      next: () => { this.successMessage = 'Estado actualizado.'; this.load(); },
-      error: (err) => { this.errorMessage = err.error?.message || 'Error al actualizar.'; },
+      next: () => { this.successMessage = 'Estado actualizado.'; this.load(); this.cdr.markForCheck(); },
+      error: (err) => { this.errorMessage = err.error?.message || 'Error al actualizar.'; this.cdr.markForCheck(); },
     });
   }
 
@@ -50,8 +54,8 @@ export class BookingsDashboard implements OnInit {
 
   cancelBooking(): void {
     this.api.cancelBooking(this.pendingCancelId).subscribe({
-      next: () => { this.successMessage = 'Reserva cancelada.'; this.load(); },
-      error: (err) => { this.errorMessage = err.error?.message || 'Error al cancelar.'; },
+      next: () => { this.successMessage = 'Reserva cancelada.'; this.load(); this.cdr.markForCheck(); },
+      error: (err) => { this.errorMessage = err.error?.message || 'Error al cancelar.'; this.cdr.markForCheck(); },
     });
   }
 

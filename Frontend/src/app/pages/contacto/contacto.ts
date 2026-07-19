@@ -1,4 +1,4 @@
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, OnInit, inject, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Meta, Title } from '@angular/platform-browser';
@@ -132,12 +132,14 @@ interface ContactForm {
     </section>
   `,
   styleUrl: '../page.css',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class Contacto implements OnInit {
   private readonly meta = inject(Meta);
   private readonly title = inject(Title);
   private readonly api = inject(TravelApiService);
   private readonly notify = inject(NotificationService);
+  private readonly cdr = inject(ChangeDetectorRef);
 
   form: ContactForm = { name: '', email: '', phone: '', message: '' };
   submitting = false;
@@ -163,6 +165,7 @@ export class Contacto implements OnInit {
       this.notify.show('Error al enviar el mensaje. Escríbenos por WhatsApp.', 'error');
     } finally {
       this.submitting = false;
+      this.cdr.markForCheck();
     }
   }
 }

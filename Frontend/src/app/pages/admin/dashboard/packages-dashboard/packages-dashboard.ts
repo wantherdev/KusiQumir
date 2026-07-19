@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Tour, TravelApiService, TravelPackage } from '../../../../services/travel-api.service';
@@ -10,6 +10,7 @@ import { ConfirmDialog } from '../../../../components/confirm-dialog/confirm-dia
   standalone: true,
   imports: [CommonModule, ReactiveFormsModule, Skeleton, ConfirmDialog],
   templateUrl: './packages-dashboard.html',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class PackagesDashboard implements OnInit {
   packages: TravelPackage[] = [];
@@ -25,6 +26,7 @@ export class PackagesDashboard implements OnInit {
   constructor(
     private readonly api: TravelApiService,
     private readonly fb: FormBuilder,
+    private readonly cdr: ChangeDetectorRef,
   ) {
     this.pkgForm = this.fb.group({
       name: ['', [Validators.required, Validators.minLength(3)]],
@@ -46,15 +48,15 @@ export class PackagesDashboard implements OnInit {
   ngOnInit(): void {
     this.load();
     this.api.getTours().subscribe({
-      next: (res) => { this.tours = res.items; },
+      next: (res) => { this.tours = res.items; this.cdr.markForCheck(); },
     });
   }
 
   load(): void {
     this.isLoading = true;
     this.api.getPackages().subscribe({
-      next: (res) => { this.packages = res; this.isLoading = false; },
-      error: () => { this.errorMessage = 'Error al cargar paquetes.'; this.isLoading = false; },
+      next: (res) => { this.packages = res; this.isLoading = false; this.cdr.markForCheck(); },
+      error: () => { this.errorMessage = 'Error al cargar paquetes.'; this.isLoading = false; this.cdr.markForCheck(); },
     });
   }
 
@@ -112,10 +114,12 @@ export class PackagesDashboard implements OnInit {
         this.successMessage = this.isEditMode ? 'Paquete actualizado.' : 'Paquete creado.';
         this.closeModal();
         this.load();
+        this.cdr.markForCheck();
       },
       error: (err) => {
         this.errorMessage = err.error?.message || 'Error al guardar.';
         this.isLoading = false;
+        this.cdr.markForCheck();
       },
     });
   }
@@ -130,8 +134,8 @@ export class PackagesDashboard implements OnInit {
 
   deletePackage(): void {
     this.api.deletePackage(this.pendingDeleteId).subscribe({
-      next: () => { this.successMessage = 'Paquete eliminado.'; this.load(); },
-      error: (err) => { this.errorMessage = err.error?.message || 'Error al eliminar.'; },
+      next: () => { this.successMessage = 'Paquete eliminado.'; this.load(); this.cdr.markForCheck(); },
+      error: (err) => { this.errorMessage = err.error?.message || 'Error al eliminar.'; this.cdr.markForCheck(); },
     });
   }
 

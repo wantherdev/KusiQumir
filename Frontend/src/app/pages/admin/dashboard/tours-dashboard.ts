@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Tour, TourPayload, TravelApiService } from '../../../services/travel-api.service';
@@ -11,6 +11,7 @@ import { ConfirmDialog } from '../../../components/confirm-dialog/confirm-dialog
   imports: [CommonModule, ReactiveFormsModule, Skeleton, ConfirmDialog],
   templateUrl: './tours-dashboard.html',
   styleUrls: ['./tours-dashboard.css'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ToursDashboard implements OnInit {
   tours: Tour[] = [];
@@ -24,6 +25,7 @@ export class ToursDashboard implements OnInit {
   constructor(
     private readonly travelApi: TravelApiService,
     private readonly fb: FormBuilder,
+    private readonly cdr: ChangeDetectorRef,
   ) {
     this.tourForm = this.fb.group({
       name: ['', [Validators.required, Validators.minLength(3)]],
@@ -52,10 +54,12 @@ export class ToursDashboard implements OnInit {
       next: (response) => {
         this.tours = response.items;
         this.isLoading = false;
+        this.cdr.markForCheck();
       },
       error: () => {
         this.errorMessage = 'No se pudieron cargar los tours.';
         this.isLoading = false;
+        this.cdr.markForCheck();
       },
     });
   }
@@ -99,10 +103,12 @@ export class ToursDashboard implements OnInit {
         this.successMessage = this.isEditMode ? 'Tour actualizado.' : 'Tour creado.';
         this.closeModal();
         this.loadTours();
+        this.cdr.markForCheck();
       },
       error: (error) => {
         this.errorMessage = error.error?.message || 'No se pudo guardar el tour.';
         this.isLoading = false;
+        this.cdr.markForCheck();
       },
     });
   }
@@ -125,10 +131,12 @@ export class ToursDashboard implements OnInit {
       next: () => {
         this.successMessage = 'Tour eliminado.';
         this.loadTours();
+        this.cdr.markForCheck();
       },
       error: (error) => {
         this.errorMessage = error.error?.message || 'No se pudo eliminar el tour.';
         this.isLoading = false;
+        this.cdr.markForCheck();
       },
     });
   }

@@ -1,4 +1,4 @@
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, OnInit, inject, signal, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
@@ -13,11 +13,35 @@ import { Tour } from '../../services/travel-api.service';
   styleUrl: '../page.css',
 })
 export class Destinos implements OnInit {
-  tours: Tour[] = [];
-  isLoading = false;
-  searchTerm = '';
-  selectedRegion = 'all';
-  selectedTourId: string | null = null;
+  readonly tours = signal<Tour[]>([]);
+  readonly isLoading = signal(false);
+  readonly searchTerm = signal('');
+  readonly selectedRegion = signal('all');
+  readonly selectedTourId = signal<string | null>(null);
+
+  readonly visibleTours = computed(() => {
+    const term = this.searchTerm().trim().toLowerCase();
+    return this.tours().filter((tour) => {
+      const matchesSearch =
+        !term ||
+        `${tour.name} ${tour.description} ${tour.location}`
+          .toLowerCase()
+          .includes(term);
+      const matchesRegion =
+        this.selectedRegion() === 'all' || tour.location === this.selectedRegion();
+      return matchesSearch && matchesRegion;
+    });
+  });
+
+  readonly availableRegions = computed(() =>
+    Array.from(
+      new Set(this.tours().map((tour) => tour.location).filter((l): l is string => !!l)),
+    ),
+  );
+
+  readonly selectedTour = computed(() =>
+    this.tours().find((tour) => tour.id === this.selectedTourId()) ?? null,
+  );
 
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
@@ -43,13 +67,13 @@ export class Destinos implements OnInit {
 
     const data = this.route.snapshot.data['tours'] as Tour[] | undefined;
     if (data?.length) {
-      this.tours = data;
-      this.selectedTourId = this.tours[0]?.id ?? null;
+      this.tours.set(data);
+      this.selectedTourId.set(this.tours()[0]?.id ?? null);
     }
 
     this.route.queryParams.subscribe((params) => {
-      if (params['search']) this.searchTerm = params['search'];
-      if (params['region']) this.selectedRegion = params['region'];
+      if (params['search']) this.searchTerm.set(params['search']);
+      if (params['region']) this.selectedRegion.set(params['region']);
     });
   }
 
@@ -57,43 +81,19 @@ export class Destinos implements OnInit {
     this.router.navigate([], {
       relativeTo: this.route,
       queryParams: {
-        search: this.searchTerm || null,
-        region: this.selectedRegion !== 'all' ? this.selectedRegion : null,
+        search: this.searchTerm() || null,
+        region: this.selectedRegion() !== 'all' ? this.selectedRegion() : null,
       },
       queryParamsHandling: 'merge',
       replaceUrl: true,
     });
   }
 
-  getVisibleTours(): Tour[] {
-    const term = this.searchTerm.trim().toLowerCase();
-    return this.tours.filter((tour) => {
-      const matchesSearch =
-        !term ||
-        `${tour.name} ${tour.description} ${tour.location}`
-          .toLowerCase()
-          .includes(term);
-      const matchesRegion =
-        this.selectedRegion === 'all' || tour.location === this.selectedRegion;
-      return matchesSearch && matchesRegion;
-    });
-  }
-
-  getAvailableRegions(): string[] {
-    return Array.from(
-      new Set(this.tours.map((tour) => tour.location).filter((l): l is string => !!l)),
-    );
-  }
-
   selectTour(tourId: string): void {
-    this.selectedTourId = tourId;
+    this.selectedTourId.set(tourId);
   }
 
   trackByFn(index: number, item: any): any {
     return item.id ?? index;
-  }
-
-  getSelectedTour(): Tour | null {
-    return this.tours.find((tour) => tour.id === this.selectedTourId) ?? null;
   }
 }

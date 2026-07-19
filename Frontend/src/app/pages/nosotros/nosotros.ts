@@ -1,4 +1,4 @@
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, OnInit, inject, ChangeDetectionStrategy } from '@angular/core';
 import { Meta, Title } from '@angular/platform-browser';
 
 @Component({
@@ -6,6 +6,7 @@ import { Meta, Title } from '@angular/platform-browser';
   imports: [],
   templateUrl: './nosotros.html',
   styleUrl: '../page.css',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class Nosotros implements OnInit {
   private readonly meta = inject(Meta);

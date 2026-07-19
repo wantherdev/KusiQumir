@@ -1,4 +1,4 @@
-import { Component, OnInit, inject, SecurityContext } from '@angular/core';
+import { Component, OnInit, inject, SecurityContext, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { Meta, Title, DomSanitizer } from '@angular/platform-browser';
@@ -50,6 +50,7 @@ import { Experience } from '../../../services/travel-api.service';
     </section>
   `,
   styleUrl: '../../page.css',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ExperienceDetail implements OnInit {
   private readonly route = inject(ActivatedRoute);

@@ -1,4 +1,4 @@
-import { Component, HostListener, inject, PLATFORM_ID } from '@angular/core';
+import { Component, HostListener, inject, PLATFORM_ID, ChangeDetectionStrategy } from '@angular/core';
 import { NgClass, NgFor, NgIf, isPlatformBrowser } from '@angular/common';
 import { Router, RouterLink, RouterLinkActive } from '@angular/router';
 
@@ -11,6 +11,7 @@ import { TourStateService } from '../../services/tour-state.service';
   imports: [NgClass, NgFor, NgIf, RouterLink, RouterLinkActive],
   templateUrl: './navbar.html',
   styleUrl: './navbar.css',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class Navbar {
   isScrolled = false;

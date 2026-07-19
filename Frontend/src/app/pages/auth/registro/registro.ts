@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
@@ -10,6 +10,7 @@ import { NotificationService } from '../../../services/notification.service';
   standalone: true,
   imports: [CommonModule, FormsModule, RouterLink],
   templateUrl: './registro.html',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class Registro {
   email = '';
@@ -24,6 +25,7 @@ export class Registro {
     private readonly authService: AuthService,
     private readonly router: Router,
     private readonly notification: NotificationService,
+    private readonly cdr: ChangeDetectorRef,
   ) {}
 
   submit(): void {
@@ -37,12 +39,14 @@ export class Registro {
     this.authService.register(this.email, this.password).subscribe({
       next: () => {
         this.isSubmitting = false;
+        this.cdr.markForCheck();
         this.notification.show('Registro exitoso. Ahora puedes iniciar sesión.', 'success');
         this.router.navigate(['/login'], { queryParams: { registered: 'true' } });
       },
       error: (err) => {
         this.isSubmitting = false;
         this.errorMessage = err.error?.message || 'Error al registrarse.';
+        this.cdr.markForCheck();
       },
     });
   }
