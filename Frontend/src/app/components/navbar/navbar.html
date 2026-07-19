@@ -65,15 +65,12 @@
          <a routerLink="/blog" routerLinkActive="text-primary" #blg="routerLinkActive" [attr.aria-current]="blg.isActive ? 'page' : null" class="rounded-md px-3 py-2 transition hover:text-primary">Blog</a>
          <a routerLink="/contacto" routerLinkActive="text-primary" #cnt="routerLinkActive" [attr.aria-current]="cnt.isActive ? 'page' : null" class="rounded-md px-3 py-2 transition hover:text-primary">Contacto</a>
 
-        <!-- Client links (any authenticated user) -->
-        <a *ngIf="auth.user()" routerLink="/mis-reservas" routerLinkActive="text-primary" #res="routerLinkActive" [attr.aria-current]="res.isActive ? 'page' : null" class="rounded-md px-3 py-2 transition hover:text-primary">
+        <!-- Mis Reservas (cliente público, en localStorage) -->
+        <a routerLink="/mis-reservas" routerLinkActive="text-primary" #res="routerLinkActive" [attr.aria-current]="res.isActive ? 'page' : null" class="rounded-md px-3 py-2 transition hover:text-primary">
           Mis Reservas
         </a>
-        <a *ngIf="auth.user()" routerLink="/mi-perfil" routerLinkActive="text-primary" #perf="routerLinkActive" [attr.aria-current]="perf.isActive ? 'page' : null" class="rounded-md px-3 py-2 transition hover:text-primary">
-          Mi Perfil
-        </a>
 
-        <!-- Admin dropdown -->
+        <!-- Admin dropdown (solo ADMIN) -->
         <div *ngIf="auth.user()?.role === 'ADMIN'" class="relative group">
           <button class="flex items-center gap-2 rounded-md px-3 py-2 transition hover:text-primary">
             <span>Admin</span>
@@ -86,23 +83,10 @@
               <a routerLink="/admin/reservas" class="block rounded-xl px-3 py-2 text-sm font-semibold text-slate-700 transition hover:bg-primary hover:text-white">Reservas</a>
               <a routerLink="/admin/blog" class="block rounded-xl px-3 py-2 text-sm font-semibold text-slate-700 transition hover:bg-primary hover:text-white">Blog</a>
               <a routerLink="/admin/experiencias" class="block rounded-xl px-3 py-2 text-sm font-semibold text-slate-700 transition hover:bg-primary hover:text-white">Experiencias</a>
+              <button (click)="logout()" class="block w-full text-left rounded-xl px-3 py-2 text-sm font-semibold text-slate-700 transition hover:bg-primary hover:text-white">Cerrar sesión</button>
             </div>
           </div>
         </div>
-        <a
-          *ngIf="!auth.user()"
-          routerLink="/login"
-          class="rounded-md px-3 py-2 transition hover:text-primary"
-          >
-          Iniciar sesión
-        </a>
-        <button
-          *ngIf="auth.user()"
-          (click)="logout()"
-          class="rounded-md px-3 py-2 transition hover:text-primary"
-          >
-          Cerrar sesión
-        </button>
       </nav>
 
       <div class="hidden md:flex items-center gap-3 text-[1rem]">
@@ -183,8 +167,7 @@
 
           >Contacto</a>
 
-          <a *ngIf="auth.user()" routerLink="/mis-reservas" routerLinkActive="bg-primary/10 text-primary" #resm="routerLinkActive" [attr.aria-current]="resm.isActive ? 'page' : null"             class="block rounded-xl px-3 py-2 transition hover:bg-primary hover:text-white">Mis Reservas</a>
-          <a *ngIf="auth.user()" routerLink="/mi-perfil" routerLinkActive="bg-primary/10 text-primary" #perfm="routerLinkActive" [attr.aria-current]="perfm.isActive ? 'page' : null" class="block rounded-xl px-3 py-2 transition hover:bg-primary hover:text-white">Mi Perfil</a>
+          <a routerLink="/mis-reservas" routerLinkActive="bg-primary/10 text-primary" #resm="routerLinkActive" [attr.aria-current]="resm.isActive ? 'page' : null" class="block rounded-xl px-3 py-2 transition hover:bg-primary hover:text-white">Mis Reservas</a>
 
           <div *ngIf="auth.user()?.role === 'ADMIN'" class="space-y-1">
             <p class="px-3 py-1 text-xs font-semibold uppercase tracking-wider text-gray-400">Admin</p>
@@ -193,21 +176,8 @@
             <a routerLink="/admin/reservas" class="block rounded-xl px-3 py-2 transition hover:bg-primary hover:text-white">Reservas</a>
             <a routerLink="/admin/blog" class="block rounded-xl px-3 py-2 transition hover:bg-primary hover:text-white">Blog</a>
             <a routerLink="/admin/experiencias" class="block rounded-xl px-3 py-2 transition hover:bg-primary hover:text-white">Experiencias</a>
+            <button (click)="logout()" class="block w-full text-left rounded-xl px-3 py-2 transition hover:bg-primary hover:text-white">Cerrar sesión</button>
           </div>
-          <a
-            *ngIf="!auth.user()"
-            routerLink="/login"
-            class="block rounded-xl px-3 py-2 transition hover:bg-primary hover:text-white"
-            >
-            Iniciar sesión
-          </a>
-          <button
-            *ngIf="auth.user()"
-            (click)="logout()"
-            class="block w-full text-left rounded-xl px-3 py-2 transition hover:bg-primary hover:text-white"
-            >
-            Cerrar sesión
-          </button>
         </div>
 
         <div class="mt-4 flex flex-col gap-3 border-t border-slate-200 pt-4">

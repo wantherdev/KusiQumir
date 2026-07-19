@@ -1,7 +1,8 @@
 import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
-import { Booking, TravelApiService } from '../../../services/travel-api.service';
+import { Booking } from '../../../services/travel-api.service';
+import { LocalBookingsService } from '../../../services/local-bookings.service';
 import { Skeleton } from '../../../components/skeleton/skeleton';
 import { ConfirmDialog } from '../../../components/confirm-dialog/confirm-dialog';
 
@@ -27,7 +28,7 @@ export class MisReservas implements OnInit {
   showConfirm = false;
   pendingCancelId = '';
 
-  constructor(private readonly api: TravelApiService) {}
+  constructor(private readonly local: LocalBookingsService) {}
 
   ngOnInit(): void {
     this.load();
@@ -36,10 +37,8 @@ export class MisReservas implements OnInit {
   load(): void {
     this.showConfirm = false;
     this.isLoading = true;
-    this.api.getMyBookings().subscribe({
-      next: (res) => { this.items = res; this.isLoading = false; },
-      error: () => { this.errorMessage = 'Error al cargar tus reservas.'; this.isLoading = false; },
-    });
+    this.items = this.local.bookings();
+    this.isLoading = false;
   }
 
   confirmCancel(id: string): void {
@@ -48,10 +47,9 @@ export class MisReservas implements OnInit {
   }
 
   cancelBooking(): void {
-    this.api.cancelBooking(this.pendingCancelId).subscribe({
-      next: () => { this.successMessage = 'Reserva cancelada correctamente.'; this.load(); },
-      error: (err) => { this.errorMessage = err.error?.message || 'Error al cancelar.'; },
-    });
+    this.local.cancel(this.pendingCancelId);
+    this.successMessage = 'Reserva cancelada correctamente.';
+    this.load();
   }
 
   trackByFn(index: number, item: Booking): any {

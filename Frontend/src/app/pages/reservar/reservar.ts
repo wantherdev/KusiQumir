@@ -7,7 +7,9 @@ import {
   TravelApiService,
   Tour,
   TravelPackage,
+  Booking,
 } from '../../services/travel-api.service';
+import { LocalBookingsService } from '../../services/local-bookings.service';
 import { NotificationService } from '../../services/notification.service';
 
 type BookingType = 'tour' | 'package';
@@ -38,6 +40,7 @@ export class Reservar implements OnInit {
   constructor(
     private readonly route: ActivatedRoute,
     private readonly travelApi: TravelApiService,
+    private readonly local: LocalBookingsService,
     private readonly notification: NotificationService,
     private readonly cdr: ChangeDetectorRef,
   ) {}
@@ -96,14 +99,33 @@ export class Reservar implements OnInit {
       startDate: this.startDate || undefined,
       notes: this.notes,
     };
+    const localBooking: Booking = {
+      id: `local-${Date.now()}`,
+      customerId: 'guest',
+      tourId: this.type === 'tour' ? this.itemId : null,
+      packageId: this.type === 'package' ? this.itemId : null,
+      travelers: this.travelers,
+      status: 'PENDIENTE',
+      date: this.startDate || new Date().toISOString().slice(0, 10),
+      total: this.total,
+      unitPrice: this.price,
+      customerName: this.customerName,
+      customerEmail: this.customerEmail,
+      customerPhone: this.customerPhone,
+      startDate: this.startDate || null,
+      notes: this.notes,
+      createdAt: new Date().toISOString(),
+      tour: this.type === 'tour' ? (this.item as Tour) : null,
+      package: this.type === 'package' ? (this.item as TravelPackage) : null,
+    };
     try {
-      await firstValueFrom(this.travelApi.createBooking(payload));
+      this.local.add(localBooking);
       this.success = true;
       this.notification.show('¡Reserva enviada! Te contactaremos para confirmar.', 'success');
     } catch (e) {
       if (isDevMode()) console.error(e);
-      this.error = 'No se pudo enviar la reserva. Inténtalo nuevamente.';
-      this.notification.show('Error al enviar la reserva.', 'error');
+      this.error = 'No se pudo guardar la reserva. Inténtalo nuevamente.';
+      this.notification.show('Error al guardar la reserva.', 'error');
     } finally {
       this.submitting = false;
       this.cdr.markForCheck();

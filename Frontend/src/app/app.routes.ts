@@ -1,6 +1,5 @@
 import { Routes } from '@angular/router';
 import { adminGuard } from './guards/admin.guard';
-import { authGuard } from './guards/auth.guard';
 import { homeResolver, toursResolver, articlesResolver, experiencesResolver, tourDetailResolver, articleResolver, experienceResolver } from './resolvers/data.resolvers';
 
 export const routes: Routes = [
@@ -18,8 +17,7 @@ export const routes: Routes = [
   { path: 'blog/:slug', loadComponent: () => import('./pages/blog/article/article').then((m) => m.BlogArticle), resolve: { article: articleResolver } },
   { path: 'login', loadComponent: () => import('./pages/auth/login').then((m) => m.Login) },
   { path: 'registro', loadComponent: () => import('./pages/auth/registro/registro').then((m) => m.Registro) },
-  { path: 'mis-reservas', loadComponent: () => import('./pages/cliente/mis-reservas/mis-reservas').then((m) => m.MisReservas), canActivate: [authGuard] },
-  { path: 'mi-perfil', loadComponent: () => import('./pages/cliente/mi-perfil/mi-perfil').then((m) => m.MiPerfil), canActivate: [authGuard] },
+  { path: 'mis-reservas', loadComponent: () => import('./pages/cliente/mis-reservas/mis-reservas').then((m) => m.MisReservas) },
   { path: 'admin/tours', loadComponent: () => import('./pages/admin/dashboard/tours-dashboard').then((m) => m.ToursDashboard), canActivate: [adminGuard] },
   { path: 'admin/blog', loadComponent: () => import('./pages/admin/dashboard/articles-dashboard').then((m) => m.ArticlesDashboard), canActivate: [adminGuard] },
   { path: 'admin/experiencias', loadComponent: () => import('./pages/admin/dashboard/experiences-dashboard').then((m) => m.ExperiencesDashboard), canActivate: [adminGuard] },
