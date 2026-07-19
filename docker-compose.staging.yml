@@ -1,0 +1,16 @@
+services:
+  backend:
+    environment:
+      NODE_ENV: staging
+      CORS_ORIGIN: ${CORS_ORIGIN:-https://staging.kusiqumir.com}
+      SENTRY_DSN: ${SENTRY_DSN:-}
+    ports:
+      - "3000:3000"
+
+  frontend:
+    build:
+      context: ./Frontend
+      args:
+        SENTRY_DSN: ${SENTRY_DSN:-}
+    ports:
+      - "4000:4000"

@@ -1,0 +1,41 @@
+services:
+  nginx:
+    build: ./nginx
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+      - ssl-certs:/etc/ssl/certs
+      - certbot-www:/var/www/certbot
+    depends_on:
+      - frontend
+      - backend
+    networks:
+      - default
+
+  postgres:
+    volumes:
+      - ./backups:/backups
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U kusiqumir"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  backend:
+    environment:
+      NODE_ENV: production
+      CORS_ORIGIN: ${CORS_ORIGIN:-https://kusiqumir.com,https://www.kusiqumir.com}
+      SENTRY_DSN: ${SENTRY_DSN:-}
+
+  frontend:
+    build:
+      args:
+        SENTRY_DSN: ${SENTRY_DSN:-}
+
+volumes:
+  pgdata:
+  ssl-certs:
+  certbot-www:

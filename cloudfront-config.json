@@ -1,0 +1,67 @@
+{
+  "Comment": "KusiQumir CDN — CloudFront distribution config",
+  "Origins": {
+    "Quantity": 1,
+    "Items": [
+      {
+        "Id": "nginx-origin",
+        "DomainName": "kusiqumir.com",
+        "OriginProtocolPolicy": "https-only",
+        "OriginSslProtocols": ["TLSv1.2"],
+        "CustomHeaders": [
+          {
+            "HeaderName": "X-CDN",
+            "HeaderValue": "CloudFront"
+          }
+        ]
+      }
+    ]
+  },
+  "DefaultCacheBehavior": {
+    "TargetOriginId": "nginx-origin",
+    "ViewerProtocolPolicy": "redirect-to-https",
+    "AllowedMethods": ["GET", "HEAD", "OPTIONS"],
+    "CachedMethods": ["GET", "HEAD"],
+    "Compress": true,
+    "DefaultTTL": 0,
+    "MaxTTL": 0,
+    "MinTTL": 0,
+    "ForwardedValues": {
+      "QueryString": true,
+      "Cookies": { "Forward": "none" }
+    }
+  },
+  "CacheBehaviors": {
+    "Quantity": 2,
+    "Items": [
+      {
+        "PathPattern": "chunk-*",
+        "TargetOriginId": "nginx-origin",
+        "ViewerProtocolPolicy": "redirect-to-https",
+        "DefaultTTL": 31536000,
+        "MaxTTL": 31536000,
+        "MinTTL": 31536000,
+        "Compress": true,
+        "ForwardedValues": {
+          "QueryString": false,
+          "Cookies": { "Forward": "none" }
+        }
+      },
+      {
+        "PathPattern": "*.webp",
+        "TargetOriginId": "nginx-origin",
+        "ViewerProtocolPolicy": "redirect-to-https",
+        "DefaultTTL": 2592000,
+        "MaxTTL": 2592000,
+        "MinTTL": 2592000,
+        "Compress": true,
+        "ForwardedValues": {
+          "QueryString": false,
+          "Cookies": { "Forward": "none" }
+        }
+      }
+    ]
+  },
+  "PriceClass": "PriceClass_100",
+  "Enabled": true
+}
