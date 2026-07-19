@@ -20,9 +20,9 @@ interface ContactForm {
     <section class="page-shell px-4 py-20 sm:px-6 lg:px-8">
       <div class="mx-auto max-w-4xl">
         <div class="page-hero rounded-[2rem] p-8 text-center sm:p-12">
-          <p class="text-sm font-semibold uppercase tracking-[0.35em] text-primary" i18n="@@contacto-tagline">Contacto</p>
-          <h1 class="mt-4 text-4xl font-bold text-slate-900 sm:text-5xl" i18n="@@contacto-title">¿Listo para tu próxima aventura?</h1>
-          <p class="mx-auto mt-4 max-w-2xl text-lg text-slate-600" i18n="@@contacto-desc">
+          <p class="text-sm font-semibold uppercase tracking-[0.35em] text-primary">Contacto</p>
+          <h1 class="mt-4 text-4xl font-bold text-slate-900 sm:text-5xl">¿Listo para tu próxima aventura?</h1>
+          <p class="mx-auto mt-4 max-w-2xl text-lg text-slate-600">
             Cuéntanos qué buscas y te responderemos a la brevedad para diseñar juntos la experiencia perfecta en Perú.
           </p>
         </div>
@@ -30,7 +30,7 @@ interface ContactForm {
         <div class="mt-10 grid gap-10 lg:grid-cols-[1fr_0.7fr]">
           <form #contactForm="ngForm" (ngSubmit)="onSubmit(contactForm)" class="rounded-[2rem] border border-slate-200 bg-white p-8 shadow-sm">
             <div class="mb-5">
-              <label for="name" class="mb-1 block text-sm font-semibold text-slate-700" i18n="@@contacto-nombre">Nombre completo <span class="text-red-500">*</span></label>
+              <label for="name" class="mb-1 block text-sm font-semibold text-slate-700">Nombre completo <span class="text-red-500">*</span></label>
               <input
                 type="text"
                 id="name"
@@ -46,7 +46,7 @@ interface ContactForm {
             </div>
 
             <div class="mb-5">
-              <label for="email" class="mb-1 block text-sm font-semibold text-slate-700" i18n="@@contacto-correo">Correo electrónico <span class="text-red-500">*</span></label>
+              <label for="email" class="mb-1 block text-sm font-semibold text-slate-700">Correo electrónico <span class="text-red-500">*</span></label>
               <input
                 type="email"
                 id="email"
@@ -62,7 +62,7 @@ interface ContactForm {
             </div>
 
             <div class="mb-5">
-              <label for="phone" class="mb-1 block text-sm font-semibold text-slate-700" i18n="@@contacto-telefono">Teléfono (opcional)</label>
+              <label for="phone" class="mb-1 block text-sm font-semibold text-slate-700">Teléfono (opcional)</label>
               <input
                 type="tel"
                 id="phone"
@@ -75,7 +75,7 @@ interface ContactForm {
             </div>
 
             <div class="mb-6">
-              <label for="message" class="mb-1 block text-sm font-semibold text-slate-700" i18n="@@contacto-mensaje">Mensaje <span class="text-red-500">*</span></label>
+              <label for="message" class="mb-1 block text-sm font-semibold text-slate-700">Mensaje <span class="text-red-500">*</span></label>
               <textarea
                 id="message"
                 name="message"
@@ -94,7 +94,6 @@ interface ContactForm {
               type="submit"
               [disabled]="contactForm.invalid || submitting"
               class="w-full rounded-full bg-primary px-8 py-3 font-semibold text-white transition hover:bg-primary-dark disabled:cursor-not-allowed disabled:opacity-50"
-              i18n="@@contacto-enviar"
             >
               {{ submitting ? 'Enviando…' : 'Enviar mensaje' }}
             </button>
@@ -102,7 +101,7 @@ interface ContactForm {
 
           <aside class="flex flex-col gap-6">
             <div class="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
-              <h3 class="text-lg font-bold text-slate-900" i18n="@@contacto-info-title">Información de contacto</h3>
+              <h3 class="text-lg font-bold text-slate-900">Información de contacto</h3>
               <ul class="mt-4 space-y-4 text-sm text-slate-600">
                 <li class="flex items-start gap-3">
                   <i aria-hidden="true" class="ri-map-pin-line mt-0.5 text-primary"></i>
@@ -120,7 +119,7 @@ interface ContactForm {
             </div>
 
             <div class="rounded-2xl bg-primary/5 p-6">
-              <h3 class="text-lg font-bold text-slate-900" i18n="@@contacto-horarios-title">Horarios de atención</h3>
+              <h3 class="text-lg font-bold text-slate-900">Horarios de atención</h3>
               <ul class="mt-4 space-y-2 text-sm text-slate-600">
                 <li><span class="font-semibold">Lun – Vie:</span> 9:00 – 18:00</li>
                 <li><span class="font-semibold">Sáb:</span> 9:00 – 13:00</li>
