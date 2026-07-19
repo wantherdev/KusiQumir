@@ -26,7 +26,10 @@ export class PaymentsService {
     id: string,
     user?: { userId: string; email?: string; role?: string },
   ) {
-    const payment = await this.prisma.payment.findUnique({ where: { id } });
+    const payment = await this.prisma.payment.findUnique({
+      where: { id },
+      select: { id: true, bookingId: true, amount: true, currency: true, status: true, createdAt: true },
+    });
     if (!payment) return null;
 
     if (!user || user.role === "ADMIN") return payment;
@@ -66,6 +69,7 @@ export class PaymentsService {
         amount: payload.amount,
         currency: payload.currency,
       },
+      select: { id: true, bookingId: true, amount: true, currency: true, status: true, createdAt: true },
     });
   }
 }

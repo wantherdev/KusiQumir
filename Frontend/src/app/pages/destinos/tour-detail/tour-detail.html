@@ -10,7 +10,7 @@
 
     <ng-container *ngIf="!isLoading && error">
       <div class="page-hero rounded-[2rem] p-8 sm:p-12 text-center">
-        <i class="ri-error-warning-line text-6xl text-primary"></i>
+        <i aria-hidden="true" class="ri-error-warning-line text-6xl text-primary"></i>
         <h1 class="mt-6 text-3xl font-bold text-slate-900">{{ error }}</h1>
         <a routerLink="/destinos" class="mt-6 inline-block rounded-full bg-primary px-6 py-3 font-semibold text-white">
           Volver a destinos
@@ -35,6 +35,7 @@
             <img
               [src]="tour.images || '/images/dest1.webp?v=2'"
               [alt]="tour.name"
+              width="800" height="400"
               loading="lazy"
               class="h-80 w-full object-cover lg:h-96"
             />
@@ -50,22 +51,22 @@
 
           <div class="mt-8 grid grid-cols-2 gap-4">
             <div class="rounded-[1.5rem] bg-slate-50 p-4 text-center">
-              <i class="ri-money-dollar-circle-line text-2xl text-primary"></i>
+              <i aria-hidden="true" class="ri-money-dollar-circle-line text-2xl text-primary"></i>
               <p class="mt-1 text-sm text-slate-500">Desde</p>
               <p class="text-xl font-bold text-slate-900">${{ tour.price | number: '1.0-0' }}</p>
             </div>
             <div class="rounded-[1.5rem] bg-slate-50 p-4 text-center">
-              <i class="ri-time-line text-2xl text-primary"></i>
+              <i aria-hidden="true" class="ri-time-line text-2xl text-primary"></i>
               <p class="mt-1 text-sm text-slate-500">Duración</p>
               <p class="text-xl font-bold text-slate-900">{{ tour.duration }}</p>
             </div>
             <div class="rounded-[1.5rem] bg-slate-50 p-4 text-center">
-              <i class="ri-signal-tower-line text-2xl text-primary"></i>
+              <i aria-hidden="true" class="ri-signal-tower-line text-2xl text-primary"></i>
               <p class="mt-1 text-sm text-slate-500">Dificultad</p>
               <p class="text-xl font-bold text-slate-900">{{ tour.difficulty || '—' }}</p>
             </div>
             <div class="rounded-[1.5rem] bg-slate-50 p-4 text-center">
-              <i class="ri-checkbox-circle-line text-2xl text-primary"></i>
+              <i aria-hidden="true" class="ri-checkbox-circle-line text-2xl text-primary"></i>
               <p class="mt-1 text-sm text-slate-500">Disponibilidad</p>
               <p class="text-xl font-bold" [ngClass]="tour.availability ? 'text-green-600' : 'text-red-500'">
                 {{ tour.availability ? 'Disponible' : 'No disponible' }}
@@ -82,7 +83,7 @@
               Reservar ahora
             </a>
             <a
-              href="https://wa.me/51987654321"
+              href="https://wa.me/{{ whatsappNumber }}"
               class="flex-1 rounded-full border border-primary px-6 py-3 text-center font-semibold text-primary transition hover:bg-primary hover:text-white"
             >
               Consultar por WhatsApp
@@ -118,10 +119,10 @@
             [queryParams]="{ tipo: 'tour', id: tour?.id }"
             class="inline-flex items-center justify-center gap-2 rounded-full bg-white px-8 py-4 font-semibold text-primary transition hover:bg-slate-100"
           >
-            <i class="ri-calendar-check-line"></i> Reservar ahora
+            <i aria-hidden="true" class="ri-calendar-check-line"></i> Reservar ahora
           </a>
           <a
-            href="https://wa.me/51987654321"
+            href="https://wa.me/{{ whatsappNumber }}"
             class="inline-flex items-center justify-center rounded-full border border-white px-8 py-4 font-semibold text-white transition hover:bg-white hover:text-primary"
           >
             Consultar por WhatsApp

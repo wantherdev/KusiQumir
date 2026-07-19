@@ -1,5 +1,5 @@
 import { Controller, Get, Post, Patch, Body, Param, Req, UseGuards } from "@nestjs/common";
-import { ApiTags, ApiOperation, ApiBearerAuth } from "@nestjs/swagger";
+import { ApiProperty, ApiTags, ApiOperation, ApiBearerAuth } from "@nestjs/swagger";
 import { IsEmail, IsNotEmpty, IsOptional, IsString } from "class-validator";
 import { CustomersService } from "./customers.service";
 import { JwtAuthGuard } from "../auth/jwt-auth.guard";
@@ -8,33 +8,41 @@ import { Roles } from "../auth/roles.decorator";
 import { AuthenticatedRequest } from "../../common/authenticated-request";
 
 class CreateCustomerDto {
+  @ApiProperty({ description: "Nombre del cliente", required: true })
   @IsNotEmpty()
   name!: string;
 
+  @ApiProperty({ description: "Correo electrónico del cliente", required: true })
   @IsEmail()
   email!: string;
 
+  @ApiProperty({ description: "Nacionalidad del cliente", required: false })
   @IsOptional()
   nationality?: string;
 }
 
 class UpdateMyProfileDto {
+  @ApiProperty({ description: "Nombre del cliente", required: false })
   @IsOptional()
   @IsString()
   name?: string;
 
+  @ApiProperty({ description: "Teléfono del cliente", required: false })
   @IsOptional()
   @IsString()
   phone?: string;
 
+  @ApiProperty({ description: "Nacionalidad del cliente", required: false })
   @IsOptional()
   @IsString()
   nationality?: string;
 
+  @ApiProperty({ description: "Pasaporte del cliente", required: false })
   @IsOptional()
   @IsString()
   passport?: string;
 
+  @ApiProperty({ description: "Preferencias del cliente", required: false })
   @IsOptional()
   @IsString()
   preferences?: string;

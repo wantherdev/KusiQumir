@@ -8,7 +8,7 @@ import {
   Patch,
   Delete,
 } from "@nestjs/common";
-import { ApiTags, ApiOperation, ApiBearerAuth } from "@nestjs/swagger";
+import { ApiProperty, ApiTags, ApiOperation, ApiBearerAuth } from "@nestjs/swagger";
 import {
   IsArray,
   ArrayNotEmpty,
@@ -24,77 +24,97 @@ import { Roles } from "../auth/roles.decorator";
 import { Public } from "../auth/public.decorator";
 
 class CreatePackageDto {
+  @ApiProperty({ description: "Nombre del paquete", required: true })
   @IsNotEmpty()
   name!: string;
 
+  @ApiProperty({ description: "Descripción del paquete", required: true })
   @IsNotEmpty()
   description!: string;
 
+  @ApiProperty({ description: "IDs de los tours incluidos", required: true })
   @IsArray()
   @ArrayNotEmpty()
   tours!: string[];
 
+  @ApiProperty({ description: "Precio del paquete", required: true })
   @IsNumber()
   @Min(0)
   price!: number;
 
+  @ApiProperty({ description: "Destacado", required: false })
   @IsOptional()
   featured?: boolean;
 
+  @ApiProperty({ description: "Duración en días", required: false })
   @IsOptional()
   @IsNumber()
   durationDays?: number;
 
+  @ApiProperty({ description: "Descuento", required: false })
   @IsOptional()
   @IsNumber()
   discount?: number;
 
+  @ApiProperty({ description: "URL de la imagen", required: false })
   @IsOptional()
   imageUrl?: string;
 
+  @ApiProperty({ description: "Incluye", required: false })
   @IsOptional()
   included?: string;
 
+  @ApiProperty({ description: "Excluye", required: false })
   @IsOptional()
   excluded?: string;
 }
 
 class UpdatePackageDto {
+  @ApiProperty({ description: "Nombre del paquete", required: false })
   @IsOptional()
   @IsNotEmpty()
   name?: string;
 
+  @ApiProperty({ description: "Descripción del paquete", required: false })
   @IsOptional()
   @IsNotEmpty()
   description?: string;
 
+  @ApiProperty({ description: "IDs de los tours incluidos", required: false })
   @IsOptional()
   @IsArray()
   @ArrayNotEmpty()
   tours?: string[];
 
+  @ApiProperty({ description: "Precio del paquete", required: false })
   @IsOptional()
   @IsNumber()
   @Min(0)
   price?: number;
 
+  @ApiProperty({ description: "Destacado", required: false })
   @IsOptional()
   featured?: boolean;
 
+  @ApiProperty({ description: "Duración en días", required: false })
   @IsOptional()
   @IsNumber()
   durationDays?: number;
 
+  @ApiProperty({ description: "Descuento", required: false })
   @IsOptional()
   @IsNumber()
   discount?: number;
 
+  @ApiProperty({ description: "URL de la imagen", required: false })
   @IsOptional()
   imageUrl?: string;
 
+  @ApiProperty({ description: "Incluye", required: false })
   @IsOptional()
   included?: string;
 
+  @ApiProperty({ description: "Excluye", required: false })
   @IsOptional()
   excluded?: string;
 }

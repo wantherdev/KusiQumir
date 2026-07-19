@@ -1,3 +1,4 @@
+import { isDevMode } from '@angular/core';
 import { HttpInterceptorFn, HttpErrorResponse } from '@angular/common/http';
 import { inject } from '@angular/core';
 import { Router } from '@angular/router';
@@ -16,7 +17,7 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
       if (error.status === 401) {
         auth.user.set(null);
       } else if (error.status >= 500) {
-        console.error('[Server Error]', error.status, error.message);
+        if (isDevMode()) console.error('[Server Error]', error.status, error.message);
       }
       return throwError(() => error);
     }),

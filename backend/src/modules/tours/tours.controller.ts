@@ -3,7 +3,7 @@ import {
   Patch, Delete, Query, UseInterceptors,
 } from "@nestjs/common";
 import { CacheInterceptor } from "@nestjs/cache-manager";
-import { ApiTags, ApiOperation, ApiBearerAuth, ApiQuery } from "@nestjs/swagger";
+import { ApiProperty, ApiTags, ApiOperation, ApiBearerAuth, ApiQuery } from "@nestjs/swagger";
 import { IsBoolean, IsNotEmpty, IsNumber, IsOptional, IsString, Min } from "class-validator";
 import { ToursService } from "./tours.service";
 import { JwtAuthGuard } from "../auth/jwt-auth.guard";
@@ -12,42 +12,73 @@ import { Roles } from "../auth/roles.decorator";
 import { Public } from "../auth/public.decorator";
 
 class CreateTourDto {
+  @ApiProperty({ description: "Nombre del tour", required: true })
   @IsNotEmpty() @IsString() name!: string;
+  @ApiProperty({ description: "Descripción del tour", required: true })
   @IsNotEmpty() @IsString() description!: string;
+  @ApiProperty({ description: "Precio del tour", required: true })
   @IsNumber() @Min(0) price!: number;
+  @ApiProperty({ description: "Duración del tour", required: true })
   @IsNotEmpty() @IsString() duration!: string;
+  @ApiProperty({ description: "Imágenes del tour", required: false })
   @IsOptional() @IsString() images?: string;
+  @ApiProperty({ description: "Dificultad del tour", required: false })
   @IsOptional() @IsString() difficulty?: string;
+  @ApiProperty({ description: "Itinerario del tour", required: false })
   @IsOptional() @IsString() itinerary?: string;
+  @ApiProperty({ description: "Incluye", required: false })
   @IsOptional() @IsString() includes?: string;
+  @ApiProperty({ description: "Excluye", required: false })
   @IsOptional() @IsString() excludes?: string;
+  @ApiProperty({ description: "Ubicación del tour", required: false })
   @IsOptional() @IsString() location?: string;
+  @ApiProperty({ description: "Disponibilidad", required: false })
   @IsOptional() @IsBoolean() availability?: boolean;
+  @ApiProperty({ description: "ID del proveedor", required: false })
   @IsOptional() @IsString() providerId?: string;
 }
 
 class UpdateTourDto {
+  @ApiProperty({ description: "Nombre del tour", required: false })
   @IsOptional() @IsNotEmpty() @IsString() name?: string;
+  @ApiProperty({ description: "Descripción del tour", required: false })
   @IsOptional() @IsNotEmpty() @IsString() description?: string;
+  @ApiProperty({ description: "Precio del tour", required: false })
   @IsOptional() @IsNumber() @Min(0) price?: number;
+  @ApiProperty({ description: "Duración del tour", required: false })
   @IsOptional() @IsNotEmpty() @IsString() duration?: string;
+  @ApiProperty({ description: "Imágenes del tour", required: false })
   @IsOptional() @IsString() images?: string;
+  @ApiProperty({ description: "Dificultad del tour", required: false })
   @IsOptional() @IsString() difficulty?: string;
+  @ApiProperty({ description: "Itinerario del tour", required: false })
   @IsOptional() @IsString() itinerary?: string;
+  @ApiProperty({ description: "Incluye", required: false })
   @IsOptional() @IsString() includes?: string;
+  @ApiProperty({ description: "Excluye", required: false })
   @IsOptional() @IsString() excludes?: string;
+  @ApiProperty({ description: "Ubicación del tour", required: false })
   @IsOptional() @IsString() location?: string;
+  @ApiProperty({ description: "Disponibilidad", required: false })
   @IsOptional() @IsBoolean() availability?: boolean;
+  @ApiProperty({ description: "ID del proveedor", required: false })
   @IsOptional() @IsString() providerId?: string;
 }
 
 class FindAllToursQuery {
+  @ApiProperty({ description: "Límite de resultados", required: false })
   @IsOptional() @IsString() take?: string;
+  @ApiProperty({ description: "Cursor para paginación", required: false })
   @IsOptional() @IsString() cursor?: string;
+  @ApiProperty({ description: "Filtrar por disponibilidad", required: false })
   @IsOptional() @IsString() availability?: string;
+  @ApiProperty({ description: "Filtrar por dificultad", required: false })
   @IsOptional() @IsString() difficulty?: string;
+  @ApiProperty({ description: "Filtrar por ubicación", required: false })
   @IsOptional() @IsString() location?: string;
+  @ApiProperty({ description: "Precio mínimo", required: false })
   @IsOptional() @IsString() minPrice?: string;
+  @ApiProperty({ description: "Precio máximo", required: false })
   @IsOptional() @IsString() maxPrice?: string;
 }
 

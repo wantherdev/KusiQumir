@@ -2,7 +2,7 @@ import {
   Controller, Get, Post, Body, Param, UseGuards,
   Request, Patch, Query,
 } from "@nestjs/common";
-import { ApiTags, ApiOperation, ApiBearerAuth, ApiQuery } from "@nestjs/swagger";
+import { ApiProperty, ApiTags, ApiOperation, ApiBearerAuth, ApiQuery } from "@nestjs/swagger";
 import {
   IsNotEmpty, IsNumber, Min, IsOptional, ValidateIf, IsString, IsEmail,
 } from "class-validator";
@@ -13,45 +13,59 @@ import { Roles } from "../auth/roles.decorator";
 import { AuthenticatedRequest } from "../../common/authenticated-request";
 
 class CreateBookingDto {
+  @ApiProperty({ description: "ID del tour", required: false })
   @ValidateIf((o) => !o.packageId)
   @IsNotEmpty()
   tourId?: string;
 
+  @ApiProperty({ description: "ID del paquete", required: false })
   @ValidateIf((o) => !o.tourId)
   @IsNotEmpty()
   packageId?: string;
 
+  @ApiProperty({ description: "Número de viajeros", required: true })
   @IsNumber()
   @Min(1)
   travelers!: number;
 
+  @ApiProperty({ description: "Nombre del cliente", required: false })
   @IsOptional()
   @IsString()
   customerName?: string;
 
+  @ApiProperty({ description: "Correo del cliente", required: false })
   @IsOptional()
   @IsEmail()
   customerEmail?: string;
 
+  @ApiProperty({ description: "Teléfono del cliente", required: false })
   @IsOptional()
   @IsString()
   customerPhone?: string;
 
+  @ApiProperty({ description: "Fecha de inicio", required: false })
   @IsOptional()
   @IsString()
   startDate?: string;
 
+  @ApiProperty({ description: "Notas adicionales", required: false })
   @IsOptional()
   @IsString()
   notes?: string;
 }
 
 class FindAllBookingsQuery {
+  @ApiProperty({ description: "Límite de resultados", required: false })
   @IsOptional() @IsString() take?: string;
+  @ApiProperty({ description: "Cursor para paginación", required: false })
   @IsOptional() @IsString() cursor?: string;
+  @ApiProperty({ description: "Filtrar por estado", required: false })
   @IsOptional() @IsString() status?: string;
+  @ApiProperty({ description: "Filtrar por cliente", required: false })
   @IsOptional() @IsString() customerId?: string;
+  @ApiProperty({ description: "Fecha desde", required: false })
   @IsOptional() @IsString() dateFrom?: string;
+  @ApiProperty({ description: "Fecha hasta", required: false })
   @IsOptional() @IsString() dateTo?: string;
 }
 

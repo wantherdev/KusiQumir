@@ -17,6 +17,7 @@ export class Navbar {
   isScrolled = false;
   isMobileMenuOpen = false;
   tours: Tour[] = [];
+  whatsappNumber = '51987654321';
   private readonly platformId = inject(PLATFORM_ID);
 
   constructor(

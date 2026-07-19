@@ -14,6 +14,7 @@ export class BillingService {
   getInvoice(id: string) {
     return this.prisma.invoice.findUnique({
       where: { id },
+      select: { id: true, bookingId: true, customerId: true, amount: true, currency: true, status: true, createdAt: true },
     });
   }
 
@@ -30,6 +31,7 @@ export class BillingService {
         amount: payload.amount,
         currency: payload.currency,
       },
+      select: { id: true, bookingId: true, customerId: true, amount: true, currency: true, status: true, createdAt: true },
     });
   }
 }

@@ -9,7 +9,7 @@
         <div
           class="w-12 h-12 rounded-full bg-white shadow-sm flex items-center justify-center overflow-hidden"
         >
-          <img src="/logo1.svg" alt="Kusi Q'umir" class="h-14 w-14 object-contain" />
+           <img src="/logo1.svg" alt="Kusi Q'umir" width="56" height="56" class="h-14 w-14 object-contain" />
         </div>
         <span class="hidden sm:inline text-lg font-bold">Kusi Q'umir</span>
       </a>
@@ -21,8 +21,8 @@
         [attr.aria-expanded]="isMobileMenuOpen"
         aria-label="Abrir menú"
       >
-        <i class="ri-menu-line text-2xl" *ngIf="!isMobileMenuOpen"></i>
-        <i class="ri-close-line text-2xl" *ngIf="isMobileMenuOpen"></i>
+        <i aria-hidden="true" class="ri-menu-line text-2xl" *ngIf="!isMobileMenuOpen"></i>
+        <i aria-hidden="true" class="ri-close-line text-2xl" *ngIf="isMobileMenuOpen"></i>
       </button>
 
       <nav
@@ -37,7 +37,7 @@
             class="flex items-center gap-2 rounded-md px-3 py-2 transition hover:text-primary"
           >
             <span>Destinos</span>
-            <i class="ri-arrow-down-s-line text-sm"></i>
+            <i aria-hidden="true" class="ri-arrow-down-s-line text-sm"></i>
           </a>
           <div
             class="absolute left-0 top-full mt-2 w-64 rounded-3xl bg-white p-4 shadow-xl opacity-0 invisible transition-all duration-300 group-hover:visible group-hover:opacity-100 group-focus-within:visible group-focus-within:opacity-100"
@@ -78,7 +78,7 @@
         <div *ngIf="auth.user()?.role === 'ADMIN'" class="relative group">
           <button class="flex items-center gap-2 rounded-md px-3 py-2 transition hover:text-primary">
             <span>Admin</span>
-            <i class="ri-arrow-down-s-line text-sm"></i>
+            <i aria-hidden="true" class="ri-arrow-down-s-line text-sm"></i>
           </button>
           <div class="absolute left-0 top-full mt-2 w-48 rounded-3xl bg-white p-4 shadow-xl opacity-0 invisible transition-all duration-300 group-hover:visible group-hover:opacity-100 group-focus-within:visible group-focus-within:opacity-100">
             <div class="space-y-2">
@@ -108,10 +108,10 @@
 
       <div class="hidden md:flex items-center gap-3 text-[1rem]">
         <a
-          href="https://wa.me/51987654321"
+          href="https://wa.me/{{ whatsappNumber }}"
           class="flex items-center gap-2 rounded-full border border-primary px-4 py-2 text-primary transition hover:bg-primary hover:text-white"
         >
-          <i class="ri-whatsapp-line"></i>
+          <i aria-hidden="true" class="ri-whatsapp-line"></i>
           <span class="hidden md:inline">Reserva rápida</span>
         </a>
         <a
@@ -212,10 +212,10 @@
 
         <div class="mt-4 flex flex-col gap-3 border-t border-slate-200 pt-4">
           <a
-            href="https://wa.me/51987654321"
+            href="https://wa.me/{{ whatsappNumber }}"
             class="inline-flex items-center justify-center gap-2 rounded-full border border-primary bg-white px-4 py-2 text-primary transition hover:bg-primary hover:text-white"
           >
-            <i class="ri-whatsapp-line"></i>
+            <i aria-hidden="true" class="ri-whatsapp-line"></i>
             <span>WhatsApp</span>
           </a>
           <a

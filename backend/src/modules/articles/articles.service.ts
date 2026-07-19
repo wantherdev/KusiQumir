@@ -1,6 +1,7 @@
 import { Injectable, NotFoundException } from "@nestjs/common";
 import { Prisma } from "@prisma/client";
 import { PrismaService } from "../../prisma/prisma.service";
+import { CreateArticleDto, UpdateArticleDto } from "./articles.controller";
 
 const articleListSelect = {
   id: true, slug: true, title: true, excerpt: true,
@@ -36,6 +37,7 @@ export class ArticlesService {
   async findBySlug(slug: string) {
     const article = await this.prisma.article.findFirst({
       where: { slug, status: "PUBLISHED", publishedAt: { lte: new Date() } },
+      select: { id: true, slug: true, title: true, excerpt: true, content: true, coverImage: true, imageAlt: true, category: true, tags: true, status: true, publishedAt: true, createdAt: true, updatedAt: true },
     });
     if (!article) throw new NotFoundException("Artículo no encontrado");
     return article;
@@ -44,26 +46,40 @@ export class ArticlesService {
   async findAllAdmin() {
     return this.prisma.article.findMany({
       orderBy: { createdAt: "desc" },
+      select: { id: true, slug: true, title: true, excerpt: true, content: true, coverImage: true, imageAlt: true, category: true, tags: true, status: true, publishedAt: true, createdAt: true, updatedAt: true },
     });
   }
 
   async findOneAdmin(id: string) {
-    const article = await this.prisma.article.findUnique({ where: { id } });
+    const article = await this.prisma.article.findUnique({
+      where: { id },
+      select: { id: true, slug: true, title: true, excerpt: true, content: true, coverImage: true, imageAlt: true, category: true, tags: true, status: true, publishedAt: true, createdAt: true, updatedAt: true },
+    });
     if (!article) throw new NotFoundException("Artículo no encontrado");
     return article;
   }
 
-  create(data: Prisma.ArticleCreateInput) {
-    return this.prisma.article.create({ data });
+  create(data: CreateArticleDto) {
+    return this.prisma.article.create({
+      data: data as any,
+      select: { id: true, slug: true, title: true, excerpt: true, content: true, coverImage: true, imageAlt: true, category: true, tags: true, status: true, publishedAt: true, createdAt: true, updatedAt: true },
+    });
   }
 
-  async update(id: string, data: Prisma.ArticleUpdateInput) {
+  async update(id: string, data: UpdateArticleDto) {
     await this.findOneAdmin(id);
-    return this.prisma.article.update({ where: { id }, data });
+    return this.prisma.article.update({
+      where: { id },
+      data: data as any,
+      select: { id: true, slug: true, title: true, excerpt: true, content: true, coverImage: true, imageAlt: true, category: true, tags: true, status: true, publishedAt: true, createdAt: true, updatedAt: true },
+    });
   }
 
   async remove(id: string) {
     await this.findOneAdmin(id);
-    return this.prisma.article.delete({ where: { id } });
+    return this.prisma.article.delete({
+      where: { id },
+      select: { id: true, slug: true, title: true },
+    });
   }
 }

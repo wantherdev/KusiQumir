@@ -35,6 +35,8 @@ import { Article } from '../../../services/travel-api.service';
           <img
             [src]="article.coverImage || '/images/placeholder.svg'"
             [alt]="article.imageAlt || article.title"
+            width="800" height="400"
+            loading="lazy"
             class="h-72 w-full rounded-[2rem] object-cover sm:h-96"
           />
           <div class="mt-8">

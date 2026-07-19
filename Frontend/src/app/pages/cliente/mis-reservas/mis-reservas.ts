@@ -54,7 +54,7 @@ export class MisReservas implements OnInit {
     });
   }
 
-  trackByFn(index: number, item: any): any {
+  trackByFn(index: number, item: Booking): any {
     return item.id ?? index;
   }
 

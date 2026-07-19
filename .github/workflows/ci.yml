@@ -60,6 +60,8 @@ jobs:
 
       - run: pnpm audit --audit-level=high
 
+      - run: pnpm lint
+
       - run: pnpm typecheck
 
       - run: pnpm prisma generate
@@ -96,6 +98,8 @@ jobs:
 
       - run: pnpm audit --audit-level=high
 
+      - run: pnpm lint
+
       - run: pnpm frontend:build
 
       - run: pnpm frontend:test
@@ -128,6 +132,17 @@ jobs:
             ${{ secrets.DOCKER_USERNAME }}/kusiqumir-backend:latest
             ${{ secrets.DOCKER_USERNAME }}/kusiqumir-backend:${{ github.sha }}
 
+      - name: Build and push nginx
+        uses: docker/build-push-action@v6
+        with:
+          context: nginx
+          push: true
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+          tags: |
+            ${{ secrets.DOCKER_USERNAME }}/kusiqumir-nginx:latest
+            ${{ secrets.DOCKER_USERNAME }}/kusiqumir-nginx:${{ github.sha }}
+
       - name: Build and push frontend
         uses: docker/build-push-action@v6
         with:
@@ -149,13 +164,31 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Deploy to server
-        uses: appleboy/ssh-action@v1.0.3
+      - name: Pull SHA-tagged images
+        uses: appleboy/ssh-action@v1.2.0
+        env:
+          TAG: ${{ github.sha }}
         with:
-          host: ${{ secrets.SSH_HOST }}
-          username: ${{ secrets.SSH_USER }}
-          key: ${{ secrets.SSH_KEY }}
+          host: ${{ secrets.DEPLOY_HOST }}
+          username: ${{ secrets.DEPLOY_USER }}
+          key: ${{ secrets.DEPLOY_SSH_KEY }}
+          script: |
+            docker pull ${{ secrets.DOCKER_USERNAME }}/kusiqumir-backend:$TAG
+            docker pull ${{ secrets.DOCKER_USERNAME }}/kusiqumir-frontend:$TAG
+            docker pull ${{ secrets.DOCKER_USERNAME }}/kusiqumir-nginx:$TAG
+
+      - name: Deploy via SSH
+        uses: appleboy/ssh-action@v1.2.0
+        env:
+          TAG: ${{ github.sha }}
+        with:
+          host: ${{ secrets.DEPLOY_HOST }}
+          username: ${{ secrets.DEPLOY_USER }}
+          key: ${{ secrets.DEPLOY_SSH_KEY }}
           script: |
             cd ${{ secrets.DEPLOY_PATH }}
-            docker compose pull
-            docker compose up -d
+            export TAG=$TAG
+            docker tag ${{ secrets.DOCKER_USERNAME }}/kusiqumir-backend:$TAG kusiqumir-backend:latest
+            docker tag ${{ secrets.DOCKER_USERNAME }}/kusiqumir-frontend:$TAG kusiqumir-frontend:latest
+            docker tag ${{ secrets.DOCKER_USERNAME }}/kusiqumir-nginx:$TAG kusiqumir-nginx:latest
+            bash scripts/deploy.sh production

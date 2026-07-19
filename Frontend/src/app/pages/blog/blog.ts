@@ -34,7 +34,7 @@ export class Blog implements OnInit {
   private readonly title = inject(Title);
 
   articles: Article[] = fallbackBlogArticles.map(toArticle);
-  isLoading = false;
+  isLoading = true;
 
   ngOnInit(): void {
     this.title.setTitle('Blog | Kusi Q\'umir');
@@ -48,6 +48,7 @@ export class Blog implements OnInit {
     if (data?.length) {
       this.articles = data;
     }
+    this.isLoading = false;
   }
 
   trackByFn(_index: number, item: Article): string {

@@ -8,7 +8,7 @@ import { tap } from "rxjs/operators";
 export class MetricsInterceptor implements NestInterceptor {
   private readonly logger = new Logger(MetricsInterceptor.name);
 
-  intercept(context: ExecutionContext, next: CallHandler): Observable<any> {
+  intercept(context: ExecutionContext, next: CallHandler): Observable<unknown> {
     const start = Date.now();
     const req = context.switchToHttp().getRequest();
     const method = req.method;

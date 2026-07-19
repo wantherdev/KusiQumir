@@ -1,6 +1,17 @@
 #!/bin/sh
 set -e
 
+SLACK_WEBHOOK_URL=${SLACK_WEBHOOK_URL:-}
+
+notify_slack() {
+  local msg="$1"
+  local color="${2:-good}"
+  if [ -n "$SLACK_WEBHOOK_URL" ]; then
+    payload='{"attachments":[{"color":"'"$color"'","text":"'"$msg"'"}]}'
+    curl -s -X POST -H 'Content-type: application/json' --data "$payload" "$SLACK_WEBHOOK_URL" >/dev/null 2>&1 || true
+  fi
+}
+
 ENV=${1:-production}
 COMPOSE_FILES="-f docker-compose.yml"
 CLOUDFRONT_DISTRIBUTION_ID=${CLOUDFRONT_DISTRIBUTION_ID:-}
@@ -15,6 +26,14 @@ case "$ENV" in
   *)
     echo "Usage: $0 {staging|production}"
     exit 1
+    ;;
+esac
+
+DRY_RUN=false
+case "$2" in
+  --dry-run)
+    DRY_RUN=true
+    echo "[deploy] MODO DRY RUN — No se ejecutarán cambios reales"
     ;;
 esac
 
@@ -80,10 +99,11 @@ fi
 # ── Rollback ──────────────────────────────────────────────────────
 
 ROLLBACK() {
+  notify_slack "🚨 Rollback ejecutado en $ENV" "danger"
   echo "[deploy] ERROR: Health checks fallaron. Ejecutando rollback..."
   docker compose $COMPOSE_FILES down 2>/dev/null || true
   for svc in backend frontend nginx; do
-    prev=$(cat /tmp/prev_${svc}.img 2>/dev/null || echo "")
+    prev=$(cat "${ROLLBACK_DIR}/prev_${svc}.img" 2>/dev/null || echo "")
     [ -n "$prev" ] && docker tag "$prev" "${svc}:latest" 2>/dev/null || true
   done
   docker compose $COMPOSE_FILES up -d --remove-orphans --wait 2>/dev/null || true
@@ -93,11 +113,22 @@ ROLLBACK() {
 
 # ── Deploy ────────────────────────────────────────────────────────
 
+notify_slack "🔨 Deploy iniciado a $ENV (commit: $(git log -1 --format=%h 2>/dev/null || echo 'unknown'))" "warning"
 echo "[deploy] Iniciando deploy a $ENV..."
+
+if [ "$DRY_RUN" = true ]; then
+  echo "[deploy] [DRY-RUN] docker compose $COMPOSE_FILES up -d --build --remove-orphans --wait"
+  echo "[deploy] [DRY-RUN] Deploy simulado. Saliendo sin cambios."
+  echo "[deploy] Deploy completado exitosamente a $ENV (dry-run)"
+  exit 0
+fi
+
+ROLLBACK_DIR="./rollback"
+mkdir -p "$ROLLBACK_DIR"
 
 # Guardar imágenes actuales para posible rollback
 for svc in backend frontend nginx; do
-  docker compose $COMPOSE_FILES images --quiet "$svc" > /tmp/prev_${svc}.img 2>/dev/null || true
+  docker compose $COMPOSE_FILES images --quiet "$svc" > "${ROLLBACK_DIR}/prev_${svc}.img" 2>/dev/null || true
 done
 
 docker compose $COMPOSE_FILES up -d --build --remove-orphans --wait
@@ -105,15 +136,31 @@ docker compose $COMPOSE_FILES up -d --build --remove-orphans --wait
 # Health check post-deploy
 echo "[deploy] Verificando estado de servicios..."
 sleep 10
-for svc in backend frontend; do
-  if docker compose $COMPOSE_FILES ps --filter "health=healthy" --format "{{.Name}}" | grep -q "$svc"; then
-    echo "[deploy] $svc saludable"
-  else
-    ROLLBACK
-  fi
+for svc in nginx backend frontend postgres; do
+  case "$svc" in
+    nginx)
+      if docker compose $COMPOSE_FILES exec -T nginx wget -qO- http://localhost/healthcheck.html >/dev/null 2>&1; then
+        echo "[deploy] nginx saludable"
+      else
+        ROLLBACK
+      fi
+      ;;
+    postgres)
+      if docker compose $COMPOSE_FILES exec -T postgres pg_isready -U "$POSTGRES_USER" >/dev/null 2>&1; then
+        echo "[deploy] postgres saludable"
+      else
+        ROLLBACK
+      fi
+      ;;
+    *)
+      if docker compose $COMPOSE_FILES ps --filter "health=healthy" --format "{{.Name}}" | grep -q "$svc"; then
+        echo "[deploy] $svc saludable"
+      else
+        ROLLBACK
+      fi
+      ;;
+  esac
 done
-
-docker compose $COMPOSE_FILES exec -T postgres pg_isready -U "$POSTGRES_USER" || true
 
 # Invalidar CDN si está configurado
 if [ -n "$CLOUDFRONT_DISTRIBUTION_ID" ] && command -v aws >/dev/null 2>&1; then
@@ -126,3 +173,4 @@ if [ -n "$CLOUDFRONT_DISTRIBUTION_ID" ] && command -v aws >/dev/null 2>&1; then
 fi
 
 echo "[deploy] Deploy completado exitosamente a $ENV"
+notify_slack "✅ Deploy completado a $ENV" "good"

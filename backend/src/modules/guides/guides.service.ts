@@ -14,6 +14,7 @@ export class GuidesService {
   findOne(id: string) {
     return this.prisma.guide.findUnique({
       where: { id },
+      select: { id: true, name: true, languages: true, credential: true, createdAt: true },
     });
   }
 

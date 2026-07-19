@@ -93,7 +93,7 @@ export class Destinos implements OnInit {
     this.selectedTourId.set(tourId);
   }
 
-  trackByFn(index: number, item: any): any {
+  trackByFn(index: number, item: Tour): any {
     return item.id ?? index;
   }
 }

@@ -1,0 +1,21 @@
+{
+  "name": "Kusi Q'umir",
+  "short_name": "KusiQ'umir",
+  "description": "Agencia de viajes en Perú",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#d97706",
+  "icons": [
+    {
+      "src": "/images/logo-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "/images/logo-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}

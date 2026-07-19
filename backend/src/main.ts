@@ -39,7 +39,7 @@ async function bootstrap() {
   app.use(compression());
   app.use(cookieParser());
   app.enableCors({
-    origin: (configService.get<string>("CORS_ORIGIN") || "http://localhost:4200").split(","),
+    origin: (configService.get<string>("CORS_ORIGIN") || "http://localhost:4200").split(",").map(s => s.trim()).filter(Boolean), // Validation: trim whitespace and remove empty entries
     methods: ["GET", "POST", "PUT", "PATCH", "DELETE"],
     credentials: true,
   });

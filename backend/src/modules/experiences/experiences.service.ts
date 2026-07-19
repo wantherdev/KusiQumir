@@ -1,6 +1,7 @@
 import { Injectable, NotFoundException } from "@nestjs/common";
 import { Prisma } from "@prisma/client";
 import { PrismaService } from "../../prisma/prisma.service";
+import { CreateExperienceDto, UpdateExperienceDto } from "./experiences.controller";
 
 const experienceListSelect = {
   id: true, slug: true, title: true, summary: true, coverImage: true,
@@ -40,7 +41,7 @@ export class ExperiencesService {
   async findBySlug(slug: string) {
     const experience = await this.prisma.experience.findFirst({
       where: { slug, status: "PUBLISHED", publishedAt: { lte: new Date() } },
-      include: { tour: { select: { id: true, name: true, price: true, duration: true } } },
+      select: { id: true, slug: true, title: true, summary: true, content: true, coverImage: true, imageAlt: true, location: true, duration: true, tourId: true, featured: true, status: true, publishedAt: true, sortOrder: true, createdAt: true, updatedAt: true, tour: { select: { id: true, name: true, price: true, duration: true } } },
     });
     if (!experience) throw new NotFoundException("Experiencia no encontrada");
     return experience;
@@ -49,26 +50,40 @@ export class ExperiencesService {
   async findAllAdmin() {
     return this.prisma.experience.findMany({
       orderBy: [{ featured: "desc" }, { sortOrder: "asc" }, { createdAt: "desc" }],
+      select: { id: true, slug: true, title: true, summary: true, content: true, coverImage: true, imageAlt: true, location: true, duration: true, tourId: true, featured: true, status: true, publishedAt: true, sortOrder: true, createdAt: true, updatedAt: true },
     });
   }
 
   async findOneAdmin(id: string) {
-    const exp = await this.prisma.experience.findUnique({ where: { id } });
+    const exp = await this.prisma.experience.findUnique({
+      where: { id },
+      select: { id: true, slug: true, title: true, summary: true, content: true, coverImage: true, imageAlt: true, location: true, duration: true, tourId: true, featured: true, status: true, publishedAt: true, sortOrder: true, createdAt: true, updatedAt: true },
+    });
     if (!exp) throw new NotFoundException("Experiencia no encontrada");
     return exp;
   }
 
-  create(data: Prisma.ExperienceCreateInput) {
-    return this.prisma.experience.create({ data });
+  create(data: CreateExperienceDto) {
+    return this.prisma.experience.create({
+      data: data as any,
+      select: { id: true, slug: true, title: true, summary: true, content: true, coverImage: true, imageAlt: true, location: true, duration: true, tourId: true, featured: true, status: true, publishedAt: true, sortOrder: true, createdAt: true, updatedAt: true },
+    });
   }
 
-  async update(id: string, data: Prisma.ExperienceUpdateInput) {
+  async update(id: string, data: UpdateExperienceDto) {
     await this.findOneAdmin(id);
-    return this.prisma.experience.update({ where: { id }, data });
+    return this.prisma.experience.update({
+      where: { id },
+      data: data as any,
+      select: { id: true, slug: true, title: true, summary: true, content: true, coverImage: true, imageAlt: true, location: true, duration: true, tourId: true, featured: true, status: true, publishedAt: true, sortOrder: true, createdAt: true, updatedAt: true },
+    });
   }
 
   async remove(id: string) {
     await this.findOneAdmin(id);
-    return this.prisma.experience.delete({ where: { id } });
+    return this.prisma.experience.delete({
+      where: { id },
+      select: { id: true, slug: true, title: true },
+    });
   }
 }

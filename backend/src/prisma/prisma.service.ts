@@ -13,7 +13,8 @@ export class PrismaService
   implements OnModuleInit, OnModuleDestroy
 {
   private readonly logger = new Logger(PrismaService.name);
-  private readonly maxRetries = 3;
+  private readonly maxRetries = Number(process.env["PRISMA_MAX_RETRIES"]) || 3;
+  private readonly retryDelay = Number(process.env["PRISMA_RETRY_DELAY"]) || 1000;
 
   async onModuleInit() {
     for (let attempt = 1; attempt <= this.maxRetries; attempt++) {
@@ -30,7 +31,7 @@ export class PrismaService
           throw new InternalServerErrorException(
             "Error al conectar con la base de datos",
           );
-        await new Promise((r) => setTimeout(r, 1000 * attempt));
+                await new Promise((r) => setTimeout(r, this.retryDelay * attempt));
       }
     }
   }

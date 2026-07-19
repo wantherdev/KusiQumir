@@ -1,9 +1,13 @@
 import { Injectable } from "@nestjs/common";
+import { ConfigService } from "@nestjs/config";
 import { PrismaService } from "../../prisma/prisma.service";
 
 @Injectable()
 export class AnalyticsService {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(
+    private readonly prisma: PrismaService,
+    private readonly config: ConfigService,
+  ) {}
 
   async getDashboard() {
     const [invoiceSum, bookingCount, customerCount, tourCount] =
@@ -22,7 +26,8 @@ export class AnalyticsService {
       totalBookings > 0
         ? `${((totalBookings / Math.max(clients, 1)) * 100).toFixed(1)}%`
         : "0%";
-    const commissions = Number((totalSales * 0.12).toFixed(2));
+    const commissionRate = this.config.get<number>("COMMISSION_RATE", 0.12);
+    const commissions = Number((totalSales * commissionRate).toFixed(2));
 
     return {
       totalSales,

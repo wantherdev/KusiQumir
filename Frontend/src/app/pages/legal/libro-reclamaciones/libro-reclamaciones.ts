@@ -1,4 +1,4 @@
-import { Component, OnInit, inject, SecurityContext, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
+import { isDevMode, Component, OnInit, inject, SecurityContext, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Title, Meta, DomSanitizer } from '@angular/platform-browser';
@@ -129,7 +129,8 @@ incluya todos los datos del paquete y la fecha del viaje.
       this.notify.show('Reclamo enviado correctamente. Recibirás un número de caso.', 'success');
       this.form = { nombre: '', documento: '', correo: '', telefono: '', servicio: '', reserva: '', fechaServicio: '', motivo: '', descripcion: '', documentos: '', permitirContacto: true };
       claimForm.resetForm();
-    } catch {
+    } catch (e) {
+      if (isDevMode()) console.error(e);
       this.error = 'Error al enviar el reclamo. Intenta de nuevo o escríbenos a info@kusiqumir.com.';
     } finally {
       this.submitting = false;

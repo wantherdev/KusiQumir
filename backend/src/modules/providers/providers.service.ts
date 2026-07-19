@@ -14,6 +14,7 @@ export class ProvidersService {
   findOne(id: string) {
     return this.prisma.provider.findUnique({
       where: { id },
+      select: { id: true, name: true, type: true, contact: true, createdAt: true },
     });
   }
 

@@ -19,7 +19,10 @@ export class AuthService {
   }
 
   async register(email: string, password: string) {
-    const existing = await this.prisma.user.findUnique({ where: { email } });
+    const existing = await this.prisma.user.findUnique({
+      where: { email },
+      select: { id: true, email: true, role: true, password: true },
+    });
     if (existing) {
       throw new ConflictException("El email ya está registrado");
     }
@@ -37,7 +40,7 @@ export class AuthService {
         password: passwordHash,
         roleId: role.id,
       },
-      include: { role: true },
+      select: { id: true, email: true, role: true },
     });
 
     return {
@@ -50,7 +53,7 @@ export class AuthService {
   async login(email: string, password: string) {
     const user = await this.prisma.user.findUnique({
       where: { email },
-      include: { role: true },
+      select: { id: true, email: true, role: true, password: true },
     });
 
     if (!user || !(await bcrypt.compare(password, user.password))) {

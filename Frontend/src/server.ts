@@ -6,6 +6,7 @@ import {
 } from '@angular/ssr/node';
 import express from 'express';
 import { join } from 'node:path';
+import { randomBytes } from 'node:crypto';
 import { createProxyMiddleware } from 'http-proxy-middleware';
 
 const browserDistFolder = join(import.meta.dirname, '../browser');
@@ -14,6 +15,21 @@ const app = express();
 const angularApp = new AngularNodeAppEngine();
 
 const API_TARGET = process.env['API_URL'] ?? 'http://localhost:3000';
+
+function buildCspHeader(nonce: string): string {
+  return [
+    "default-src 'self'",
+    `script-src 'self' 'nonce-${nonce}' 'strict-dynamic' https://cdnjs.cloudflare.com`,
+    `style-src 'self' 'nonce-${nonce}' https://cdnjs.cloudflare.com https://fonts.googleapis.com`,
+    "font-src 'self' https://cdnjs.cloudflare.com https://fonts.gstatic.com",
+    "img-src 'self' https://images.unsplash.com data: blob:",
+    "connect-src 'self' https://api.whatsapp.com https://sentry.io",
+    "frame-src 'none'",
+    "object-src 'none'",
+    "base-uri 'self'",
+    "form-action 'self'",
+  ].join('; ');
+}
 
 app.use(
   '/api',
@@ -35,6 +51,9 @@ app.use(
 );
 
 app.use((req, res, next) => {
+  const nonce = randomBytes(16).toString('base64');
+  req.headers['x-csp-nonce'] = nonce;
+  res.setHeader('Content-Security-Policy', buildCspHeader(nonce));
   angularApp
     .handle(req)
     .then((response) =>
@@ -52,7 +71,7 @@ app.use((_req, res) => {
 });
 
 app.use((err: Error, _req: express.Request, res: express.Response, _next: express.NextFunction) => {
-  console.error('[SSR Error]', err.message);
+  if (process.env['NODE_ENV'] !== 'production') console.error('[SSR Error]', err.message);
   res.status(500).json({
     statusCode: 500,
     message: 'Error interno del servidor',
@@ -66,7 +85,7 @@ if (isMainModule(import.meta.url) || process.env['pm_id']) {
     if (error) {
       throw error;
     }
-    console.log(`Node Express server listening on http://localhost:${port}`);
+    if (process.env['NODE_ENV'] !== 'production') console.log(`Node Express server listening on http://localhost:${port}`);
   });
 }
 

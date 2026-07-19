@@ -1,3 +1,4 @@
+import { isDevMode } from '@angular/core';
 import { bootstrapApplication } from '@angular/platform-browser';
 import * as Sentry from '@sentry/angular';
 import { appConfig } from './app/app.config';
@@ -16,4 +17,4 @@ if (environment.sentryDsn) {
 }
 
 // TODO: Register Service Worker — install @angular/service-worker and add navigator.serviceWorker.register()
-bootstrapApplication(App, appConfig).catch((err) => console.error(err));
+bootstrapApplication(App, appConfig).catch((err) => { if (isDevMode()) console.error(err); });

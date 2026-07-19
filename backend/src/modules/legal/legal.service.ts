@@ -44,6 +44,7 @@ export class LegalService {
         ip: payload.ip,
         version: payload.version,
       },
+      select: { id: true, documentId: true, customerId: true, ip: true, version: true, acceptedAt: true },
     });
   }
 
@@ -53,6 +54,7 @@ export class LegalService {
   ) {
     const acceptance = await this.prisma.documentAcceptance.findUnique({
       where: { id },
+      select: { id: true, documentId: true, customerId: true, ip: true, version: true, acceptedAt: true },
     });
     if (!acceptance) return null;
 

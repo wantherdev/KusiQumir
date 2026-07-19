@@ -19,4 +19,4 @@ COPY --from=builder /app/dist ./dist
 RUN chown -R node:node /app && chmod -R g-w /app
 USER node
 EXPOSE 3000
-CMD npx prisma migrate deploy && node dist/main.js
+CMD ["sh", "-c", "npx prisma migrate deploy && exec node dist/main.js"]

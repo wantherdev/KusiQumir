@@ -7,7 +7,7 @@ import {
   UseGuards,
   Request,
 } from "@nestjs/common";
-import { ApiTags, ApiOperation, ApiBearerAuth } from "@nestjs/swagger";
+import { ApiProperty, ApiTags, ApiOperation, ApiBearerAuth } from "@nestjs/swagger";
 import { IsNotEmpty, IsIP } from "class-validator";
 import { LegalService } from "./legal.service";
 import { JwtAuthGuard } from "../auth/jwt-auth.guard";
@@ -16,15 +16,19 @@ import { Roles } from "../auth/roles.decorator";
 import { AuthenticatedRequest } from "../../common/authenticated-request";
 
 class AcceptDocumentDto {
+  @ApiProperty({ description: "ID del documento legal", required: true })
   @IsNotEmpty()
   documentId!: string;
 
+  @ApiProperty({ description: "ID del cliente", required: true })
   @IsNotEmpty()
   clientId!: string;
 
+  @ApiProperty({ description: "Dirección IP del cliente", required: true })
   @IsIP()
   ip!: string;
 
+  @ApiProperty({ description: "Versión del documento", required: true })
   @IsNotEmpty()
   version!: string;
 }

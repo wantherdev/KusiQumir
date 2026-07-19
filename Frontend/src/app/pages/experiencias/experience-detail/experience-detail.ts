@@ -35,6 +35,8 @@ import { Experience } from '../../../services/travel-api.service';
           <img
             [src]="exp.coverImage || '/images/placeholder.svg'"
             [alt]="exp.imageAlt || exp.title"
+            width="800" height="400"
+            loading="lazy"
             class="h-72 w-full rounded-[2rem] object-cover sm:h-96"
           />
           <div class="mt-8">
@@ -82,5 +84,8 @@ export class ExperienceDetail implements OnInit {
     this.meta.updateTag({ property: 'og:type', content: 'product' });
     this.meta.updateTag({ name: 'twitter:title', content: t });
     this.meta.updateTag({ name: 'twitter:description', content: d });
+    const image = exp.coverImage || '/images/og-default.jpg';
+    this.meta.updateTag({ property: 'og:image', content: image });
+    this.meta.updateTag({ name: 'twitter:image', content: image });
   }
 }

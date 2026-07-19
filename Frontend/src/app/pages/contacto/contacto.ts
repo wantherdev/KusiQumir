@@ -104,15 +104,15 @@ interface ContactForm {
               <h3 class="text-lg font-bold text-slate-900">Información de contacto</h3>
               <ul class="mt-4 space-y-4 text-sm text-slate-600">
                 <li class="flex items-start gap-3">
-                  <i class="ri-map-pin-line mt-0.5 text-primary"></i>
+                  <i aria-hidden="true" class="ri-map-pin-line mt-0.5 text-primary"></i>
                   <span>Cusco, Perú</span>
                 </li>
                 <li class="flex items-start gap-3">
-                  <i class="ri-whatsapp-line mt-0.5 text-primary"></i>
+                  <i aria-hidden="true" class="ri-whatsapp-line mt-0.5 text-primary"></i>
                   <a href="https://wa.me/51999999999" class="hover:text-primary">+51 999 999 999</a>
                 </li>
                 <li class="flex items-start gap-3">
-                  <i class="ri-mail-line mt-0.5 text-primary"></i>
+                  <i aria-hidden="true" class="ri-mail-line mt-0.5 text-primary"></i>
                   <a href="mailto:hola@kusiqumir.com" class="hover:text-primary">hola&#64;kusiqumir.com</a>
                 </li>
               </ul>

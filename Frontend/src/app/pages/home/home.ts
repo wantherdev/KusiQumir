@@ -17,6 +17,7 @@ export class Home implements OnInit {
   tours: Tour[] = [];
   featuredPackages: TravelPackage[] = [];
   isLoading = true;
+  whatsappNumber = '51987654321';
 
   private readonly route = inject(ActivatedRoute);
   private readonly meta = inject(Meta);

@@ -1,5 +1,5 @@
 import { Controller, Get, Post, Body, Req, Res, UseGuards } from "@nestjs/common";
-import { ApiTags, ApiOperation, ApiBearerAuth } from "@nestjs/swagger";
+import { ApiProperty, ApiTags, ApiOperation, ApiBearerAuth } from "@nestjs/swagger";
 import { Throttle } from "@nestjs/throttler";
 import { ConfigService } from "@nestjs/config";
 import { Request, Response } from "express";
@@ -11,18 +11,22 @@ import { AuthenticatedRequest } from "../../common/authenticated-request";
 import { IsEmail, IsNotEmpty, MinLength } from "class-validator";
 
 class LoginDto {
+  @ApiProperty({ description: "Correo electrónico del usuario", required: true })
   @IsEmail()
   email!: string;
 
+  @ApiProperty({ description: "Contraseña del usuario", required: true })
   @IsNotEmpty()
   @MinLength(6)
   password!: string;
 }
 
 class RegisterDto {
+  @ApiProperty({ description: "Correo electrónico del usuario", required: true })
   @IsEmail()
   email!: string;
 
+  @ApiProperty({ description: "Contraseña del usuario", required: true })
   @IsNotEmpty()
   @MinLength(6)
   password!: string;
@@ -93,7 +97,7 @@ export class AuthController {
   @Post("logout")
   @ApiOperation({ summary: "Cerrar sesión" })
   logout(@Res({ passthrough: true }) res: Response) {
-    res.clearCookie("access_token", { path: "/" });
+    res.clearCookie("access_token", { path: "/", sameSite: "lax", secure: process.env.NODE_ENV === "production" });
     return { message: "Sesión cerrada" };
   }
 }

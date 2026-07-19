@@ -8,15 +8,15 @@ export class PackagesService {
 
   findAll() {
     return this.prisma.package.findMany({
-      include: { tours: true },
       orderBy: { createdAt: "desc" },
+      select: { id: true, name: true, description: true, price: true, featured: true, durationDays: true, discount: true, imageUrl: true, included: true, excluded: true, createdAt: true, tours: { select: { id: true, name: true, price: true, duration: true } } },
     });
   }
 
   findOne(id: string) {
     return this.prisma.package.findUnique({
       where: { id },
-      include: { tours: true },
+      select: { id: true, name: true, description: true, price: true, featured: true, durationDays: true, discount: true, imageUrl: true, included: true, excluded: true, createdAt: true, tours: { select: { id: true, name: true, price: true, duration: true } } },
     });
   }
 
@@ -47,7 +47,7 @@ export class PackagesService {
           connect: payload.tours.map((tourId) => ({ id: tourId })),
         },
       },
-      include: { tours: true },
+      select: { id: true, name: true, description: true, price: true, featured: true, durationDays: true, discount: true, imageUrl: true, included: true, excluded: true, createdAt: true, tours: { select: { id: true, name: true, price: true, duration: true } } },
     });
   }
 
@@ -66,7 +66,7 @@ export class PackagesService {
       excluded?: string;
     },
   ) {
-    const data: any = {};
+    const data: Record<string, unknown> = {};
 
     if (payload.name !== undefined) data.name = payload.name;
     if (payload.description !== undefined) data.description = payload.description;
@@ -86,12 +86,15 @@ export class PackagesService {
 
     return this.prisma.package.update({
       where: { id },
-      data,
-      include: { tours: true },
+      data: data as any,
+      select: { id: true, name: true, description: true, price: true, featured: true, durationDays: true, discount: true, imageUrl: true, included: true, excluded: true, createdAt: true, tours: { select: { id: true, name: true, price: true, duration: true } } },
     });
   }
 
   remove(id: string) {
-    return this.prisma.package.delete({ where: { id } });
+    return this.prisma.package.delete({
+      where: { id },
+      select: { id: true, name: true },
+    });
   }
 }

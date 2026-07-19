@@ -1,4 +1,4 @@
-import { Component, OnInit, inject, ChangeDetectionStrategy } from '@angular/core';
+import { isDevMode, Component, OnInit, inject, ChangeDetectionStrategy } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { firstValueFrom } from 'rxjs';
 import { TravelApiService } from '../../../services/travel-api.service';
@@ -46,7 +46,7 @@ export class DestinoRedirect implements OnInit {
           return;
         }
       } catch {
-        console.error('Error al cargar destinos para redirección');
+        if (isDevMode()) console.error('Error al cargar destinos para redirección');
         await this.router.navigate(['/destinos'], { replaceUrl: true });
         return;
       }

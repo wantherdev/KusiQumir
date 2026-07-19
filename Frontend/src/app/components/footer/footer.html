@@ -5,7 +5,7 @@
       <div>
         <div class="flex items-center space-x-3 mb-6">
           <div class="w-24 h-24 rounded-full flex items-center justify-center">
-            <img src="/logo2.svg" alt="Kusi Q'umir Logo" class="w-20 h-20" />
+             <img src="/logo2.svg" alt="Kusi Q'umir Logo" width="48" height="48" class="w-20 h-20" />
           </div>
           <div>
             <h3 class="font-['Fjalla_One'] font-bold -mt-6 text-3xl text-primary leading-6">
@@ -15,22 +15,22 @@
         </div>
         <div class="space-y-3 text-gray-300">
           <div class="flex items-start space-x-3">
-            <i class="ri-map-pin-line mt-1 text-primary"></i>
+            <i aria-hidden="true" class="ri-map-pin-line mt-1 text-primary"></i>
             <div>
               <p>Av. El Sol 814, Oficina 205</p>
               <p>Cusco, Perú 08000</p>
             </div>
           </div>
           <div class="flex items-center space-x-3">
-            <i class="ri-phone-line text-primary"></i>
+            <i aria-hidden="true" class="ri-phone-line text-primary"></i>
             <p>+51 987 654 321</p>
           </div>
           <div class="flex items-center space-x-3">
-            <i class="ri-mail-line text-primary"></i>
+            <i aria-hidden="true" class="ri-mail-line text-primary"></i>
             <p>info@kusiqumir.com</p>
           </div>
           <div class="flex items-center space-x-3">
-            <i class="ri-time-line text-primary"></i>
+            <i aria-hidden="true" class="ri-time-line text-primary"></i>
             <p>Atención: Lun - Sáb · 8:00 - 18:00</p>
           </div>
         </div>
@@ -136,40 +136,40 @@
         <h4 class="text-lg font-semibold mb-6">Síguenos</h4>
         <div class="flex space-x-4 mb-6">
           <a
-            href="https://facebook.com/kusiqumir"
+            [href]="social.facebook"
             target="_blank"
             rel="noopener noreferrer"
             class="w-10 h-10 bg-gray-700 rounded-full flex items-center justify-center hover:bg-primary transition-colors cursor-pointer"
             aria-label="Facebook"
           >
-            <i class="ri-facebook-fill"></i>
+            <i aria-hidden="true" class="ri-facebook-fill"></i>
           </a>
           <a
-            href="https://instagram.com/kusiqumir"
+            [href]="social.instagram"
             target="_blank"
             rel="noopener noreferrer"
             class="w-10 h-10 bg-gray-700 rounded-full flex items-center justify-center hover:bg-primary transition-colors cursor-pointer"
             aria-label="Instagram"
           >
-            <i class="ri-instagram-line"></i>
+            <i aria-hidden="true" class="ri-instagram-line"></i>
           </a>
           <a
-            href="https://youtube.com/@kusiqumir"
+            [href]="social.youtube"
             target="_blank"
             rel="noopener noreferrer"
             class="w-10 h-10 bg-gray-700 rounded-full flex items-center justify-center hover:bg-primary transition-colors cursor-pointer"
             aria-label="YouTube"
           >
-            <i class="ri-youtube-line"></i>
+            <i aria-hidden="true" class="ri-youtube-line"></i>
           </a>
           <a
-            href="https://tiktok.com/@kusiqumir"
+            [href]="social.tiktok"
             target="_blank"
             rel="noopener noreferrer"
             class="w-10 h-10 bg-gray-700 rounded-full flex items-center justify-center hover:bg-primary transition-colors cursor-pointer"
             aria-label="TikTok"
           >
-            <i class="ri-tiktok-line"></i>
+            <i aria-hidden="true" class="ri-tiktok-line"></i>
           </a>
         </div>
         <div class="bg-gray-800 rounded-lg p-4">
@@ -190,7 +190,7 @@
               [disabled]="newsletterForm.invalid"
               class="border-primary border px-4 py-2 rounded-r hover:bg-primary transition-colors cursor-pointer disabled:opacity-50"
             >
-              <i class="ri-send-plane-line"></i>
+              <i aria-hidden="true" class="ri-send-plane-line"></i>
             </button>
           </form>
         </div>
@@ -204,9 +204,9 @@
           20123456789 | Licencia MINCETUR: AGV-001-2014
         </p>
         <div class="flex items-center space-x-4 mt-4 md:mt-0 font-light">
-          <i class="ri-visa-line text-2xl text-gray-400"></i>
-          <i class="ri-mastercard-line text-2xl text-gray-400"></i>
-          <i class="ri-paypal-line text-2xl text-gray-400"></i>
+          <i aria-hidden="true" class="ri-visa-line text-2xl text-gray-400"></i>
+          <i aria-hidden="true" class="ri-mastercard-line text-2xl text-gray-400"></i>
+          <i aria-hidden="true" class="ri-paypal-line text-2xl text-gray-400"></i>
         </div>
       </div>
     </div>

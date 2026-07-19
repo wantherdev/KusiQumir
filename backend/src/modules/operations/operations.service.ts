@@ -14,6 +14,7 @@ export class OperationsService {
   findOne(id: string) {
     return this.prisma.operation.findUnique({
       where: { id },
+      select: { id: true, bookingId: true, guideId: true, transport: true, pickupTime: true, status: true, createdAt: true },
     });
   }
 
@@ -31,6 +32,7 @@ export class OperationsService {
         pickupTime: payload.pickupTime,
         status: "Confirmado",
       },
+      select: { id: true, bookingId: true, guideId: true, transport: true, pickupTime: true, status: true, createdAt: true },
     });
   }
 }

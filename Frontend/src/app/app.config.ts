@@ -1,4 +1,5 @@
 import { ApplicationConfig, isDevMode, provideBrowserGlobalErrorListeners, APP_INITIALIZER, inject } from '@angular/core';
+import { provideServiceWorker } from '@angular/service-worker';
 import { provideHttpClient, withFetch, withInterceptors, HttpClient } from '@angular/common/http';
 import { provideRouter } from '@angular/router';
 import { tap, catchError, retry } from 'rxjs/operators';
@@ -17,6 +18,7 @@ export const appConfig: ApplicationConfig = {
     provideRouter(routes),
     provideHttpClient(withFetch(), withInterceptors([authInterceptor, csrfInterceptor])),
     provideClientHydration(withEventReplay()),
+    provideServiceWorker('ngsw-worker.js', { enabled: !isDevMode(), registrationStrategy: 'registerWhenStable:3000' }),
     {
       provide: APP_INITIALIZER,
       useFactory: () => {

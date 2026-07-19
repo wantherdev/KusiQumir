@@ -4,7 +4,7 @@ import { CsrfService } from "./csrf.service";
 
 @Injectable()
 export class CsrfMiddleware implements NestMiddleware {
-  private readonly skipSegments = ["auth/csrf", "auth/login", "auth/register", "auth/health", "health"];
+  private readonly skipSegments = ["auth/csrf", "auth/login", "auth/register", "health"];
 
   constructor(private readonly csrf: CsrfService) {}
 

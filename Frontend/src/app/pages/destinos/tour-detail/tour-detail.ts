@@ -19,6 +19,7 @@ export class TourDetail implements OnInit {
   tour: Tour | null = null;
   isLoading = false;
   error = '';
+  whatsappNumber = '51987654321';
 
   ngOnInit(): void {
     this.tour = this.route.snapshot.data['tour'] as Tour | null;
@@ -44,6 +45,9 @@ export class TourDetail implements OnInit {
       content: `${name} | Kusi Q'umir`,
     });
     this.meta.updateTag({ name: 'twitter:description', content: desc });
+    const image = tour.imageUrl || '/images/og-default.jpg';
+    this.meta.updateTag({ property: 'og:image', content: image });
+    this.meta.updateTag({ name: 'twitter:image', content: image });
   }
 }
 

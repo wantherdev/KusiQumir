@@ -1,4 +1,4 @@
-import { Component, OnInit, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
+import { isDevMode, Component, OnInit, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, RouterLink } from '@angular/router';
@@ -60,7 +60,8 @@ export class Reservar implements OnInit {
       } else {
         this.item = await firstValueFrom(this.travelApi.getTourById(this.itemId));
       }
-    } catch {
+    } catch (e) {
+      if (isDevMode()) console.error(e);
       this.error = 'No se pudo cargar la información del producto.';
     } finally {
       this.isLoading = false;
@@ -99,7 +100,8 @@ export class Reservar implements OnInit {
       await firstValueFrom(this.travelApi.createBooking(payload));
       this.success = true;
       this.notification.show('¡Reserva enviada! Te contactaremos para confirmar.', 'success');
-    } catch {
+    } catch (e) {
+      if (isDevMode()) console.error(e);
       this.error = 'No se pudo enviar la reserva. Inténtalo nuevamente.';
       this.notification.show('Error al enviar la reserva.', 'error');
     } finally {
