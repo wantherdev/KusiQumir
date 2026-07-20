@@ -1,22 +1,40 @@
-import { Component, OnInit, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy, ChangeDetectorRef, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 import { Booking, TravelApiService } from '../../../services/travel-api.service';
 import { Skeleton } from '../../../components/skeleton/skeleton';
 import { ConfirmDialog } from '../../../components/confirm-dialog/confirm-dialog';
+import { NotificationService } from '../../../services/notification.service';
 
 @Component({
   selector: 'app-bookings-dashboard',
   standalone: true,
-  imports: [CommonModule, Skeleton, ConfirmDialog],
+  imports: [CommonModule, FormsModule, Skeleton, ConfirmDialog],
   templateUrl: './bookings-dashboard.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class BookingsDashboard implements OnInit {
   items: Booking[] = [];
+  pageSize = 10;
+  currentPage = 1;
+
+  get pagedItems() {
+    const start = (this.currentPage - 1) * this.pageSize;
+    return this.filteredBookings.slice(start, start + this.pageSize);
+  }
+
+  get totalPages() {
+    return Math.max(1, Math.ceil(this.filteredBookings.length / this.pageSize));
+  }
+
+  prevPage() { this.currentPage = Math.max(1, this.currentPage - 1); }
+  nextPage() { this.currentPage = Math.min(this.totalPages, this.currentPage + 1); }
+
   isLoading = false;
-  errorMessage = '';
-  successMessage = '';
+  private readonly notification = inject(NotificationService);
   statusFilter = '';
+  searchQuery = '';
+  selectedBooking: Booking | null = null;
 
   constructor(
     private readonly api: TravelApiService,
@@ -27,20 +45,34 @@ export class BookingsDashboard implements OnInit {
     this.load();
   }
 
+  get filteredBookings(): Booking[] {
+    const q = this.searchQuery.toLowerCase().trim();
+    if (!q) return this.items;
+    return this.items.filter(
+      (b) =>
+        b.customerName?.toLowerCase().includes(q) ||
+        b.customerEmail?.toLowerCase().includes(q) ||
+        b.customer?.name?.toLowerCase().includes(q) ||
+        b.customer?.email?.toLowerCase().includes(q),
+    );
+  }
+
   load(): void {
+    this.currentPage = 1;
     this.isLoading = true;
+    this.selectedBooking = null;
     const params: Record<string, string> = {};
     if (this.statusFilter) params['status'] = this.statusFilter;
     this.api.getBookings(params).subscribe({
       next: (res) => { this.items = res.items; this.isLoading = false; this.cdr.markForCheck(); },
-      error: () => { this.errorMessage = 'Error al cargar reservas.'; this.isLoading = false; this.cdr.markForCheck(); },
+      error: () => { this.notification.show('Error al cargar reservas.', 'error'); this.isLoading = false; this.cdr.markForCheck(); },
     });
   }
 
   updateStatus(id: string, status: string): void {
     this.api.updateBookingStatus(id, status).subscribe({
-      next: () => { this.successMessage = 'Estado actualizado.'; this.load(); this.cdr.markForCheck(); },
-      error: (err) => { this.errorMessage = err.error?.message || 'Error al actualizar.'; this.cdr.markForCheck(); },
+      next: () => { this.notification.show('Estado actualizado.', 'success'); this.load(); this.cdr.markForCheck(); },
+      error: (err: any) => { this.notification.show(err.error?.message || 'Error al actualizar.', 'error'); this.cdr.markForCheck(); },
     });
   }
 
@@ -54,8 +86,8 @@ export class BookingsDashboard implements OnInit {
 
   cancelBooking(): void {
     this.api.cancelBooking(this.pendingCancelId).subscribe({
-      next: () => { this.successMessage = 'Reserva cancelada.'; this.load(); this.cdr.markForCheck(); },
-      error: (err) => { this.errorMessage = err.error?.message || 'Error al cancelar.'; this.cdr.markForCheck(); },
+      next: () => { this.notification.show('Reserva cancelada.', 'success'); this.load(); this.cdr.markForCheck(); },
+      error: (err: any) => { this.notification.show(err.error?.message || 'Error al cancelar.', 'error'); this.cdr.markForCheck(); },
     });
   }
 
@@ -66,5 +98,13 @@ export class BookingsDashboard implements OnInit {
   setFilter(status: string): void {
     this.statusFilter = status;
     this.load();
+  }
+
+  openDetail(booking: Booking): void {
+    this.selectedBooking = booking;
+  }
+
+  closeDetail(): void {
+    this.selectedBooking = null;
   }
 }

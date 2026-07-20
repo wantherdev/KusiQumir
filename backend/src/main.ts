@@ -6,6 +6,8 @@ import { SwaggerModule, DocumentBuilder } from "@nestjs/swagger";
 import helmet from "helmet";
 import compression from "compression";
 import cookieParser from "cookie-parser";
+import { join } from "path";
+import express from "express";
 import * as Sentry from "@sentry/node";
 import { nodeProfilingIntegration } from "@sentry/profiling-node";
 import { MetricsInterceptor } from "./common/metrics.interceptor";
@@ -29,7 +31,18 @@ async function bootstrap() {
 
   app.setGlobalPrefix("api/v1");
   app.use(helmet({
-    contentSecurityPolicy: false,
+    contentSecurityPolicy: {
+      directives: {
+        defaultSrc: ["'self'"],
+        scriptSrc: ["'self'", "'unsafe-inline'", "https://cdnjs.cloudflare.com"],
+        styleSrc: ["'self'", "'unsafe-inline'", "https://cdnjs.cloudflare.com", "https://fonts.googleapis.com"],
+        fontSrc: ["'self'", "https://cdnjs.cloudflare.com", "https://fonts.gstatic.com"],
+        imgSrc: ["'self'", "data:", "https://*.unsplash.com", "https://*.whatsapp.com"],
+        connectSrc: ["'self'", "https://*.sentry.io"],
+        frameAncestors: ["'self'"],
+        upgradeInsecureRequests: [],
+      },
+    },
     hsts: { maxAge: 31536000, includeSubDomains: true, preload: true },
     referrerPolicy: { policy: "strict-origin-when-cross-origin" },
     frameguard: { action: "sameorigin" },
@@ -38,6 +51,7 @@ async function bootstrap() {
   }));
   app.use(compression());
   app.use(cookieParser());
+  app.use("/uploads", express.static(join(process.cwd(), "uploads")));
   app.enableCors({
     origin: (configService.get<string>("CORS_ORIGIN") || "http://localhost:4200").split(",").map(s => s.trim()).filter(Boolean), // Validation: trim whitespace and remove empty entries
     methods: ["GET", "POST", "PUT", "PATCH", "DELETE"],

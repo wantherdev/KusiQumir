@@ -44,9 +44,9 @@ import { Experience } from '../../../services/travel-api.service';
               <span *ngIf="exp.location" class="rounded-full bg-amber-50 px-3 py-1 font-medium text-primary">{{ exp.location }}</span>
               <span *ngIf="exp.duration">{{ exp.duration }}</span>
             </div>
-            <h1 class="mt-4 text-3xl font-bold text-slate-900 sm:text-4xl">{{ exp.title }}</h1>
+            <h1 class="mt-4 text-3xl font-bold text-tertiary sm:text-4xl">{{ exp.title }}</h1>
           </div>
-          <div class="mt-8 prose prose-slate max-w-none" [innerHTML]="safeContent"></div>
+          <div class="mt-8 prose prose-slate prose-headings:text-[#0f172a] prose-a:text-primary prose-img:rounded-2xl max-w-none" [innerHTML]="safeContent"></div>
         </ng-container>
       </div>
     </section>

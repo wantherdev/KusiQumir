@@ -4,139 +4,160 @@ import { Observable } from 'rxjs';
 
 import { API_URL } from '../tokens/api-url';
 
-export interface TourLanguage {
+export interface Category {
   id: string;
-  language: string;
-}
-
-export interface Highlight {
-  id: string;
-  title: string;
+  slug: string;
+  name: string;
   description?: string;
-  icon?: string;
-}
-
-export interface ItineraryItem {
-  id: string;
-  day: number;
-  order: number;
-  time?: string;
-  title: string;
-  description: string;
-  location?: string;
-  duration?: number;
 }
 
 export interface Destination {
   id: string;
+  slug: string;
   name: string;
-  type?: string;
-  description?: string;
-  latitude?: number;
-  longitude?: number;
-  altitude?: number;
-  visitTime?: number;
-  images?: DestinationImage[];
-}
-
-export interface DestinationImage {
-  id: string;
-  imageUrl: string;
-  alt?: string;
-}
-
-export interface Include {
-  id: string;
-  title: string;
-  description?: string;
-}
-
-export interface NotInclude {
-  id: string;
-  title: string;
-  description?: string;
-}
-
-export interface Recommendation {
-  id: string;
-  title?: string;
   description: string;
 }
 
-export interface Requirement {
+export interface TourSchedule {
+  id: string;
+  departure: string;
+  pickupStart: string;
+  arrival: string;
+  language?: string;
+  available: boolean;
+}
+
+export interface ItineraryActivity {
+  id: string;
+  itineraryDayId: string;
+  sortOrder: number;
+  time?: string;
+  title: string;
+  description: string;
+  duration: number;
+}
+
+export interface ItineraryDay {
+  id: string;
+  day: number;
+  title: string;
+  activities: ItineraryActivity[];
+}
+
+export interface TourDestination {
+  id: string;
+  tourId: string;
+  destinationId: string;
+  sortOrder: number;
+  destination: Destination;
+}
+
+export interface TourInclude {
+  id: string;
+  title: string;
+  description?: string;
+}
+
+export interface TourExclude {
+  id: string;
+  title: string;
+  description?: string;
+}
+
+export interface TourFaq {
+  id: string;
+  question: string;
+  answer: string;
+  sortOrder: number;
+}
+
+export interface TourRecommendation {
+  id: string;
+  title: string;
+  description: string;
+}
+
+export interface TourRequirement {
   id: string;
   requirement: string;
 }
 
-export interface WhatToBring {
+export interface TourPrice {
   id: string;
-  item: string;
-}
-
-export interface FAQItem {
-  id: string;
-  question: string;
-  answer: string;
+  name: string;
+  currency: string;
+  adult: number;
+  child?: number;
+  private?: number;
 }
 
 export interface TourImage {
   id: string;
   url: string;
-  alt?: string;
+  alt: string;
   featured: boolean;
-  order: number;
+  sortOrder: number;
+  source?: string;
+}
+
+export interface TourSeo {
+  id: string;
+  title: string;
+  description: string;
+  keywords?: string[];
+  canonical?: string;
+}
+
+export interface TourMetadata {
+  id: string;
+  provider?: string;
+  sourceUrl?: string;
+  lastUpdated?: string;
+}
+
+export interface Review {
+  id: string;
+  rating: number;
+  comment: string;
+  name?: string;
+  country?: string;
+  createdAt: string;
 }
 
 export interface Tour {
   id: string;
   slug: string;
-  name: string;
+  code: string;
+  title: string;
   subtitle?: string;
-  shortDescription?: string;
+  shortDescription: string;
   description: string;
-  category: string;
-  tourType: string;
-  durationDays: number;
   durationHours: number;
-  durationText: string;
-  country: string;
-  region: string;
-  city: string;
-  meetingPoint?: string;
-  endingPoint?: string;
-  pickup: boolean;
-  startTime?: string;
-  endTime?: string;
-  difficulty?: string;
-  altitudeMin?: number;
-  altitudeMax?: number;
-  groupType?: string;
+  durationDays: number;
+  difficulty: 'Easy' | 'Moderate' | 'Challenging';
+  groupType: 'Shared' | 'Private';
+  serviceType: 'HalfDay' | 'FullDay' | 'MultiDay';
   featured: boolean;
-  status: string;
-  coverImage?: string;
-  video?: string;
-  currency: string;
-  adultPrice: number;
-  childPrice?: number;
-  discount?: number;
-  seoTitle?: string;
-  seoDescription?: string;
-  seoKeywords?: string[];
+  active: boolean;
+  categoryId: string;
   providerId?: string;
-  sourceUrl?: string;
   createdAt: string;
   updatedAt: string;
-  languages: TourLanguage[];
-  highlights: Highlight[];
-  itinerary: ItineraryItem[];
-  destinations: Destination[];
-  includes: Include[];
-  notIncludes: NotInclude[];
-  recommendations: Recommendation[];
-  requirements: Requirement[];
-  whatToBring: WhatToBring[];
-  faqs: FAQItem[];
-  images: TourImage[];
+  category?: Category;
+  provider?: Provider;
+  schedules?: TourSchedule[];
+  itineraryDays?: ItineraryDay[];
+  destinations?: TourDestination[];
+  includes?: TourInclude[];
+  excludes?: TourExclude[];
+  faqs?: TourFaq[];
+  recommendations?: TourRecommendation[];
+  requirements?: TourRequirement[];
+  prices?: TourPrice[];
+  images?: TourImage[];
+  seo?: TourSeo;
+  metadata?: TourMetadata;
+  reviews?: Review[];
 }
 
 export interface PaginatedResponse<T> {
@@ -144,7 +165,21 @@ export interface PaginatedResponse<T> {
   nextCursor: string | null;
 }
 
-export type TourPayload = Omit<Tour, 'id' | 'createdAt' | 'updatedAt' | 'languages' | 'highlights' | 'itinerary' | 'destinations' | 'includes' | 'notIncludes' | 'recommendations' | 'requirements' | 'whatToBring' | 'faqs' | 'images'>;
+export type TourPayload = Omit<Tour, 'id' | 'createdAt' | 'updatedAt' | 'category' | 'provider' | 'schedules' | 'itineraryDays' | 'destinations' | 'includes' | 'excludes' | 'faqs' | 'recommendations' | 'requirements' | 'prices' | 'images' | 'seo' | 'metadata' | 'reviews'> & {
+  schedules?: { create: { departure: string; pickupStart: string; arrival: string; language?: string; available?: boolean }[] };
+  itineraryDays?: { create: { day: number; title: string; activities?: { create: { sortOrder: number; time?: string; title: string; description: string; duration: number }[] } }[] };
+  destinations?: { create: { destinationId: string; sortOrder: number }[] };
+  includes?: { create: { title: string; description?: string }[] };
+  excludes?: { create: { title: string; description?: string }[] };
+  faqs?: { create: { question: string; answer: string; sortOrder: number }[] };
+  recommendations?: { create: { title: string; description: string }[] };
+  requirements?: { create: { requirement: string }[] };
+  prices?: { create: { name: string; currency: string; adult: number; child?: number; private?: number }[] };
+  images?: { create: { url: string; alt: string; featured?: boolean; sortOrder: number; source?: string }[] };
+  seo?: { create: { title: string; description: string; keywords?: string[]; canonical?: string } };
+  metadata?: { create: { provider?: string; sourceUrl?: string; lastUpdated?: string } };
+  reviews?: { create: { rating: number; comment: string; name?: string; country?: string }[] };
+};
 
 export interface Booking {
   id: string;
@@ -218,6 +253,9 @@ export interface TravelPackage {
   imageUrl?: string | null;
   included?: string | null;
   excluded?: string | null;
+  slug?: string | null;
+  seoTitle?: string | null;
+  seoDescription?: string | null;
   tours?: Tour[];
   createdAt?: string;
 }
@@ -234,6 +272,96 @@ export interface UserProfile {
 
 export type UserProfilePayload = Pick<UserProfile, 'name' | 'phone' | 'nationality' | 'passport' | 'preferences'>;
 
+export interface Customer {
+  id: string;
+  name: string;
+  email: string;
+  nationality?: string | null;
+  passport?: string | null;
+  phone?: string | null;
+  preferences?: string | null;
+  createdAt: string;
+  bookings?: Booking[];
+}
+
+export interface Provider {
+  id: string;
+  name: string;
+  type: string;
+  contact: string;
+  contract?: string | null;
+  commission?: string | null;
+  services?: string | null;
+  createdAt: string;
+}
+
+export interface Guide {
+  id: string;
+  name: string;
+  languages: string;
+  credential: string;
+  availability: boolean;
+  rating: number;
+  createdAt: string;
+}
+
+export interface Operation {
+  id: string;
+  bookingId: string;
+  guideId?: string | null;
+  guide?: Guide | null;
+  transport: string;
+  pickupTime: string;
+  status: string;
+  createdAt: string;
+  booking?: Booking | null;
+}
+
+export interface Payment {
+  id: string;
+  bookingId: string;
+  amount: number;
+  currency: string;
+  method?: string | null;
+  status: string;
+  createdAt: string;
+  booking?: Booking | null;
+}
+
+export interface Invoice {
+  id: string;
+  bookingId: string;
+  customerId: string;
+  amount: number;
+  currency: string;
+  status: string;
+  createdAt: string;
+  booking?: Booking | null;
+  customer?: Customer | null;
+}
+
+export interface AnalyticsData {
+  totalBookings: number;
+  totalRevenue: number;
+  pendingBookings: number;
+  confirmedBookings: number;
+  completedBookings: number;
+  cancelledBookings: number;
+  toursCount: number;
+  packagesCount: number;
+  articlesCount: number;
+  experiencesCount: number;
+  customersCount: number;
+  providersCount: number;
+  guidesCount: number;
+  operationsCount: number;
+  paymentsCount: number;
+  invoicesCount: number;
+  recentBookings: Booking[];
+  revenueByMonth: { month: string; revenue: number }[];
+  bookingsByStatus: { status: string; count: number }[];
+}
+
 @Injectable({ providedIn: 'root' })
 export class TravelApiService {
   constructor(
@@ -241,13 +369,16 @@ export class TravelApiService {
     @Inject(API_URL) private readonly apiUrl: string,
   ) {}
 
-  getDestinations(limit = 4): Observable<Destination[]> {
-    const params = new HttpParams().set('take', limit);
-    return this.http.get<Destination[]>(`${this.apiUrl}/destinations`, { params });
+  getCategories(): Observable<Category[]> {
+    return this.http.get<Category[]>(`${this.apiUrl}/categories`);
   }
 
-  getDestination(id: number): Observable<Destination> {
-    return this.http.get<Destination>(`${this.apiUrl}/destinations/${id}`);
+  createCategory(name: string, description?: string): Observable<Category> {
+    return this.http.post<Category>(`${this.apiUrl}/categories`, { name, description });
+  }
+
+  getDestinations(): Observable<Destination[]> {
+    return this.http.get<Destination[]>(`${this.apiUrl}/destinations`);
   }
 
   getFeaturedPackages(limit = 3): Observable<TravelPackage[]> {
@@ -265,6 +396,10 @@ export class TravelApiService {
 
   getTours(): Observable<PaginatedResponse<Tour>> {
     return this.http.get<PaginatedResponse<Tour>>(`${this.apiUrl}/tours`);
+  }
+
+  getToursAdmin(): Observable<Tour[]> {
+    return this.http.get<Tour[]>(`${this.apiUrl}/tours/admin`);
   }
 
   getTourById(id: string): Observable<Tour> {
@@ -285,6 +420,10 @@ export class TravelApiService {
 
   deleteTour(id: string): Observable<void> {
     return this.http.delete<void>(`${this.apiUrl}/tours/${id}`);
+  }
+
+  bulkCreateTours(tours: TourPayload[]): Observable<any[]> {
+    return this.http.post<any[]>(`${this.apiUrl}/tours/bulk`, { tours });
   }
 
   // --- Bookings ---
@@ -400,5 +539,94 @@ export class TravelApiService {
 
   deletePackage(id: string): Observable<unknown> {
     return this.http.delete(`${this.apiUrl}/packages/${id}`);
+  }
+
+  uploadImage(file: File): Observable<{ url: string }> {
+    const formData = new FormData();
+    formData.append("file", file);
+    return this.http.post<{ url: string }>(`${this.apiUrl}/uploads`, formData);
+  }
+
+  // --- Customers ---
+  getCustomers(): Observable<Customer[]> {
+    return this.http.get<Customer[]>(`${this.apiUrl}/customers`);
+  }
+
+  getCustomer(id: string): Observable<Customer> {
+    return this.http.get<Customer>(`${this.apiUrl}/customers/${id}`);
+  }
+
+  createCustomer(payload: { name: string; email: string; phone?: string; nationality?: string; passport?: string }): Observable<Customer> {
+    return this.http.post<Customer>(`${this.apiUrl}/customers`, payload);
+  }
+
+  // --- Providers ---
+  getProviders(): Observable<Provider[]> {
+    return this.http.get<Provider[]>(`${this.apiUrl}/providers`);
+  }
+
+  getProvider(id: string): Observable<Provider> {
+    return this.http.get<Provider>(`${this.apiUrl}/providers/${id}`);
+  }
+
+  createProvider(payload: { name: string; type: string; contact: string; contract?: string; commission?: string; services?: string }): Observable<Provider> {
+    return this.http.post<Provider>(`${this.apiUrl}/providers`, payload);
+  }
+
+  // --- Guides ---
+  getGuides(): Observable<Guide[]> {
+    return this.http.get<Guide[]>(`${this.apiUrl}/guides`);
+  }
+
+  getGuide(id: string): Observable<Guide> {
+    return this.http.get<Guide>(`${this.apiUrl}/guides/${id}`);
+  }
+
+  createGuide(payload: { name: string; languages: string; credential: string; availability?: boolean; rating?: number }): Observable<Guide> {
+    return this.http.post<Guide>(`${this.apiUrl}/guides`, payload);
+  }
+
+  // --- Operations ---
+  getOperations(): Observable<Operation[]> {
+    return this.http.get<Operation[]>(`${this.apiUrl}/operations`);
+  }
+
+  getOperation(id: string): Observable<Operation> {
+    return this.http.get<Operation>(`${this.apiUrl}/operations/${id}`);
+  }
+
+  createOperation(payload: { bookingId: string; guideId?: string; transport: string; pickupTime: string; status?: string }): Observable<Operation> {
+    return this.http.post<Operation>(`${this.apiUrl}/operations`, payload);
+  }
+
+  // --- Payments ---
+  getPayments(): Observable<Payment[]> {
+    return this.http.get<Payment[]>(`${this.apiUrl}/payments`);
+  }
+
+  getPayment(id: string): Observable<Payment> {
+    return this.http.get<Payment>(`${this.apiUrl}/payments/${id}`);
+  }
+
+  createPayment(payload: { bookingId: string; amount: number; currency?: string; method?: string }): Observable<Payment> {
+    return this.http.post<Payment>(`${this.apiUrl}/payments`, payload);
+  }
+
+  // --- Billing / Invoices ---
+  getInvoices(): Observable<Invoice[]> {
+    return this.http.get<Invoice[]>(`${this.apiUrl}/billing/invoices`);
+  }
+
+  getInvoice(id: string): Observable<Invoice> {
+    return this.http.get<Invoice>(`${this.apiUrl}/billing/invoices/${id}`);
+  }
+
+  createInvoice(payload: { bookingId: string; customerId: string; amount: number; currency?: string }): Observable<Invoice> {
+    return this.http.post<Invoice>(`${this.apiUrl}/billing/invoices`, payload);
+  }
+
+  // --- Analytics ---
+  getAnalytics(): Observable<AnalyticsData> {
+    return this.http.get<AnalyticsData>(`${this.apiUrl}/analytics/dashboard`);
   }
 }

@@ -1,9 +1,10 @@
-import { Component, OnInit, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy, ChangeDetectorRef, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Article, ArticlePayload, TravelApiService } from '../../../services/travel-api.service';
 import { Skeleton } from '../../../components/skeleton/skeleton';
 import { ConfirmDialog } from '../../../components/confirm-dialog/confirm-dialog';
+import { NotificationService } from '../../../services/notification.service';
 
 @Component({
   selector: 'app-articles-dashboard',
@@ -14,12 +15,26 @@ import { ConfirmDialog } from '../../../components/confirm-dialog/confirm-dialog
 })
 export class ArticlesDashboard implements OnInit {
   articles: Article[] = [];
+  pageSize = 10;
+  currentPage = 1;
+
+  get pagedItems() {
+    const start = (this.currentPage - 1) * this.pageSize;
+    return this.articles.slice(start, start + this.pageSize);
+  }
+
+  get totalPages() {
+    return Math.max(1, Math.ceil(this.articles.length / this.pageSize));
+  }
+
+  prevPage() { this.currentPage = Math.max(1, this.currentPage - 1); }
+  nextPage() { this.currentPage = Math.min(this.totalPages, this.currentPage + 1); }
+
   isLoading = false;
-  isModalOpen = false;
+  activeView: 'list' | 'form' = 'list';
   selectedId: string | null = null;
   form: FormGroup;
-  errorMessage = '';
-  successMessage = '';
+  private readonly notification = inject(NotificationService);
 
   constructor(
     private readonly api: TravelApiService,
@@ -41,18 +56,19 @@ export class ArticlesDashboard implements OnInit {
   }
 
   ngOnInit(): void {
-    this.load();
+    this.loadArticles();
   }
 
-  load(): void {
+  loadArticles(): void {
+    this.currentPage = 1;
     this.isLoading = true;
     this.api.getArticlesAdmin().subscribe({
       next: (items) => { this.articles = items; this.isLoading = false; this.cdr.markForCheck(); },
-      error: () => { this.errorMessage = 'Error al cargar artículos.'; this.isLoading = false; this.cdr.markForCheck(); },
+      error: () => { this.notification.show('Error al cargar artículos.', 'error'); this.isLoading = false; this.cdr.markForCheck(); },
     });
   }
 
-  open(item?: Article): void {
+  openForm(item?: Article): void {
     this.selectedId = item?.id ?? null;
     this.form.reset({
       title: item?.title ?? '',
@@ -66,26 +82,38 @@ export class ArticlesDashboard implements OnInit {
       status: item?.status ?? 'DRAFT',
       publishedAt: item?.publishedAt ?? '',
     });
-    this.isModalOpen = true;
+    this.activeView = 'form';
   }
 
-  close(): void {
-    this.isModalOpen = false;
+  closeForm(): void {
+    this.activeView = 'list';
     this.selectedId = null;
     this.form.reset();
   }
 
-  save(): void {
-    if (this.form.invalid) return;
+  saveArticle(): void {
+    if (this.form.invalid) {
+      this.form.markAllAsTouched();
+      this.notification.show('Completa los campos obligatorios marcados en rojo.', 'error');
+      return;
+    }
     this.isLoading = true;
     const payload = this.form.getRawValue() as ArticlePayload;
     const req = this.selectedId
       ? this.api.updateArticle(this.selectedId, payload)
       : this.api.createArticle(payload);
     req.subscribe({
-      next: () => { this.successMessage = 'Artículo guardado.'; this.close(); this.load(); this.cdr.markForCheck(); },
-      error: (err) => { this.errorMessage = err.error?.message || 'Error al guardar.'; this.isLoading = false; this.cdr.markForCheck(); },
+      next: () => { this.notification.show('Artículo guardado.', 'success'); this.closeForm(); this.loadArticles(); this.cdr.markForCheck(); },
+      error: (err: any) => { this.notification.show(err.error?.message || 'Error al guardar.', 'error'); this.isLoading = false; this.cdr.markForCheck(); },
     });
+  }
+
+  generateSlug(): void {
+    const title = this.form.get('title')?.value;
+    if (title) {
+      const slug = title.toLowerCase().replace(/[^a-z0-9áéíóúñü\s-]/g, '').replace(/[\s]+/g, '-').replace(/-{2,}/g, '-').replace(/^-+|-+$/g, '');
+      this.form.patchValue({ slug });
+    }
   }
 
   trackByFn(index: number, item: Article): string | number {
@@ -100,10 +128,23 @@ export class ArticlesDashboard implements OnInit {
     this.showConfirm = true;
   }
 
-  delete(): void {
+  deleteArticle(): void {
+    this.isLoading = true;
     this.api.deleteArticle(this.pendingDeleteId).subscribe({
-      next: () => { this.successMessage = 'Artículo eliminado.'; this.load(); this.cdr.markForCheck(); },
-      error: () => { this.errorMessage = 'Error al eliminar.'; this.cdr.markForCheck(); },
+      next: () => {
+        this.notification.show('Artículo eliminado.', 'success');
+        this.showConfirm = false;
+        this.pendingDeleteId = "";
+        this.loadArticles();
+        this.cdr.markForCheck();
+      },
+      error: () => {
+        this.notification.show('Error al eliminar.', 'error');
+        this.showConfirm = false;
+        this.pendingDeleteId = "";
+        this.isLoading = false;
+        this.cdr.markForCheck();
+      },
     });
   }
 }

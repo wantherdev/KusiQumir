@@ -5,6 +5,7 @@ import { Meta, Title } from '@angular/platform-browser';
 import { firstValueFrom } from 'rxjs';
 import { TravelApiService } from '../../services/travel-api.service';
 import { NotificationService } from '../../services/notification.service';
+import { environment } from '../../../environments/environment';
 
 interface ContactForm {
   name: string;
@@ -21,7 +22,7 @@ interface ContactForm {
       <div class="mx-auto max-w-4xl">
         <div class="page-hero rounded-[2rem] p-8 text-center sm:p-12">
           <p class="text-sm font-semibold uppercase tracking-[0.35em] text-primary">Contacto</p>
-          <h1 class="mt-4 text-4xl font-bold text-slate-900 sm:text-5xl">¿Listo para tu próxima aventura?</h1>
+          <h1 class="mt-4 text-4xl font-bold text-tertiary sm:text-5xl">¿Listo para tu próxima aventura?</h1>
           <p class="mx-auto mt-4 max-w-2xl text-lg text-slate-600">
             Cuéntanos qué buscas y te responderemos a la brevedad para diseñar juntos la experiencia perfecta en Perú.
           </p>
@@ -101,7 +102,7 @@ interface ContactForm {
 
           <aside class="flex flex-col gap-6">
             <div class="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
-              <h3 class="text-lg font-bold text-slate-900">Información de contacto</h3>
+              <h3 class="text-lg font-bold text-tertiary">Información de contacto</h3>
               <ul class="mt-4 space-y-4 text-sm text-slate-600">
                 <li class="flex items-start gap-3">
                   <i aria-hidden="true" class="ri-map-pin-line mt-0.5 text-primary"></i>
@@ -109,7 +110,7 @@ interface ContactForm {
                 </li>
                 <li class="flex items-start gap-3">
                   <i aria-hidden="true" class="ri-whatsapp-line mt-0.5 text-primary"></i>
-                  <a href="https://wa.me/51999999999" class="hover:text-primary">+51 999 999 999</a>
+                  <a href="https://wa.me/{{ whatsappNumber }}" class="hover:text-primary">+51 999 999 999</a>
                 </li>
                 <li class="flex items-start gap-3">
                   <i aria-hidden="true" class="ri-mail-line mt-0.5 text-primary"></i>
@@ -119,7 +120,7 @@ interface ContactForm {
             </div>
 
             <div class="rounded-2xl bg-primary/5 p-6">
-              <h3 class="text-lg font-bold text-slate-900">Horarios de atención</h3>
+              <h3 class="text-lg font-bold text-tertiary">Horarios de atención</h3>
               <ul class="mt-4 space-y-2 text-sm text-slate-600">
                 <li><span class="font-semibold">Lun – Vie:</span> 9:00 – 18:00</li>
                 <li><span class="font-semibold">Sáb:</span> 9:00 – 13:00</li>
@@ -143,6 +144,7 @@ export class Contacto implements OnInit {
 
   form: ContactForm = { name: '', email: '', phone: '', message: '' };
   submitting = false;
+  readonly whatsappNumber = environment.whatsappNumber;
 
   ngOnInit(): void {
     this.title.setTitle('Contacto | Kusi Q\'umir');

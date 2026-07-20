@@ -1,74 +1,872 @@
-<div class="min-h-screen bg-slate-50 px-4 py-8 sm:px-6 lg:px-8">
+<div class="min-h-screen bg-linear-to-br from-slate-50 to-secondary-soft px-4 py-8 sm:px-6 lg:px-8">
   <div class="mx-auto max-w-7xl">
-    <div class="mb-8 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-      <div>
-        <h1 class="text-3xl font-bold text-slate-900">Tours</h1>
-        <p class="mt-2 text-sm text-slate-600">Crea y administra las experiencias disponibles.</p>
+
+    <!-- ====== LIST VIEW ====== -->
+    <div *ngIf="activeView === 'list'">
+
+      <!-- Hero header -->
+      <header class="animate-slide-up relative mb-6 overflow-hidden rounded-2xl bg-linear-to-r from-primary to-primary-dark p-6 text-white shadow-lg shadow-primary/20 sm:p-8">
+        <div class="pointer-events-none absolute inset-0 opacity-20" style="background-image: radial-gradient(circle at 18% 22%, rgba(255,255,255,0.9) 1px, transparent 1px); background-size: 24px 24px;"></div>
+        <div class="relative flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+          <div>
+            <p class="text-xs font-semibold uppercase tracking-[0.2em] text-white/70">Panel de administración</p>
+            <h1 class="mt-1 flex items-center gap-2 text-2xl font-bold sm:text-3xl">
+              <i class="ri-map-pin-line"></i> Tours
+            </h1>
+            <p class="mt-1 text-sm text-white/85">{{ tours.length }} tour(es) registrados</p>
+          </div>
+          <div class="flex items-center gap-2">
+            <button (click)="openBulk()" class="inline-flex items-center gap-2 rounded-xl border border-white/30 bg-white/10 px-4 py-2.5 text-sm font-semibold text-white backdrop-blur transition hover:bg-white/20">
+              <i class="ri-upload-cloud-2-line text-lg"></i>
+              Carga masiva
+            </button>
+            <button (click)="openForm()" class="inline-flex items-center gap-2 rounded-xl bg-white px-5 py-2.5 text-sm font-bold text-primary shadow-lg transition-all hover:scale-[1.02] hover:shadow-xl active:scale-[0.98]">
+              <i class="ri-add-line text-lg"></i>
+              Nuevo tour
+            </button>
+          </div>
+        </div>
+      </header>
+
+      <!-- Stats Bar -->
+      <div class="animate-slide-up mb-6 grid grid-cols-2 gap-4 sm:grid-cols-4">
+        <div class="group rounded-xl border border-slate-100 bg-white p-4 shadow-sm transition hover:-translate-y-0.5 hover:shadow-md">
+          <div class="flex items-center gap-3">
+            <div class="flex h-10 w-10 items-center justify-center rounded-xl bg-green-50 text-green-600"><i class="ri-checkbox-circle-line text-lg"></i></div>
+            <div>
+              <p class="text-xs font-medium uppercase tracking-wider text-slate-400">Activos</p>
+              <p class="mt-0.5 text-2xl font-bold text-tertiary">{{ tours.filter(t => t.active).length }}</p>
+            </div>
+          </div>
+        </div>
+        <div class="group rounded-xl border border-slate-100 bg-white p-4 shadow-sm transition hover:-translate-y-0.5 hover:shadow-md">
+          <div class="flex items-center gap-3">
+            <div class="flex h-10 w-10 items-center justify-center rounded-xl bg-amber-50 text-amber-600"><i class="ri-star-line text-lg"></i></div>
+            <div>
+              <p class="text-xs font-medium uppercase tracking-wider text-slate-400">Destacados</p>
+              <p class="mt-0.5 text-2xl font-bold text-tertiary">{{ tours.filter(t => t.featured).length }}</p>
+            </div>
+          </div>
+        </div>
+        <div class="group rounded-xl border border-slate-100 bg-white p-4 shadow-sm transition hover:-translate-y-0.5 hover:shadow-md">
+          <div class="flex items-center gap-3">
+            <div class="flex h-10 w-10 items-center justify-center rounded-xl bg-red-50 text-red-600"><i class="ri-close-circle-line text-lg"></i></div>
+            <div>
+              <p class="text-xs font-medium uppercase tracking-wider text-slate-400">Inactivos</p>
+              <p class="mt-0.5 text-2xl font-bold text-tertiary">{{ tours.filter(t => !t.active).length }}</p>
+            </div>
+          </div>
+        </div>
+        <div class="group rounded-xl border border-slate-100 bg-white p-4 shadow-sm transition hover:-translate-y-0.5 hover:shadow-md">
+          <div class="flex items-center gap-3">
+            <div class="flex h-10 w-10 items-center justify-center rounded-xl bg-primary/10 text-primary"><i class="ri-folder-line text-lg"></i></div>
+            <div>
+              <p class="text-xs font-medium uppercase tracking-wider text-slate-400">Categorías</p>
+              <p class="mt-0.5 text-2xl font-bold text-tertiary">{{ categories.length }}</p>
+            </div>
+          </div>
+        </div>
       </div>
-      <button (click)="openModal()" class="rounded-2xl bg-primary px-4 py-2 text-sm font-medium text-white hover:bg-primary-dark">
-        Nuevo tour
-      </button>
+
+      <!-- Toolbar -->
+      <div class="mb-5 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+        <div class="relative w-full max-w-md">
+          <i class="ri-search-line absolute left-4 top-1/2 -translate-y-1/2 text-slate-400"></i>
+          <input [(ngModel)]="searchQuery" (ngModelChange)="onSearch()" placeholder="Buscar por título, slug o código…"
+            class="w-full rounded-xl border border-slate-200 bg-white py-3 pl-11 pr-10 text-sm outline-none transition-all focus:border-primary/40 focus:ring-2 focus:ring-primary/5 placeholder:text-slate-400" />
+          <button *ngIf="searchQuery" (click)="searchQuery=''; onSearch()" class="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 transition hover:text-slate-700">
+            <i class="ri-close-line text-lg"></i>
+          </button>
+        </div>
+        <p class="text-sm text-slate-500">Mostrando <span class="font-semibold text-slate-700">{{ pagedItems.length }}</span> de {{ filtered.length }}</p>
+      </div>
+
+      <!-- Loading / Table -->
+      <ng-container *ngIf="isLoading; else loaded">
+        <div class="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
+          <app-skeleton variant="table-row" [rows]="5" [cols]="6"></app-skeleton>
+        </div>
+      </ng-container>
+
+      <ng-template #loaded>
+        <div *ngIf="filtered.length === 0" class="animate-slide-up flex flex-col items-center gap-4 rounded-2xl border border-dashed border-slate-300 bg-white py-16 shadow-sm">
+          <div class="flex h-20 w-20 items-center justify-center rounded-full bg-secondary-soft text-primary">
+            <i class="ri-map-pin-line text-4xl"></i>
+          </div>
+          <p class="text-lg font-semibold text-slate-700">{{ searchQuery ? 'Sin resultados' : 'No hay tours todavía' }}</p>
+          <p class="text-sm text-slate-400">{{ searchQuery ? 'Prueba con otro término de búsqueda.' : 'Crea tu primer tour para empezar.' }}</p>
+          <button (click)="searchQuery ? clearSearch() : openForm()" class="mt-1 inline-flex items-center gap-2 rounded-xl bg-primary px-4 py-2 text-sm font-semibold text-white transition hover:bg-primary-dark">
+            <i class="ri-add-line"></i> {{ searchQuery ? 'Limpiar búsqueda' : 'Crear tour' }}
+          </button>
+        </div>
+
+        <div *ngIf="filtered.length > 0" class="animate-slide-up overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
+          <div class="overflow-x-auto">
+            <table class="w-full text-left text-sm">
+              <thead>
+                <tr class="border-b border-slate-100 bg-slate-50/80 text-xs font-semibold uppercase tracking-wider text-slate-500">
+                  <th class="px-5 py-4">Tour</th>
+                  <th class="px-5 py-4">Duración</th>
+                  <th class="px-5 py-4">Dificultad</th>
+                  <th class="px-5 py-4">Categoría</th>
+                  <th class="px-5 py-4 text-center">Estado</th>
+                  <th class="px-5 py-4 text-right">Acciones</th>
+                </tr>
+              </thead>
+              <tbody class="divide-y divide-slate-50">
+                <tr *ngFor="let t of pagedItems; trackBy: trackByFn" class="group transition hover:bg-secondary-soft">
+                  <td class="px-5 py-4">
+                    <div class="flex items-center gap-3">
+                      <div class="relative h-12 w-16 shrink-0 overflow-hidden rounded-lg bg-linear-to-br from-primary/10 to-primary/5">
+                        <div class="absolute inset-0 flex items-center justify-center text-primary/70"><i class="ri-map-pin-line"></i></div>
+                        <img *ngIf="tourThumb(t)" [src]="tourThumb(t)" (error)="onImgError($event)" class="absolute inset-0 h-full w-full object-cover" />
+                      </div>
+                      <div class="min-w-0">
+                        <p class="truncate font-semibold text-tertiary">{{ t.title }}</p>
+                        <p class="truncate text-xs text-slate-400">{{ t.code }} · {{ t.slug }}</p>
+                      </div>
+                    </div>
+                  </td>
+                  <td class="px-5 py-4">
+                    <span class="inline-flex items-center gap-1 whitespace-nowrap rounded-lg bg-slate-50 px-2.5 py-1 text-slate-700">
+                      <i class="ri-time-line text-slate-400"></i>
+                      {{ t.durationDays }}d {{ t.durationHours }}h
+                    </span>
+                  </td>
+                  <td class="px-5 py-4">
+                    <span class="inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium {{ difficultyColor(t.difficulty) }}">
+                      {{ t.difficulty }}
+                    </span>
+                  </td>
+                  <td class="px-5 py-4">
+                    <span class="rounded-full bg-primary/10 px-2.5 py-0.5 text-xs font-medium text-primary">
+                      {{ t.category?.name || t.categoryId?.slice(0, 8) || '—' }}
+                    </span>
+                  </td>
+                  <td class="px-5 py-4">
+                    <div class="flex flex-wrap items-center justify-center gap-1.5">
+                      <span class="inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-medium"
+                        [class.bg-green-50]="t.active"
+                        [class.text-green-700]="t.active"
+                        [class.bg-red-50]="!t.active"
+                        [class.text-red-600]="!t.active">
+                        <span class="inline-block h-1.5 w-1.5 rounded-full"
+                          [class.bg-green-500]="t.active"
+                          [class.bg-red-500]="!t.active"></span>
+                        {{ t.active ? 'Activo' : 'Inactivo' }}
+                      </span>
+                      <span *ngIf="t.featured" class="inline-flex items-center gap-1 rounded-full bg-amber-50 px-2.5 py-1 text-xs font-medium text-amber-700">
+                        <i class="ri-star-fill text-xs"></i> Destacado
+                      </span>
+                    </div>
+                  </td>
+                  <td class="px-5 py-4">
+                    <div class="flex items-center justify-end gap-1.5">
+                      <button (click)="openForm(t)" title="Editar" class="inline-flex items-center gap-1.5 rounded-lg border border-slate-200 bg-white px-3 py-1.5 text-xs font-medium text-slate-700 shadow-sm transition-all hover:border-primary/30 hover:bg-primary/5 hover:text-primary">
+                        <i class="ri-edit-line"></i> Editar
+                      </button>
+                      <button (click)="confirmDelete(t.id)" title="Eliminar" class="inline-flex items-center gap-1.5 rounded-lg border border-slate-200 bg-white px-3 py-1.5 text-xs font-medium text-red-600 shadow-sm transition-all hover:border-red-200 hover:bg-red-50">
+                        <i class="ri-delete-bin-6-line"></i> Eliminar
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <!-- Pagination -->
+          <div *ngIf="totalPages > 1" class="flex items-center justify-between border-t border-slate-100 px-5 py-3">
+            <p class="text-xs text-slate-500">Página {{ currentPage }} de {{ totalPages }}</p>
+            <div class="flex gap-2">
+              <button (click)="prevPage()" [disabled]="currentPage === 1" class="inline-flex items-center gap-1 rounded-lg border border-slate-200 px-3.5 py-2 text-xs font-medium text-slate-600 transition hover:border-primary/30 hover:text-primary disabled:cursor-not-allowed disabled:opacity-40 disabled:hover:border-slate-200 disabled:hover:text-slate-600">
+                <i class="ri-arrow-left-s-line"></i> Anterior
+              </button>
+              <button (click)="nextPage()" [disabled]="currentPage === totalPages" class="inline-flex items-center gap-1 rounded-lg border border-slate-200 px-3.5 py-2 text-xs font-medium text-slate-600 transition hover:border-primary/30 hover:text-primary disabled:cursor-not-allowed disabled:opacity-40 disabled:hover:border-slate-200 disabled:hover:text-slate-600">
+                Siguiente <i class="ri-arrow-right-s-line"></i>
+              </button>
+            </div>
+          </div>
+        </div>
+      </ng-template>
     </div>
 
-    <p *ngIf="successMessage" class="mb-4 rounded-2xl border border-green-200 bg-green-50 p-4 text-sm text-green-800">{{ successMessage }}</p>
-    <p *ngIf="errorMessage" class="mb-4 rounded-2xl border border-red-200 bg-red-50 p-4 text-sm text-red-800">{{ errorMessage }}</p>
+    <!-- ====== BULK VIEW ====== -->
+    <div *ngIf="activeView === 'bulk'">
+      <div class="animate-slide-up rounded-2xl border border-slate-200 bg-white shadow-sm">
+        <div class="flex items-center justify-between border-b border-slate-100 px-6 py-5">
+          <div class="flex items-center gap-4">
+            <button (click)="closeBulk()" class="inline-flex items-center gap-1.5 rounded-lg px-2 py-1 text-sm font-medium text-slate-500 transition hover:bg-slate-100 hover:text-slate-800">
+              <i class="ri-arrow-left-line"></i> Volver
+            </button>
+            <div class="h-6 w-px bg-slate-200"></div>
+            <h2 class="text-lg font-bold text-tertiary">
+              <i class="ri-upload-cloud-2-line mr-2 text-primary"></i>
+              Carga masiva de tours
+            </h2>
+          </div>
+        </div>
 
-    <div *ngIf="isLoading" class="space-y-2">
-      <app-skeleton *ngFor="let _ of [].constructor(5)" variant="table-row" [rows]="1" [cols]="5" />
-    </div>
-    <div *ngIf="!isLoading || tours.length" class="overflow-x-auto overflow-hidden rounded-2xl bg-white shadow">
-      <p *ngIf="tours.length === 0" class="p-12 text-center text-slate-500">No hay tours registrados.</p>
-      <table *ngIf="tours.length" class="min-w-full divide-y divide-slate-200">
-        <thead class="bg-slate-50"><tr>
-          <th class="px-6 py-3 text-left text-xs font-medium uppercase text-slate-500">Tour</th>
-          <th class="px-6 py-3 text-left text-xs font-medium uppercase text-slate-500">Duración</th>
-          <th class="px-6 py-3 text-left text-xs font-medium uppercase text-slate-500">Precio</th>
-          <th class="px-6 py-3 text-left text-xs font-medium uppercase text-slate-500">Estado</th>
-          <th class="px-6 py-3 text-right text-xs font-medium uppercase text-slate-500">Acciones</th>
-        </tr></thead>
-        <tbody class="divide-y divide-slate-200"><tr *ngFor="let tour of tours; trackBy: trackByFn">
-          <td class="px-6 py-4"><p class="font-medium text-slate-900">{{ tour.name }}</p><p class="text-sm text-slate-500">{{ tour.city || tour.region || 'Sin ubicación' }}</p></td>
-          <td class="px-6 py-4 text-sm text-slate-700">{{ tour.durationText }}</td>
-          <td class="px-6 py-4 text-sm font-medium text-slate-900">${{ tour.adultPrice }}</td>
-          <td class="px-6 py-4 text-sm" [class.text-green-700]="tour.status === 'published'" [class.text-slate-500]="tour.status !== 'published'">{{ tour.status === 'published' ? 'Disponible' : 'No disponible' }}</td>
-          <td class="px-6 py-4 text-right text-sm"><button (click)="openModal(tour)" class="mr-4 text-primary hover:text-primary-dark">Editar</button><button (click)="confirmDelete(tour.id)" class="text-red-600 hover:text-red-900">Eliminar</button></td>
-        </tr></tbody>
-      </table>
-    </div>
-  </div>
+        <div class="space-y-5 p-6">
+          <p class="text-sm text-slate-500">
+            Pega un arreglo JSON de tours o carga un archivo <code class="rounded bg-slate-100 px-1.5 py-0.5 text-xs">.json</code>.
+            Cada tour necesita <code class="rounded bg-slate-100 px-1.5 py-0.5 text-xs">title</code>,
+            <code class="rounded bg-slate-100 px-1.5 py-0.5 text-xs">slug</code>,
+            <code class="rounded bg-slate-100 px-1.5 py-0.5 text-xs">code</code>,
+            <code class="rounded bg-slate-100 px-1.5 py-0.5 text-xs">shortDescription</code>,
+            <code class="rounded bg-slate-100 px-1.5 py-0.5 text-xs">description</code> y
+            <code class="rounded bg-slate-100 px-1.5 py-0.5 text-xs">categoryId</code> o
+            <code class="rounded bg-slate-100 px-1.5 py-0.5 text-xs">categoryName</code> (se crea si no existe).
+          </p>
 
-  <div *ngIf="isModalOpen" class="fixed inset-0 z-50 overflow-y-auto bg-slate-900/50 p-4">
-    <div class="mx-auto mt-12 max-w-2xl rounded-2xl bg-white p-6 shadow-xl">
-      <div class="mb-5 flex items-center justify-between"><h2 class="text-xl font-semibold">{{ isEditMode ? 'Editar tour' : 'Nuevo tour' }}</h2><button (click)="closeModal()" aria-label="Cerrar" class="text-2xl text-slate-400">×</button></div>
-      <form [formGroup]="tourForm" (ngSubmit)="saveTour()" class="space-y-4">
-        <div><label class="block text-sm font-medium">Nombre *</label><input formControlName="name" class="mt-1 w-full rounded-2xl border border-slate-200 px-4 py-3 text-sm outline-none transition focus:border-primary focus:ring-2 focus:ring-primary/10" /><p *ngIf="tourForm.controls['name'].touched && tourForm.controls['name'].invalid" class="mt-1 text-sm text-red-600">Ingresa al menos 3 caracteres.</p></div>
-        <div><label class="block text-sm font-medium">Descripción *</label><textarea formControlName="description" rows="3" class="mt-1 w-full rounded-2xl border border-slate-200 px-4 py-3 text-sm outline-none transition focus:border-primary focus:ring-2 focus:ring-primary/10"></textarea></div>
-        <div class="grid gap-4 sm:grid-cols-2"><div><label class="block text-sm font-medium">Precio adulto *</label><input type="number" min="0" step="0.01" formControlName="adultPrice" class="mt-1 w-full rounded-2xl border border-slate-200 px-4 py-3 text-sm outline-none transition focus:border-primary focus:ring-2 focus:ring-primary/10" /></div><div><label class="block text-sm font-medium">Duración (días) *</label><input type="number" min="1" formControlName="durationDays" placeholder="Ej: 4" class="mt-1 w-full rounded-2xl border border-slate-200 px-4 py-3 text-sm outline-none transition focus:border-primary focus:ring-2 focus:ring-primary/10" /></div></div>
-        <div class="grid gap-4 sm:grid-cols-2"><div><label class="block text-sm font-medium">Horas adicionales</label><input type="number" min="0" formControlName="durationHours" placeholder="Ej: 0" class="mt-1 w-full rounded-2xl border border-slate-200 px-4 py-3 text-sm outline-none transition focus:border-primary focus:ring-2 focus:ring-primary/10" /></div><div><label class="block text-sm font-medium">Texto de duración *</label><input formControlName="durationText" placeholder="Ej. 4 días / 3 noches" class="mt-1 w-full rounded-2xl border border-slate-200 px-4 py-3 text-sm outline-none transition focus:border-primary focus:ring-2 focus:ring-primary/10" /></div></div>
-        <div class="grid gap-4 sm:grid-cols-3"><div><label class="block text-sm font-medium">País *</label><input formControlName="country" class="mt-1 w-full rounded-2xl border border-slate-200 px-4 py-3 text-sm outline-none transition focus:border-primary focus:ring-2 focus:ring-primary/10" /></div><div><label class="block text-sm font-medium">Región/Departamento *</label><input formControlName="region" class="mt-1 w-full rounded-2xl border border-slate-200 px-4 py-3 text-sm outline-none transition focus:border-primary focus:ring-2 focus:ring-primary/10" /></div><div><label class="block text-sm font-medium">Ciudad *</label><input formControlName="city" class="mt-1 w-full rounded-2xl border border-slate-200 px-4 py-3 text-sm outline-none transition focus:border-primary focus:ring-2 focus:ring-primary/10" /></div></div>
-        <div class="grid gap-4 sm:grid-cols-2"><div><label class="block text-sm font-medium">Punto de encuentro</label><input formControlName="meetingPoint" class="mt-1 w-full rounded-2xl border border-slate-200 px-4 py-3 text-sm outline-none transition focus:border-primary focus:ring-2 focus:ring-primary/10" /></div><div><label class="block text-sm font-medium">Punto final</label><input formControlName="endingPoint" class="mt-1 w-full rounded-2xl border border-slate-200 px-4 py-3 text-sm outline-none transition focus:border-primary focus:ring-2 focus:ring-primary/10" /></div></div>
-        <div class="grid gap-4 sm:grid-cols-2"><div><label class="block text-sm font-medium">Incluye recogida</label><input type="checkbox" formControlName="pickup" class="mt-1 w-full rounded border-slate-200" /></div><div><label class="block text-sm font-medium">Hora inicio</label><input type="time" formControlName="startTime" class="mt-1 w-full rounded-2xl border border-slate-200 px-4 py-3 text-sm outline-none transition focus:border-primary focus:ring-2 focus:ring-primary/10" /></div></div>
-        <div class="grid gap-4 sm:grid-cols-2"><div><label class="block text-sm font-medium">Hora fin</label><input type="time" formControlName="endTime" class="mt-1 w-full rounded-2xl border border-slate-200 px-4 py-3 text-sm outline-none transition focus:border-primary focus:ring-2 focus:ring-primary/10" /></div><div><label class="block text-sm font-medium">Dificultad</label><input formControlName="difficulty" placeholder="Fácil, media o difícil" class="mt-1 w-full rounded-2xl border border-slate-200 px-4 py-3 text-sm outline-none transition focus:border-primary focus:ring-2 focus:ring-primary/10" /></div></div>
-        <div class="grid gap-4 sm:grid-cols-2"><div><label class="block text-sm font-medium">Altitud mínima (m)</label><input type="number" min="0" formControlName="altitudeMin" class="mt-1 w-full rounded-2xl border border-slate-200 px-4 py-3 text-sm outline-none transition focus:border-primary focus:ring-2 focus:ring-primary/10" /></div><div><label class="block text-sm font-medium">Altitud máxima (m)</label><input type="number" min="0" formControlName="altitudeMax" class="mt-1 w-full rounded-2xl border border-slate-200 px-4 py-3 text-sm outline-none transition focus:border-primary focus:ring-2 focus:ring-primary/10" /></div></div>
-        <div class="grid gap-4 sm:grid-cols-2"><div><label class="block text-sm font-medium">Tipo de grupo</label><input formControlName="groupType" placeholder="Grupos pequeños (máx 12)" class="mt-1 w-full rounded-2xl border border-slate-200 px-4 py-3 text-sm outline-none transition focus:border-primary focus:ring-2 focus:ring-primary/10" /></div><div><label class="block text-sm font-medium">Destacado</label><input type="checkbox" formControlName="featured" class="mt-1 w-full rounded border-slate-200" /></div></div>
-        <div class="grid gap-4 sm:grid-cols-2"><div><label class="block text-sm font-medium">Estado *</label><select formControlName="status" class="mt-1 w-full rounded-2xl border border-slate-200 px-4 py-3 text-sm outline-none transition focus:border-primary focus:ring-2 focus:ring-primary/10"><option value="published">Publicado</option><option value="draft">Borrador</option><option value="archived">Archivado</option></select></div><div><label class="block text-sm font-medium">Imagen principal</label><input type="url" formControlName="coverImage" class="mt-1 w-full rounded-2xl border border-slate-200 px-4 py-3 text-sm outline-none transition focus:border-primary focus:ring-2 focus:ring-primary/10" /></div></div>
-        <div class="grid gap-4 sm:grid-cols-2"><div><label class="block text-sm font-medium">Video URL</label><input type="url" formControlName="video" class="mt-1 w-full rounded-2xl border border-slate-200 px-4 py-3 text-sm outline-none transition focus:border-primary focus:ring-2 focus:ring-primary/10" /></div><div><label class="block text-sm font-medium">Moneda</label><input formControlName="currency" class="mt-1 w-full rounded-2xl border border-slate-200 px-4 py-3 text-sm outline-none transition focus:border-primary focus:ring-2 focus:ring-primary/10" /></div></div>
-        <div class="grid gap-4 sm:grid-cols-2"><div><label class="block text-sm font-medium">Precio adulto *</label><input type="number" min="0" step="0.01" formControlName="adultPrice" class="mt-1 w-full rounded-2xl border border-slate-200 px-4 py-3 text-sm outline-none transition focus:border-primary focus:ring-2 focus:ring-primary/10" /></div><div><label class="block text-sm font-medium">Precio niño</label><input type="number" min="0" step="0.01" formControlName="childPrice" class="mt-1 w-full rounded-2xl border border-slate-200 px-4 py-3 text-sm outline-none transition focus:border-primary focus:ring-2 focus:ring-primary/10" /></div></div>
-        <div class="grid gap-4 sm:grid-cols-2"><div><label class="block text-sm font-medium">Descuento</label><input type="number" min="0" formControlName="discount" class="mt-1 w-full rounded-2xl border border-slate-200 px-4 py-3 text-sm outline-none transition focus:border-primary focus:ring-2 focus:ring-primary/10" /></div><div><label class="block text-sm font-medium">SEO Title</label><input formControlName="seoTitle" class="mt-1 w-full rounded-2xl border border-slate-200 px-4 py-3 text-sm outline-none transition focus:border-primary focus:ring-2 focus:ring-primary/10" /></div></div>
-        <div class="grid gap-4 sm:grid-cols-2"><div><label class="block text-sm font-medium">SEO Description</label><textarea formControlName="seoDescription" rows="2" class="mt-1 w-full rounded-2xl border border-slate-200 px-4 py-3 text-sm outline-none transition focus:border-primary focus:ring-2 focus:ring-primary/10"></textarea></div><div><label class="block text-sm font-medium">SEO Keywords (JSON array)</label><input formControlName="seoKeywords" placeholder="['cusco', 'machu picchu', 'peru']" class="mt-1 w-full rounded-2xl border border-slate-200 px-4 py-3 text-sm outline-none transition focus:border-primary focus:ring-2 focus:ring-primary/10" /></div></div>
-        <div class="grid gap-4 sm:grid-cols-2"><div><label class="block text-sm font-medium">Provider ID</label><input formControlName="providerId" class="mt-1 w-full rounded-2xl border border-slate-200 px-4 py-3 text-sm outline-none transition focus:border-primary focus:ring-2 focus:ring-primary/10" /></div><div><label class="block text-sm font-medium">Source URL</label><input type="url" formControlName="sourceUrl" class="mt-1 w-full rounded-2xl border border-slate-200 px-4 py-3 text-sm outline-none transition focus:border-primary focus:ring-2 focus:ring-primary/10" /></div></div>
-        <div><label class="block text-sm font-medium">Imagen principal</label><input type="url" formControlName="coverImage" class="mt-1 w-full rounded-2xl border border-slate-200 px-4 py-3 text-sm outline-none transition focus:border-primary focus:ring-2 focus:ring-primary/10" /></div>
-        <div class="flex justify-end gap-3 pt-2"><button type="button" (click)="closeModal()" class="rounded-2xl border border-slate-300 px-4 py-2">Cancelar</button><button type="submit" [disabled]="isLoading" class="rounded-2xl bg-primary px-4 py-2 text-white disabled:opacity-50">{{ isLoading ? 'Guardando...' : 'Guardar' }}</button></div>
-      </form>
+          <div class="flex flex-wrap items-center gap-3">
+            <label class="inline-flex cursor-pointer items-center gap-2 rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-sm font-medium text-slate-700 transition hover:border-primary/30 hover:bg-primary/5 hover:text-primary">
+              <i class="ri-file-upload-line text-primary"></i>
+              Cargar archivo JSON
+              <input type="file" accept=".json,application/json" class="hidden" (change)="onBulkFile($event)" />
+            </label>
+            <button (click)="loadBulkExample()" class="inline-flex items-center gap-2 rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-sm font-medium text-slate-700 transition hover:border-primary/30 hover:bg-primary/5 hover:text-primary">
+              <i class="ri-code-line text-primary"></i>
+              Ver ejemplo
+            </button>
+          </div>
+
+          <textarea [(ngModel)]="bulkJson" (ngModelChange)="bulkParsed = null" rows="14" spellcheck="false"
+            placeholder='[ { "title": "...", "slug": "...", "code": "...", "shortDescription": "...", "description": "...", "durationHours": 8, "durationDays": 3, "difficulty": "Moderate", "groupType": "Shared", "serviceType": "MultiDay", "categoryName": "Aventura" } ]'
+            class="w-full rounded-xl border border-slate-200 bg-slate-50 p-4 font-mono text-xs leading-relaxed text-slate-700 outline-none transition focus:border-primary/40 focus:ring-2 focus:ring-primary/5"></textarea>
+
+          <div class="flex flex-wrap items-center gap-3">
+            <button (click)="validateBulk()" class="inline-flex items-center gap-2 rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-sm font-medium text-slate-700 transition hover:border-primary/30 hover:bg-primary/5 hover:text-primary">
+              <i class="ri-check-line text-primary"></i>
+              Validar
+            </button>
+            <button (click)="uploadBulk()" [disabled]="bulkUploading || !bulkParsed"
+              class="inline-flex items-center gap-2 rounded-xl bg-linear-to-r from-primary to-primary-dark px-5 py-2.5 text-sm font-semibold text-white shadow-lg shadow-primary/20 transition hover:shadow-xl disabled:cursor-not-allowed disabled:opacity-50">
+              <i class="ri-upload-line" *ngIf="!bulkUploading"></i>
+              <i class="ri-loader-4-line animate-spin" *ngIf="bulkUploading"></i>
+              {{ bulkUploading ? 'Subiendo…' : 'Subir tours' }}
+            </button>
+            <span *ngIf="bulkParsed" class="inline-flex items-center gap-1 text-sm font-medium text-green-600">
+              <i class="ri-checkbox-circle-line"></i> {{ bulkParsed.length }} tour(s) válidos listos para subir.
+            </span>
+          </div>
+
+          <div *ngIf="bulkError" class="flex items-start gap-2 rounded-xl border border-red-200 bg-red-50 p-4 text-sm text-red-700">
+            <i class="ri-error-warning-line mt-0.5 text-lg"></i> <span>{{ bulkError }}</span>
+          </div>
+
+          <div *ngIf="bulkResult" class="flex items-start gap-2 rounded-xl border border-green-200 bg-green-50 p-4 text-sm text-green-700">
+            <i class="ri-checkbox-circle-line mt-0.5 text-lg"></i> <span>{{ bulkResult }}</span>
+          </div>
+        </div>
+      </div>
     </div>
+
+    <!-- ====== FORM VIEW ====== -->
+    <div *ngIf="activeView === 'form'">
+      <div class="animate-slide-up overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
+
+        <!-- Form Header -->
+        <div class="sticky top-0 z-30 flex items-center justify-between border-b border-slate-100 bg-white/90 px-6 py-4 backdrop-blur">
+          <div class="flex items-center gap-4">
+            <button (click)="closeForm()" class="inline-flex items-center gap-1.5 rounded-lg px-2 py-1 text-sm font-medium text-slate-500 transition hover:bg-slate-100 hover:text-slate-800">
+              <i class="ri-arrow-left-line"></i> Volver
+            </button>
+            <div class="h-6 w-px bg-slate-200"></div>
+            <h2 class="text-lg font-bold text-tertiary">
+              <i class="ri-map-pin-line mr-2 text-primary"></i>
+              {{ isEditMode ? 'Editar tour' : 'Nuevo tour' }}
+            </h2>
+          </div>
+          <span *ngIf="isEditMode" class="hidden rounded-full bg-primary/10 px-3 py-1 text-xs font-medium text-primary sm:inline">{{ selectedId?.slice(0,8) }}…</span>
+        </div>
+
+        <form [formGroup]="form" (ngSubmit)="saveTour()" class="p-6">
+
+          <!-- Validation Summary -->
+          <div *ngIf="formSubmitted && form.invalid" class="mb-6 flex items-start gap-3 rounded-xl border border-red-200 bg-red-50 p-4">
+            <i class="ri-error-warning-line mt-0.5 text-lg text-red-500"></i>
+            <div>
+              <p class="text-sm font-semibold text-red-800">Corrige los siguientes errores:</p>
+              <ul class="mt-1.5 list-inside list-disc text-sm text-red-700">
+                <li *ngIf="form.get('title')?.invalid">Título es requerido</li>
+                <li *ngIf="form.get('shortDescription')?.invalid">Descripción corta es requerida</li>
+                <li *ngIf="form.get('description')?.invalid">Descripción es requerida</li>
+                <li *ngIf="form.get('categoryId')?.invalid">Categoría es requerida</li>
+              </ul>
+            </div>
+          </div>
+
+          <!-- Two-column layout -->
+          <div class="grid gap-6 lg:grid-cols-2">
+
+            <!-- Left Column -->
+            <div class="space-y-6">
+
+              <!-- Basic Info Section -->
+              <div class="rounded-xl border border-slate-100 bg-slate-50/50 p-5">
+                <h3 class="mb-4 flex items-center gap-2 text-sm font-bold uppercase tracking-wider text-slate-600">
+                  <span class="flex h-6 w-6 items-center justify-center rounded-lg bg-primary/10 text-primary"><i class="ri-information-line text-sm"></i></span>
+                  Información básica
+                </h3>
+                <div class="space-y-4">
+                  <div class="grid gap-4 sm:grid-cols-2">
+                    <div>
+                      <label class="mb-1.5 block text-xs font-semibold text-slate-700">Título <span class="text-red-500">*</span></label>
+                      <input formControlName="title" placeholder="Nombre del tour" (input)="onTitleChange()"
+                        class="w-full rounded-lg border border-slate-200 px-3.5 py-2.5 text-sm outline-none transition focus:border-primary/50 focus:ring-2 focus:ring-primary/5" />
+                    </div>
+                    <div>
+                      <label class="mb-1.5 block text-xs font-semibold text-slate-700">Subtítulo</label>
+                      <input formControlName="subtitle" placeholder="Frase corta"
+                        class="w-full rounded-lg border border-slate-200 px-3.5 py-2.5 text-sm outline-none transition focus:border-primary/50 focus:ring-2 focus:ring-primary/5" />
+                    </div>
+                  </div>
+                  <div class="grid gap-4 sm:grid-cols-2">
+                    <div>
+                      <label class="mb-1.5 block text-xs font-semibold text-slate-700">Slug (auto-generado)</label>
+                      <input formControlName="slug" placeholder="auto-generado desde el título" readonly
+                        class="w-full cursor-not-allowed rounded-lg border border-slate-200 bg-slate-100 px-3.5 py-2.5 text-sm font-mono text-xs text-slate-500 outline-none" />
+                    </div>
+                    <div>
+                      <label class="mb-1.5 block text-xs font-semibold text-slate-700">Código</label>
+                      <input formControlName="code" placeholder="auto-generado si se deja vacío"
+                        class="w-full rounded-lg border border-slate-200 px-3.5 py-2.5 text-sm font-mono text-xs outline-none transition focus:border-primary/50 focus:ring-2 focus:ring-primary/5" />
+                    </div>
+                  </div>
+                  <div>
+                    <div class="mb-1.5 flex items-center justify-between">
+                      <label class="block text-xs font-semibold text-slate-700">Descripción corta <span class="text-red-500">*</span></label>
+                      <span class="text-[10px] text-slate-400">{{ (form.get('shortDescription')?.value || '').length }} car.</span>
+                    </div>
+                    <textarea formControlName="shortDescription" rows="2" placeholder="Resumen atractivo del tour"
+                      class="w-full rounded-lg border border-slate-200 px-3.5 py-2.5 text-sm outline-none transition focus:border-primary/50 focus:ring-2 focus:ring-primary/5"></textarea>
+                  </div>
+                  <div>
+                    <div class="mb-1.5 flex items-center justify-between">
+                      <label class="block text-xs font-semibold text-slate-700">Descripción completa <span class="text-red-500">*</span></label>
+                      <span class="text-[10px] text-slate-400">{{ (form.get('description')?.value || '').length }} car.</span>
+                    </div>
+                    <textarea formControlName="description" rows="4" placeholder="Descripción detallada del tour"
+                      class="w-full rounded-lg border border-slate-200 px-3.5 py-2.5 text-sm outline-none transition focus:border-primary/50 focus:ring-2 focus:ring-primary/5"></textarea>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Duration & Classification -->
+              <div class="rounded-xl border border-slate-100 bg-slate-50/50 p-5">
+                <h3 class="mb-4 flex items-center gap-2 text-sm font-bold uppercase tracking-wider text-slate-600">
+                  <span class="flex h-6 w-6 items-center justify-center rounded-lg bg-primary/10 text-primary"><i class="ri-time-line text-sm"></i></span>
+                  Duración y clasificación
+                </h3>
+                <div class="space-y-4">
+                  <div class="grid gap-4 sm:grid-cols-2">
+                    <div>
+                      <label class="mb-1.5 block text-xs font-semibold text-slate-700">Días <span class="text-red-500">*</span></label>
+                      <input type="number" min="0" formControlName="durationDays"
+                        class="w-full rounded-lg border border-slate-200 px-3.5 py-2.5 text-sm outline-none transition focus:border-primary/50 focus:ring-2 focus:ring-primary/5" />
+                    </div>
+                    <div>
+                      <label class="mb-1.5 block text-xs font-semibold text-slate-700">Horas</label>
+                      <input type="number" min="0" formControlName="durationHours"
+                        class="w-full rounded-lg border border-slate-200 px-3.5 py-2.5 text-sm outline-none transition focus:border-primary/50 focus:ring-2 focus:ring-primary/5" />
+                    </div>
+                  </div>
+                  <div class="grid gap-4 sm:grid-cols-3">
+                    <div>
+                      <label class="mb-1.5 block text-xs font-semibold text-slate-700">Dificultad <span class="text-red-500">*</span></label>
+                      <select formControlName="difficulty"
+                        class="w-full rounded-lg border border-slate-200 px-3.5 py-2.5 text-sm outline-none transition focus:border-primary/50 focus:ring-2 focus:ring-primary/5">
+                        <option value="Easy">Fácil</option>
+                        <option value="Moderate">Moderada</option>
+                        <option value="Challenging">Difícil</option>
+                      </select>
+                    </div>
+                    <div>
+                      <label class="mb-1.5 block text-xs font-semibold text-slate-700">Grupo</label>
+                      <select formControlName="groupType"
+                        class="w-full rounded-lg border border-slate-200 px-3.5 py-2.5 text-sm outline-none transition focus:border-primary/50 focus:ring-2 focus:ring-primary/5">
+                        <option value="Shared">Compartido</option>
+                        <option value="Private">Privado</option>
+                      </select>
+                    </div>
+                    <div>
+                      <label class="mb-1.5 block text-xs font-semibold text-slate-700">Servicio</label>
+                      <select formControlName="serviceType"
+                        class="w-full rounded-lg border border-slate-200 px-3.5 py-2.5 text-sm outline-none transition focus:border-primary/50 focus:ring-2 focus:ring-primary/5">
+                        <option value="HalfDay">Medio día</option>
+                        <option value="FullDay">Día completo</option>
+                        <option value="MultiDay">Multi días</option>
+                      </select>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Flags & Category -->
+              <div class="rounded-xl border border-slate-100 bg-slate-50/50 p-5">
+                <h3 class="mb-4 flex items-center gap-2 text-sm font-bold uppercase tracking-wider text-slate-600">
+                  <span class="flex h-6 w-6 items-center justify-center rounded-lg bg-primary/10 text-primary"><i class="ri-flag-line text-sm"></i></span>
+                  Estado y categoría
+                </h3>
+                <div class="space-y-4">
+                  <div class="relative">
+                    <label class="mb-1.5 block text-xs font-semibold text-slate-700">Categoría <span class="text-red-500">*</span></label>
+                    <div class="relative" *ngIf="!form.get('categoryId')?.value; else catTag">
+                      <i class="ri-folder-line absolute left-3 top-1/2 -translate-y-1/2 text-slate-400"></i>
+                      <input [value]="categorySearch" (input)="onCategoryInput($event)"
+                        placeholder="Buscar categoría…" (focus)="showCategoryDropdown=true" (blur)="hideCategoryDropdown()"
+                        [class.border-red-300]="formSubmitted && form.get('categoryId')?.invalid"
+                        class="w-full rounded-lg border border-slate-200 py-2.5 pl-9 pr-3.5 text-sm outline-none transition focus:border-primary/50 focus:ring-2 focus:ring-primary/5" />
+                      <div *ngIf="showCategoryDropdown"
+                        class="absolute left-0 right-0 top-full z-20 mt-1 max-h-48 overflow-auto rounded-lg border border-slate-200 bg-white shadow-lg">
+                        <button *ngFor="let c of filteredCategories" type="button" (mousedown)="selectCategory(c)"
+                          class="w-full px-3.5 py-2 text-left text-sm hover:bg-slate-50">{{ c.name }}</button>
+                        <button *ngIf="categorySearch.trim() && !filteredCategories.some(c => c.name.toLowerCase() === categorySearch.trim().toLowerCase())" type="button" (mousedown)="createCategory()"
+                          class="flex w-full items-center gap-2 border-t border-slate-100 px-3.5 py-2 text-left text-sm font-medium text-primary hover:bg-primary/5">
+                          <i class="ri-add-line"></i> Crear "{{ categorySearch }}"
+                        </button>
+                      </div>
+                    </div>
+                    <ng-template #catTag>
+                      <div class="inline-flex items-center gap-1.5 rounded-full bg-primary/10 px-3 py-1.5 text-sm font-medium text-primary">
+                        <i class="ri-folder-line"></i> {{ currentCategoryName }}
+                        <button type="button" (click)="clearCategory()" class="ml-1 text-primary/60 transition hover:text-primary">&times;</button>
+                      </div>
+                    </ng-template>
+                  </div>
+                  <div>
+                    <label class="mb-1.5 block text-xs font-semibold text-slate-700">Proveedor</label>
+                    <input formControlName="providerId" placeholder="ID del proveedor"
+                      class="w-full rounded-lg border border-slate-200 px-3.5 py-2.5 text-sm outline-none transition focus:border-primary/50 focus:ring-2 focus:ring-primary/5" />
+                  </div>
+                  <div class="flex gap-6">
+                    <label class="flex cursor-pointer items-center gap-2.5">
+                      <input type="checkbox" formControlName="featured" class="h-4 w-4 rounded border-slate-300 text-amber-500 focus:ring-amber-200" />
+                      <span class="text-sm font-medium text-slate-700">Tour destacado</span>
+                    </label>
+                    <label class="flex cursor-pointer items-center gap-2.5">
+                      <input type="checkbox" formControlName="active" class="h-4 w-4 rounded border-slate-300 text-green-500 focus:ring-green-200" />
+                      <span class="text-sm font-medium text-slate-700">Activo</span>
+                    </label>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+
+            <!-- Right Column -->
+            <div class="space-y-6">
+
+              <!-- Sub-entities Tabs -->
+              <div class="rounded-xl border border-slate-100 bg-slate-50/50 p-5">
+                <h3 class="mb-4 flex items-center gap-2 text-sm font-bold uppercase tracking-wider text-slate-600">
+                  <span class="flex h-6 w-6 items-center justify-center rounded-lg bg-primary/10 text-primary"><i class="ri-list-check text-sm"></i></span>
+                  Contenido del tour
+                </h3>
+
+                <!-- Tab Navigation -->
+                <nav class="mb-5 flex flex-wrap gap-1.5">
+                  <button type="button" (click)="subEntityTab = 'itinerary'" class="inline-flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-xs font-medium transition"
+                    [class.bg-primary]="subEntityTab === 'itinerary'" [class.text-white]="subEntityTab === 'itinerary'"
+                    [class.bg-white]="subEntityTab !== 'itinerary'" [class.text-slate-600]="subEntityTab !== 'itinerary'" [class.shadow-sm]="subEntityTab !== 'itinerary'"
+                    [class.hover:bg-slate-100]="subEntityTab !== 'itinerary'">
+                    <i class="ri-calendar-line"></i> Itinerario
+                    <span class="rounded-full px-1.5 text-[10px]" [class.bg-white/25]="subEntityTab === 'itinerary'" [class.bg-slate-100]="subEntityTab !== 'itinerary'">{{ itineraryDays.length }}</span>
+                  </button>
+                  <button type="button" (click)="subEntityTab = 'includes'" class="inline-flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-xs font-medium transition"
+                    [class.bg-primary]="subEntityTab === 'includes'" [class.text-white]="subEntityTab === 'includes'"
+                    [class.bg-white]="subEntityTab !== 'includes'" [class.text-slate-600]="subEntityTab !== 'includes'" [class.shadow-sm]="subEntityTab !== 'includes'"
+                    [class.hover:bg-slate-100]="subEntityTab !== 'includes'">
+                    <i class="ri-checkbox-circle-line"></i> Incluye
+                    <span class="rounded-full px-1.5 text-[10px]" [class.bg-white/25]="subEntityTab === 'includes'" [class.bg-slate-100]="subEntityTab !== 'includes'">{{ includes.length }}</span>
+                  </button>
+                  <button type="button" (click)="subEntityTab = 'excludes'" class="inline-flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-xs font-medium transition"
+                    [class.bg-primary]="subEntityTab === 'excludes'" [class.text-white]="subEntityTab === 'excludes'"
+                    [class.bg-white]="subEntityTab !== 'excludes'" [class.text-slate-600]="subEntityTab !== 'excludes'" [class.shadow-sm]="subEntityTab !== 'excludes'"
+                    [class.hover:bg-slate-100]="subEntityTab !== 'excludes'">
+                    <i class="ri-close-circle-line"></i> Excluye
+                    <span class="rounded-full px-1.5 text-[10px]" [class.bg-white/25]="subEntityTab === 'excludes'" [class.bg-slate-100]="subEntityTab !== 'excludes'">{{ excludes.length }}</span>
+                  </button>
+                  <button type="button" (click)="subEntityTab = 'faqs'" class="inline-flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-xs font-medium transition"
+                    [class.bg-primary]="subEntityTab === 'faqs'" [class.text-white]="subEntityTab === 'faqs'"
+                    [class.bg-white]="subEntityTab !== 'faqs'" [class.text-slate-600]="subEntityTab !== 'faqs'" [class.shadow-sm]="subEntityTab !== 'faqs'"
+                    [class.hover:bg-slate-100]="subEntityTab !== 'faqs'">
+                    <i class="ri-question-line"></i> FAQs
+                    <span class="rounded-full px-1.5 text-[10px]" [class.bg-white/25]="subEntityTab === 'faqs'" [class.bg-slate-100]="subEntityTab !== 'faqs'">{{ faqs.length }}</span>
+                  </button>
+                  <button type="button" (click)="subEntityTab = 'prices'" class="inline-flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-xs font-medium transition"
+                    [class.bg-primary]="subEntityTab === 'prices'" [class.text-white]="subEntityTab === 'prices'"
+                    [class.bg-white]="subEntityTab !== 'prices'" [class.text-slate-600]="subEntityTab !== 'prices'" [class.shadow-sm]="subEntityTab !== 'prices'"
+                    [class.hover:bg-slate-100]="subEntityTab !== 'prices'">
+                    <i class="ri-money-dollar-circle-line"></i> Precios
+                    <span class="rounded-full px-1.5 text-[10px]" [class.bg-white/25]="subEntityTab === 'prices'" [class.bg-slate-100]="subEntityTab !== 'prices'">{{ prices.length }}</span>
+                  </button>
+                  <button type="button" (click)="subEntityTab = 'recommendations'" class="inline-flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-xs font-medium transition"
+                    [class.bg-primary]="subEntityTab === 'recommendations'" [class.text-white]="subEntityTab === 'recommendations'"
+                    [class.bg-white]="subEntityTab !== 'recommendations'" [class.text-slate-600]="subEntityTab !== 'recommendations'" [class.shadow-sm]="subEntityTab !== 'recommendations'"
+                    [class.hover:bg-slate-100]="subEntityTab !== 'recommendations'">
+                    <i class="ri-thumb-up-line"></i> Recom.
+                    <span class="rounded-full px-1.5 text-[10px]" [class.bg-white/25]="subEntityTab === 'recommendations'" [class.bg-slate-100]="subEntityTab !== 'recommendations'">{{ recommendations.length }}</span>
+                  </button>
+                  <button type="button" (click)="subEntityTab = 'requirements'" class="inline-flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-xs font-medium transition"
+                    [class.bg-primary]="subEntityTab === 'requirements'" [class.text-white]="subEntityTab === 'requirements'"
+                    [class.bg-white]="subEntityTab !== 'requirements'" [class.text-slate-600]="subEntityTab !== 'requirements'" [class.shadow-sm]="subEntityTab !== 'requirements'"
+                    [class.hover:bg-slate-100]="subEntityTab !== 'requirements'">
+                    <i class="ri-list-check-2"></i> Reqs.
+                    <span class="rounded-full px-1.5 text-[10px]" [class.bg-white/25]="subEntityTab === 'requirements'" [class.bg-slate-100]="subEntityTab !== 'requirements'">{{ requirements.length }}</span>
+                  </button>
+                  <button type="button" (click)="subEntityTab = 'schedules'" class="inline-flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-xs font-medium transition"
+                    [class.bg-primary]="subEntityTab === 'schedules'" [class.text-white]="subEntityTab === 'schedules'"
+                    [class.bg-white]="subEntityTab !== 'schedules'" [class.text-slate-600]="subEntityTab !== 'schedules'" [class.shadow-sm]="subEntityTab !== 'schedules'"
+                    [class.hover:bg-slate-100]="subEntityTab !== 'schedules'">
+                    <i class="ri-timer-line"></i> Horarios
+                    <span class="rounded-full px-1.5 text-[10px]" [class.bg-white/25]="subEntityTab === 'schedules'" [class.bg-slate-100]="subEntityTab !== 'schedules'">{{ schedules.length }}</span>
+                  </button>
+                  <button type="button" (click)="subEntityTab = 'images'" class="inline-flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-xs font-medium transition"
+                    [class.bg-primary]="subEntityTab === 'images'" [class.text-white]="subEntityTab === 'images'"
+                    [class.bg-white]="subEntityTab !== 'images'" [class.text-slate-600]="subEntityTab !== 'images'" [class.shadow-sm]="subEntityTab !== 'images'"
+                    [class.hover:bg-slate-100]="subEntityTab !== 'images'">
+                    <i class="ri-image-line"></i> Imágenes
+                    <span class="rounded-full px-1.5 text-[10px]" [class.bg-white/25]="subEntityTab === 'images'" [class.bg-slate-100]="subEntityTab !== 'images'">{{ images.length }}</span>
+                  </button>
+                  <button type="button" (click)="subEntityTab = 'seo'" class="inline-flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-xs font-medium transition"
+                    [class.bg-primary]="subEntityTab === 'seo'" [class.text-white]="subEntityTab === 'seo'"
+                    [class.bg-white]="subEntityTab !== 'seo'" [class.text-slate-600]="subEntityTab !== 'seo'" [class.shadow-sm]="subEntityTab !== 'seo'"
+                    [class.hover:bg-slate-100]="subEntityTab !== 'seo'">
+                    <i class="ri-search-eye-line"></i> SEO
+                  </button>
+                </nav>
+
+                <!-- ====== ITINERARY TAB ====== -->
+                <div *ngIf="subEntityTab === 'itinerary'">
+                  <div class="mb-3 flex items-center justify-between">
+                    <p class="text-xs text-slate-500">{{ itineraryDays.length }} día(s)</p>
+                    <button type="button" (click)="addItineraryDay()" class="inline-flex items-center gap-1 rounded-lg bg-primary/10 px-3 py-1.5 text-xs font-medium text-primary transition hover:bg-primary/20">
+                      <i class="ri-add-line"></i> Añadir día
+                    </button>
+                  </div>
+                  <div *ngFor="let day of itineraryDays.controls; let i = index; trackBy: trackByFn" class="mb-3 rounded-lg border border-slate-200 bg-white p-4">
+                    <div class="mb-3 flex items-center justify-between">
+                      <div class="flex items-center gap-3">
+                        <span class="flex h-8 w-8 items-center justify-center rounded-lg bg-primary/10 text-sm font-bold text-primary">{{ i + 1 }}</span>
+                        <input [formControl]="fc(day.get('day'))" type="number" min="1" class="w-16 rounded-lg border border-slate-200 px-2 py-1.5 text-xs outline-none" />
+                      </div>
+                      <button type="button" (click)="removeItineraryDay(i)" class="text-red-400 transition hover:text-red-600">
+                        <i class="ri-delete-bin-5-line"></i>
+                      </button>
+                    </div>
+                    <input [formControl]="fc(day.get('title'))" placeholder="Título del día"
+                      class="mb-3 w-full rounded-lg border border-slate-200 px-3 py-2 text-sm outline-none transition focus:border-primary/50 focus:ring-2 focus:ring-primary/5" />
+                    <div class="space-y-2">
+                      <div *ngFor="let act of getActivities(i).controls; let j = index; trackBy: trackByFn" class="flex items-start gap-2 rounded-lg bg-slate-50 p-2.5">
+                        <div class="flex-1 space-y-1.5">
+                          <div class="flex gap-2">
+                            <input [formControl]="fc(act.get('time'))" type="time" class="w-24 rounded border border-slate-200 px-2 py-1 text-xs outline-none" />
+                            <input [formControl]="fc(act.get('duration'))" type="number" min="0" placeholder="min" class="w-16 rounded border border-slate-200 px-2 py-1 text-xs outline-none" />
+                          </div>
+                          <input [formControl]="fc(act.get('title'))" placeholder="Título de la actividad"
+                            class="w-full rounded border border-slate-200 px-2 py-1 text-xs outline-none" />
+                          <textarea [formControl]="fc(act.get('description'))" rows="1" placeholder="Descripción"
+                            class="w-full rounded border border-slate-200 px-2 py-1 text-xs outline-none"></textarea>
+                        </div>
+                        <button type="button" (click)="removeActivity(i, j)" class="mt-1 text-red-300 hover:text-red-500">
+                          <i class="ri-close-line"></i>
+                        </button>
+                      </div>
+                      <button type="button" (click)="addActivity(i)" class="text-xs font-medium text-primary hover:text-primary-dark">
+                        <i class="ri-add-line mr-0.5"></i> Añadir actividad
+                      </button>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- ====== INCLUDES TAB ====== -->
+                <div *ngIf="subEntityTab === 'includes'">
+                  <div class="mb-3 flex items-center justify-between">
+                    <p class="text-xs text-slate-500">{{ includes.length }} ítem(s)</p>
+                    <button type="button" (click)="addInclude()" class="inline-flex items-center gap-1 rounded-lg bg-green-50 px-3 py-1.5 text-xs font-medium text-green-700 transition hover:bg-green-100">
+                      <i class="ri-add-line"></i> Añadir
+                    </button>
+                  </div>
+                  <div *ngFor="let inc of includes.controls; let i = index; trackBy: trackByFn" class="mb-2 flex items-start gap-2 rounded-lg border border-slate-200 bg-white p-3">
+                    <div class="flex-1 space-y-2">
+                      <input [formControl]="fc(inc.get('title'))" placeholder="Título (ej: Transporte)"
+                        class="w-full rounded-lg border border-slate-200 px-3 py-2 text-sm outline-none transition focus:border-green-300" />
+                      <textarea [formControl]="fc(inc.get('description'))" rows="1" placeholder="Descripción (opcional)"
+                        class="w-full rounded-lg border border-slate-200 px-3 py-2 text-sm outline-none transition focus:border-green-300"></textarea>
+                    </div>
+                    <button type="button" (click)="removeInclude(i)" class="mt-1 text-red-400 hover:text-red-600">
+                      <i class="ri-close-line"></i>
+                    </button>
+                  </div>
+                </div>
+
+                <!-- ====== EXCLUDES TAB ====== -->
+                <div *ngIf="subEntityTab === 'excludes'">
+                  <div class="mb-3 flex items-center justify-between">
+                    <p class="text-xs text-slate-500">{{ excludes.length }} ítem(s)</p>
+                    <button type="button" (click)="addExclude()" class="inline-flex items-center gap-1 rounded-lg bg-red-50 px-3 py-1.5 text-xs font-medium text-red-700 transition hover:bg-red-100">
+                      <i class="ri-add-line"></i> Añadir
+                    </button>
+                  </div>
+                  <div *ngFor="let exc of excludes.controls; let i = index; trackBy: trackByFn" class="mb-2 flex items-start gap-2 rounded-lg border border-slate-200 bg-white p-3">
+                    <div class="flex-1 space-y-2">
+                      <input [formControl]="fc(exc.get('title'))" placeholder="Título (ej: Alimentación)"
+                        class="w-full rounded-lg border border-slate-200 px-3 py-2 text-sm outline-none transition focus:border-red-300" />
+                      <textarea [formControl]="fc(exc.get('description'))" rows="1" placeholder="Descripción (opcional)"
+                        class="w-full rounded-lg border border-slate-200 px-3 py-2 text-sm outline-none transition focus:border-red-300"></textarea>
+                    </div>
+                    <button type="button" (click)="removeExclude(i)" class="mt-1 text-red-400 hover:text-red-600">
+                      <i class="ri-close-line"></i>
+                    </button>
+                  </div>
+                </div>
+
+                <!-- ====== FAQs TAB ====== -->
+                <div *ngIf="subEntityTab === 'faqs'">
+                  <div class="mb-3 flex items-center justify-between">
+                    <p class="text-xs text-slate-500">{{ faqs.length }} FAQ(s)</p>
+                    <button type="button" (click)="addFaq()" class="inline-flex items-center gap-1 rounded-lg bg-purple-50 px-3 py-1.5 text-xs font-medium text-purple-700 transition hover:bg-purple-100">
+                      <i class="ri-add-line"></i> Añadir FAQ
+                    </button>
+                  </div>
+                  <div *ngFor="let faq of faqs.controls; let i = index; trackBy: trackByFn" class="mb-2 rounded-lg border border-slate-200 bg-white p-3">
+                    <div class="mb-2 flex items-start justify-between">
+                      <input [formControl]="fc(faq.get('question'))" placeholder="Pregunta"
+                        class="flex-1 rounded-lg border border-slate-200 px-3 py-2 text-sm outline-none transition focus:border-purple-300" />
+                      <button type="button" (click)="removeFaq(i)" class="ml-2 text-red-400 hover:text-red-600">
+                        <i class="ri-close-line"></i>
+                      </button>
+                    </div>
+                    <textarea [formControl]="fc(faq.get('answer'))" rows="2" placeholder="Respuesta"
+                      class="w-full rounded-lg border border-slate-200 px-3 py-2 text-sm outline-none transition focus:border-purple-300"></textarea>
+                  </div>
+                </div>
+
+                <!-- ====== PRICES TAB ====== -->
+                <div *ngIf="subEntityTab === 'prices'">
+                  <div class="mb-3 flex items-center justify-between">
+                    <p class="text-xs text-slate-500">{{ prices.length }} precio(s)</p>
+                    <button type="button" (click)="addPrice()" class="inline-flex items-center gap-1 rounded-lg bg-emerald-50 px-3 py-1.5 text-xs font-medium text-emerald-700 transition hover:bg-emerald-100">
+                      <i class="ri-add-line"></i> Añadir precio
+                    </button>
+                  </div>
+                  <div *ngFor="let p of prices.controls; let i = index; trackBy: trackByFn" class="mb-2 flex items-start gap-2 rounded-lg border border-slate-200 bg-white p-3">
+                    <div class="grid flex-1 grid-cols-3 gap-2">
+                      <input [formControl]="fc(p.get('name'))" placeholder="Nombre (ej: Adulto)"
+                        class="rounded-lg border border-slate-200 px-3 py-2 text-sm outline-none transition focus:border-emerald-300" />
+                      <div class="flex gap-1">
+                        <select [formControl]="fc(p.get('currency'))"
+                          class="w-20 rounded-lg border border-slate-200 px-2 py-2 text-xs outline-none">
+                          <option value="USD">USD</option>
+                          <option value="PEN">PEN</option>
+                          <option value="EUR">EUR</option>
+                        </select>
+                        <input [formControl]="fc(p.get('adult'))" type="number" min="0" step="0.01" placeholder="Adulto"
+                          class="flex-1 rounded-lg border border-slate-200 px-2 py-2 text-sm outline-none" />
+                      </div>
+                      <div class="flex gap-1">
+                        <input [formControl]="fc(p.get('child'))" type="number" min="0" step="0.01" placeholder="Niño"
+                          class="flex-1 rounded-lg border border-slate-200 px-2 py-2 text-sm outline-none" />
+                        <input [formControl]="fc(p.get('private'))" type="number" min="0" step="0.01" placeholder="Privado"
+                          class="flex-1 rounded-lg border border-slate-200 px-2 py-2 text-sm outline-none" />
+                      </div>
+                    </div>
+                    <button type="button" (click)="removePrice(i)" class="mt-1 text-red-400 hover:text-red-600">
+                      <i class="ri-close-line"></i>
+                    </button>
+                  </div>
+                </div>
+
+                <!-- ====== RECOMMENDATIONS TAB ====== -->
+                <div *ngIf="subEntityTab === 'recommendations'">
+                  <div class="mb-3 flex items-center justify-between">
+                    <p class="text-xs text-slate-500">{{ recommendations.length }} recomendación(es)</p>
+                    <button type="button" (click)="addRecommendation()" class="inline-flex items-center gap-1 rounded-lg bg-blue-50 px-3 py-1.5 text-xs font-medium text-blue-700 transition hover:bg-blue-100">
+                      <i class="ri-add-line"></i> Añadir
+                    </button>
+                  </div>
+                  <div *ngFor="let r of recommendations.controls; let i = index; trackBy: trackByFn" class="mb-2 flex items-start gap-2 rounded-lg border border-slate-200 bg-white p-3">
+                    <div class="flex-1 space-y-2">
+                      <input [formControl]="fc(r.get('title'))" placeholder="Título"
+                        class="w-full rounded-lg border border-slate-200 px-3 py-2 text-sm outline-none transition focus:border-blue-300" />
+                      <textarea [formControl]="fc(r.get('description'))" rows="1" placeholder="Descripción"
+                        class="w-full rounded-lg border border-slate-200 px-3 py-2 text-sm outline-none transition focus:border-blue-300"></textarea>
+                    </div>
+                    <button type="button" (click)="removeRecommendation(i)" class="mt-1 text-red-400 hover:text-red-600">
+                      <i class="ri-close-line"></i>
+                    </button>
+                  </div>
+                </div>
+
+                <!-- ====== REQUIREMENTS TAB ====== -->
+                <div *ngIf="subEntityTab === 'requirements'">
+                  <div class="mb-3 flex items-center justify-between">
+                    <p class="text-xs text-slate-500">{{ requirements.length }} requisito(s)</p>
+                    <button type="button" (click)="addRequirement()" class="inline-flex items-center gap-1 rounded-lg bg-orange-50 px-3 py-1.5 text-xs font-medium text-orange-700 transition hover:bg-orange-100">
+                      <i class="ri-add-line"></i> Añadir
+                    </button>
+                  </div>
+                  <div *ngFor="let r of requirements.controls; let i = index; trackBy: trackByFn" class="mb-2 flex items-start gap-2 rounded-lg border border-slate-200 bg-white p-3">
+                    <input [formControl]="fc(r.get('requirement'))" placeholder="Ej: Llevar ropa abrigada"
+                      class="flex-1 rounded-lg border border-slate-200 px-3 py-2 text-sm outline-none transition focus:border-orange-300" />
+                    <button type="button" (click)="removeRequirement(i)" class="mt-1 text-red-400 hover:text-red-600">
+                      <i class="ri-close-line"></i>
+                    </button>
+                  </div>
+                </div>
+
+                <!-- ====== SCHEDULES TAB ====== -->
+                <div *ngIf="subEntityTab === 'schedules'">
+                  <div class="mb-3 flex items-center justify-between">
+                    <p class="text-xs text-slate-500">{{ schedules.length }} horario(s)</p>
+                    <button type="button" (click)="addSchedule()" class="inline-flex items-center gap-1 rounded-lg bg-cyan-50 px-3 py-1.5 text-xs font-medium text-cyan-700 transition hover:bg-cyan-100">
+                      <i class="ri-add-line"></i> Añadir horario
+                    </button>
+                  </div>
+                  <div *ngFor="let s of schedules.controls; let i = index; trackBy: trackByFn" class="mb-2 rounded-lg border border-slate-200 bg-white p-3">
+                    <div class="grid grid-cols-2 gap-2">
+                      <input [formControl]="fc(s.get('departure'))" placeholder="Salida (ej: 07:00)"
+                        class="rounded-lg border border-slate-200 px-3 py-2 text-sm outline-none" />
+                      <input [formControl]="fc(s.get('pickupStart'))" placeholder="Recogida (ej: 06:30)"
+                        class="rounded-lg border border-slate-200 px-3 py-2 text-sm outline-none" />
+                      <input [formControl]="fc(s.get('arrival'))" placeholder="Regreso (ej: 18:00)"
+                        class="rounded-lg border border-slate-200 px-3 py-2 text-sm outline-none" />
+                      <div class="flex gap-2">
+                        <input [formControl]="fc(s.get('language'))" placeholder="Idioma (opcional)"
+                          class="flex-1 rounded-lg border border-slate-200 px-3 py-2 text-sm outline-none" />
+                        <label class="flex cursor-pointer items-center gap-1.5 text-xs font-medium text-slate-600">
+                          <input type="checkbox" [formControl]="fc(s.get('available'))" class="h-4 w-4 rounded border-slate-300 text-cyan-500" />
+                          Disponible
+                        </label>
+                      </div>
+                    </div>
+                    <button type="button" (click)="removeSchedule(i)" class="mt-2 text-xs font-medium text-red-400 hover:text-red-600">
+                      <i class="ri-close-line mr-0.5"></i> Eliminar
+                    </button>
+                  </div>
+                </div>
+
+                <!-- ====== IMAGES TAB (gallery) ====== -->
+                <div *ngIf="subEntityTab === 'images'">
+                  <div class="mb-4 flex flex-wrap items-center justify-between gap-3">
+                    <p class="text-xs text-slate-500">{{ images.length }} imagen(es)</p>
+                    <div class="flex items-center gap-2">
+                      <input #fileInput type="file" accept="image/*" class="hidden" (change)="onUploadNewImage($event); fileInput.value=''" />
+                      <button type="button" (click)="fileInput.click()" [disabled]="uploading" class="inline-flex items-center gap-1 rounded-lg bg-linear-to-r from-primary to-primary-dark px-3 py-1.5 text-xs font-semibold text-white shadow-sm transition hover:shadow-md disabled:opacity-50">
+                        <i class="ri-upload-2-line" [class.animate-spin]="uploading"></i> Subir imagen
+                      </button>
+                      <button type="button" (click)="addImage()" class="inline-flex items-center gap-1 rounded-lg bg-primary/10 px-3 py-1.5 text-xs font-medium text-primary transition hover:bg-primary/20">
+                        <i class="ri-link"></i> Añadir por URL
+                      </button>
+                    </div>
+                  </div>
+
+                  <div *ngIf="images.length === 0" class="flex flex-col items-center gap-3 rounded-xl border border-dashed border-slate-300 bg-white py-10">
+                    <div class="flex h-14 w-14 items-center justify-center rounded-full bg-secondary-soft text-primary">
+                      <i class="ri-image-line text-2xl"></i>
+                    </div>
+                    <p class="text-sm font-medium text-slate-500">Aún no hay imágenes</p>
+                    <p class="text-xs text-slate-400">Sube un archivo o añade una URL.</p>
+                  </div>
+
+                  <div *ngIf="images.length > 0" class="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4">
+                    <div *ngFor="let img of images.controls; let i = index; trackBy: trackByFn" class="group relative overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm transition hover:shadow-md">
+                      <div class="relative aspect-[4/3] overflow-hidden bg-linear-to-br from-primary/10 to-primary/5">
+                        <div class="absolute inset-0 flex items-center justify-center text-primary/60"><i class="ri-image-line text-2xl"></i></div>
+                        <img *ngIf="img.get('url')?.value" [src]="img.get('url')?.value" (error)="onImgError($event)" class="absolute inset-0 h-full w-full object-cover" />
+                        <span *ngIf="img.get('featured')?.value" class="absolute left-2 top-2 inline-flex items-center gap-1 rounded-full bg-amber-400 px-2 py-0.5 text-[10px] font-bold text-white shadow">
+                          <i class="ri-star-fill"></i> Destacada
+                        </span>
+                        <div class="absolute inset-0 flex items-center justify-center gap-1 bg-slate-900/45 opacity-0 transition group-hover:opacity-100">
+                          <button type="button" (click)="moveImage(i, -1)" [disabled]="i === 0" title="Subir orden" class="rounded-lg bg-white/90 p-1.5 text-slate-700 transition hover:bg-white disabled:opacity-40"><i class="ri-arrow-up-line"></i></button>
+                          <button type="button" (click)="makeFeatured(i)" title="Marcar destacada" class="rounded-lg bg-white/90 p-1.5 text-amber-500 transition hover:bg-white"><i class="ri-star-line"></i></button>
+                          <button type="button" (click)="moveImage(i, 1)" [disabled]="i === images.length - 1" title="Bajar orden" class="rounded-lg bg-white/90 p-1.5 text-slate-700 transition hover:bg-white disabled:opacity-40"><i class="ri-arrow-down-line"></i></button>
+                        </div>
+                      </div>
+                      <div class="space-y-2 p-2.5">
+                        <div class="flex gap-1.5">
+                          <input [formControl]="fc(img.get('url'))" placeholder="URL de la imagen"
+                            class="min-w-0 flex-1 rounded-lg border border-slate-200 px-2.5 py-1.5 text-xs outline-none transition focus:border-primary/50 focus:ring-2 focus:ring-primary/5" />
+                          <input #rowFile type="file" accept="image/*" class="hidden" (change)="onUploadImage($event, i); rowFile.value=''" />
+                          <button type="button" (click)="rowFile.click()" [disabled]="uploadingIndex === i" class="shrink-0 rounded-lg border border-primary/20 px-2.5 py-1.5 text-xs font-medium text-primary transition hover:bg-primary/10 disabled:opacity-50" title="Subir archivo">
+                            <i class="ri-upload-2-line" [class.animate-spin]="uploadingIndex === i"></i>
+                          </button>
+                        </div>
+                        <input [formControl]="fc(img.get('alt'))" placeholder="Texto alternativo"
+                          class="w-full rounded-lg border border-slate-200 px-2.5 py-1.5 text-xs outline-none transition focus:border-primary/50 focus:ring-2 focus:ring-primary/5" />
+                        <div class="flex items-center justify-between">
+                          <label class="flex cursor-pointer items-center gap-1.5 text-xs font-medium text-slate-600">
+                            <input type="checkbox" [formControl]="fc(img.get('featured'))" class="h-3.5 w-3.5 rounded border-slate-300 text-amber-500" />
+                            Destacada
+                          </label>
+                          <button type="button" (click)="removeImage(i)" class="text-xs font-medium text-red-400 transition hover:text-red-600">
+                            <i class="ri-delete-bin-line mr-0.5"></i> Quitar
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- ====== SEO TAB ====== -->
+                <div *ngIf="subEntityTab === 'seo'">
+                  <div class="space-y-3">
+                    <div>
+                      <label class="mb-1 block text-xs font-semibold text-slate-600">SEO Title</label>
+                      <input formControlName="seoTitle" placeholder="Título para SEO"
+                        class="w-full rounded-lg border border-slate-200 px-3 py-2 text-sm outline-none transition focus:border-indigo-300" />
+                    </div>
+                    <div>
+                      <label class="mb-1 block text-xs font-semibold text-slate-600">SEO Description</label>
+                      <textarea formControlName="seoDescription" rows="2" placeholder="Meta descripción"
+                        class="w-full rounded-lg border border-slate-200 px-3 py-2 text-sm outline-none transition focus:border-indigo-300"></textarea>
+                    </div>
+                    <div>
+                      <label class="mb-1 block text-xs font-semibold text-slate-600">SEO Keywords</label>
+                      <input formControlName="seoKeywords" placeholder="palabras, clave, separadas, por, coma"
+                        class="w-full rounded-lg border border-slate-200 px-3 py-2 text-sm outline-none transition focus:border-indigo-300" />
+                    </div>
+                    <div>
+                      <label class="mb-1 block text-xs font-semibold text-slate-600">Canonical URL</label>
+                      <input formControlName="seoCanonical" placeholder="https://ejemplo.com/tour/mi-tour"
+                        class="w-full rounded-lg border border-slate-200 px-3 py-2 text-sm outline-none transition focus:border-indigo-300" />
+                    </div>
+                  </div>
+                </div>
+
+              </div>
+            </div>
+          </div>
+
+          <!-- Form Actions -->
+          <div class="mt-6 flex items-center justify-between gap-3 border-t border-slate-100 pt-5">
+            <p class="text-xs text-slate-400">Los campos con <span class="text-red-500">*</span> son obligatorios.</p>
+            <div class="flex gap-3">
+              <button type="button" (click)="closeForm()" class="rounded-lg border border-slate-200 px-5 py-2.5 text-sm font-medium text-slate-600 transition hover:bg-slate-50">
+                Cancelar
+              </button>
+              <button type="submit" [disabled]="saving" class="inline-flex items-center gap-2 rounded-lg bg-linear-to-r from-primary to-primary-dark px-6 py-2.5 text-sm font-semibold text-white shadow-lg shadow-primary/20 transition-all hover:shadow-xl hover:shadow-primary/30 disabled:cursor-not-allowed disabled:opacity-50">
+                <i *ngIf="saving" class="ri-loader-4-line animate-spin"></i>
+                {{ saving ? 'Guardando…' : (isEditMode ? 'Actualizar tour' : 'Crear tour') }}
+              </button>
+            </div>
+          </div>
+
+        </form>
+      </div>
+    </div>
+
   </div>
 </div>
 
 <app-confirm-dialog
   [visible]="showConfirm"
   title="Eliminar tour"
-  message="¿Estás seguro de eliminar este tour?"
+  message="¿Estás seguro de eliminar este tour? Esta acción no se puede deshacer."
   confirmLabel="Eliminar"
   (confirmed)="deleteTour()"
   (cancelled)="showConfirm = false"
 ></app-confirm-dialog>
+

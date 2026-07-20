@@ -1,19 +1,19 @@
-import { Component, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
 import { NotificationService } from '../../services/notification.service';
 
 @Component({
   selector: 'app-login',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, RouterLink],
   templateUrl: './login.html',
   styleUrl: './login.css',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class Login {
+export class Login implements OnInit {
   email = '';
   password = '';
   errorMessage = '';
@@ -27,6 +27,16 @@ export class Login {
     private readonly notification: NotificationService,
     private readonly cdr: ChangeDetectorRef,
   ) {}
+
+  ngOnInit(): void {
+    if (this.authService.user()) {
+      this.router.navigateByUrl('/mis-reservas');
+      return;
+    }
+    if (this.route.snapshot.queryParamMap.get('registered') === 'true') {
+      this.notification.show('Cuenta creada. Ahora puedes iniciar sesión.', 'success');
+    }
+  }
 
   submit(): void {
     this.errorMessage = '';

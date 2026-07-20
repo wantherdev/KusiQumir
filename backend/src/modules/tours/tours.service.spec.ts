@@ -10,6 +10,7 @@ const mockPrisma = {
     findUnique: jest.fn(),
     create: jest.fn(),
     update: jest.fn(),
+    delete: jest.fn(),
   },
 };
 
@@ -34,7 +35,7 @@ describe("ToursService", () => {
 
   describe("findAllPublic", () => {
     it("should return paginated tours", async () => {
-      const tours = [{ id: "1", name: "Test" }];
+      const tours = [{ id: "1", title: "Test" }];
       mockPrisma.tour.findMany.mockResolvedValue(tours);
 
       const result = await service.findAllPublic({ take: "10" } as any);
@@ -42,12 +43,12 @@ describe("ToursService", () => {
       expect(result.nextCursor).toBeNull();
     });
 
-    it("should filter by status", async () => {
+    it("should filter by difficulty", async () => {
       mockPrisma.tour.findMany.mockResolvedValue([]);
-      await service.findAllPublic({ status: "published" });
+      await service.findAllPublic({ difficulty: "Easy" });
       expect(mockPrisma.tour.findMany).toHaveBeenCalledWith(
         expect.objectContaining({
-          where: expect.objectContaining({ status: "published" }),
+          where: expect.objectContaining({ difficulty: "Easy" }),
         }),
       );
     });
@@ -55,7 +56,7 @@ describe("ToursService", () => {
 
   describe("findOne", () => {
     it("should return a tour by id", async () => {
-      const tour = { id: "1", name: "Test Tour" };
+      const tour = { id: "1", title: "Test Tour" };
       mockPrisma.tour.findFirst.mockResolvedValue(tour);
 
       const result = await service.findOne("1");
@@ -72,47 +73,47 @@ describe("ToursService", () => {
     it("should create a tour", async () => {
       const payload = {
         slug: "test-tour",
-        name: "New Tour",
+        code: "T001",
+        title: "New Tour",
         description: "A great tour",
-        category: "Adventure",
-        tourType: "Private",
+        shortDescription: "Short desc",
+        categoryId: "cat1",
+        difficulty: "Easy" as any,
+        groupType: "Shared" as any,
+        serviceType: "FullDay" as any,
         durationDays: 3,
-        durationHours: 0,
-        durationText: "3 días",
-        country: "Perú",
-        region: "Cusco",
-        city: "Cusco",
-        adultPrice: 100,
+        durationHours: 8,
       };
       const created = { id: "1", ...payload };
       mockPrisma.tour.create.mockResolvedValue(created);
 
-      const result = await service.create(payload);
+      const result = await service.create(payload as any);
       expect(result).toEqual(created);
     });
   });
 
   describe("update", () => {
     it("should update a tour", async () => {
-      const existing = { id: "1", name: "Old" };
+      const existing = { id: "1", title: "Old" };
       mockPrisma.tour.findFirst.mockResolvedValue(existing);
       mockPrisma.tour.findUnique.mockResolvedValue(existing);
-      mockPrisma.tour.update.mockResolvedValue({ ...existing, name: "Updated" });
+      mockPrisma.tour.update.mockResolvedValue({ ...existing, title: "Updated" });
 
-      const result = await service.update("1", { name: "Updated" });
-      expect(result.name).toBe("Updated");
+      const result = await service.update("1", { title: "Updated" } as any);
+      expect(result.title).toBe("Updated");
     });
   });
 
   describe("remove", () => {
-    it("should archive a tour (change status to archived)", async () => {
-      const tour = { id: "1", name: "Test" };
+    it("should delete a tour permanently (hard delete)", async () => {
+      const tour = { id: "1", title: "Test" };
       mockPrisma.tour.findFirst.mockResolvedValue(tour);
       mockPrisma.tour.findUnique.mockResolvedValue(tour);
-      mockPrisma.tour.update.mockResolvedValue({ ...tour, status: "archived" });
+      mockPrisma.tour.delete.mockResolvedValue(tour);
 
       const result = await service.remove("1");
-      expect(result.status).toBe("archived");
+      expect(result.id).toBe("1");
+      expect(mockPrisma.tour.delete).toHaveBeenCalledWith({ where: { id: "1" } });
     });
   });
 });

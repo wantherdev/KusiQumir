@@ -4,7 +4,7 @@ import {
 } from "@nestjs/common";
 import { CacheInterceptor } from "@nestjs/cache-manager";
 import { ApiProperty, ApiTags, ApiOperation, ApiBearerAuth } from "@nestjs/swagger";
-import { IsNotEmpty, IsOptional, IsString, IsBoolean, IsEnum } from "class-validator";
+import { IsNotEmpty, IsOptional, IsString, IsBoolean, IsEnum, IsNumber } from "class-validator";
 import { ExperiencesService } from "./experiences.service";
 import { JwtAuthGuard } from "../auth/jwt-auth.guard";
 import { RolesGuard } from "../auth/roles.guard";
@@ -32,8 +32,10 @@ export class CreateExperienceDto {
   @IsOptional() @IsString() tourId?: string;
   @ApiProperty({ description: "Destacado", required: false })
   @IsOptional() @IsBoolean() featured?: boolean;
+  @ApiProperty({ description: "Orden", required: false })
+  @IsOptional() @IsNumber() sortOrder?: number;
   @ApiProperty({ description: "Estado de la experiencia", required: false })
-  @IsOptional() @IsEnum(["DRAFT", "PUBLISHED"]) status?: string;
+  @IsOptional() @IsEnum(["DRAFT", "PUBLISHED", "ARCHIVED"]) status?: string;
 }
 
 export class UpdateExperienceDto {
@@ -57,8 +59,10 @@ export class UpdateExperienceDto {
   @IsOptional() @IsString() tourId?: string;
   @ApiProperty({ description: "Destacado", required: false })
   @IsOptional() @IsBoolean() featured?: boolean;
+  @ApiProperty({ description: "Orden", required: false })
+  @IsOptional() @IsNumber() sortOrder?: number;
   @ApiProperty({ description: "Estado de la experiencia", required: false })
-  @IsOptional() @IsEnum(["DRAFT", "PUBLISHED"]) status?: string;
+  @IsOptional() @IsEnum(["DRAFT", "PUBLISHED", "ARCHIVED"]) status?: string;
 }
 
 class FindAllExperiencesQuery {

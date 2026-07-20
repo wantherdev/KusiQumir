@@ -1,136 +1,200 @@
-<section class="page-shell px-4 py-20 sm:px-6 lg:px-8">
-  <div class="mx-auto flex max-w-4xl flex-col gap-10">
-    <div class="page-hero rounded-[2rem] p-8 text-center sm:p-12">
-      <p class="text-sm font-semibold uppercase tracking-[0.35em] text-primary">Reservar</p>
-      <h1 class="mt-4 text-4xl font-bold text-slate-900 sm:text-5xl">Completa tu reserva</h1>
-      <p class="mt-4 text-lg text-slate-600">
-        Déjanos tus datos y nos pondremos en contacto para confirmar tu experiencia.
-      </p>
-    </div>
+<section class="page-shell px-4 py-16 sm:px-6 lg:px-8">
+  <div class="mx-auto flex max-w-6xl flex-col gap-10">
 
+    <!-- Hero -->
+    <header class="relative overflow-hidden rounded-[2rem] bg-linear-to-r from-primary to-primary-dark p-8 text-center text-white shadow-lg shadow-primary/20 sm:p-12">
+      <div class="pointer-events-none absolute inset-0 opacity-20" style="background-image: radial-gradient(circle at 18% 22%, rgba(255,255,255,0.9) 1px, transparent 1px); background-size: 26px 26px;"></div>
+      <div class="relative">
+        <p class="text-sm font-semibold uppercase tracking-[0.35em] text-white/80">Reservar</p>
+        <h1 class="mt-3 text-4xl font-bold sm:text-5xl">Completa tu reserva</h1>
+        <p class="mt-4 text-lg text-white/85">Déjanos tus datos y nos pondremos en contacto para confirmar tu experiencia.</p>
+      </div>
+    </header>
+
+    <!-- Loading -->
     <ng-container *ngIf="isLoading">
       <div class="h-64 animate-pulse rounded-[2rem] bg-slate-200"></div>
     </ng-container>
 
+    <!-- Error -->
     <ng-container *ngIf="!isLoading && error">
       <div class="rounded-[2rem] bg-white p-8 text-center shadow-sm">
-        <i class="ri-error-warning-line text-5xl text-primary"></i>
+        <i class="ri-error-warning-line text-5xl text-primary" aria-hidden="true"></i>
         <p class="mt-4 text-lg text-slate-600">{{ error }}</p>
-        <a routerLink="/destinos" class="mt-6 inline-block rounded-full bg-primary px-6 py-3 font-semibold text-white">
-          Ver destinos
-        </a>
+        <a routerLink="/destinos" class="mt-6 inline-block rounded-full bg-primary px-6 py-3 font-semibold text-white">Ver destinos</a>
       </div>
     </ng-container>
 
+    <!-- Success -->
     <ng-container *ngIf="!isLoading && !error && success">
       <div class="rounded-[2rem] bg-white p-10 text-center shadow-sm">
-        <i class="ri-checkbox-circle-line text-6xl text-green-500"></i>
-        <h2 class="mt-4 text-3xl font-bold text-slate-900">¡Reserva enviada!</h2>
-        <p class="mt-3 text-lg text-slate-600">
-          Hemos recibido tu solicitud. Te escribiremos pronto para confirmar los detalles.
-        </p>
+        <i class="ri-checkbox-circle-line text-6xl text-green-500" aria-hidden="true"></i>
+        <h2 class="mt-4 text-3xl font-bold text-tertiary">¡Reserva enviada!</h2>
+        <p class="mt-3 text-lg text-slate-600">Hemos recibido tu solicitud. Te escribiremos pronto para confirmar los detalles.</p>
         <div class="mt-8 flex flex-col justify-center gap-3 sm:flex-row">
-          <a routerLink="/mis-reservas" class="rounded-full bg-primary px-6 py-3 font-semibold text-white transition hover:bg-primary-dark">
-            Ver mis reservas
-          </a>
-          <a routerLink="/destinos" class="rounded-full border border-primary px-6 py-3 font-semibold text-primary transition hover:bg-primary hover:text-white">
-            Seguir explorando
-          </a>
+          <a routerLink="/mis-reservas" class="rounded-full bg-primary px-6 py-3 font-semibold text-white transition hover:bg-primary-dark">Ver mis reservas</a>
+          <a routerLink="/destinos" class="rounded-full border border-primary px-6 py-3 font-semibold text-primary transition hover:bg-primary hover:text-white">Seguir explorando</a>
         </div>
       </div>
     </ng-container>
 
+    <!-- Main -->
     <ng-container *ngIf="!isLoading && !error && !success && item">
-      <div class="grid gap-8 lg:grid-cols-[1fr_1fr]">
-        <div class="rounded-[2rem] border border-slate-200 bg-white p-8 shadow-sm">
-          <p class="text-sm font-semibold uppercase tracking-[0.3em] text-primary">
-            {{ type === 'package' ? 'Paquete' : 'Tour' }}
-          </p>
-          <h2 class="mt-2 text-3xl font-bold text-slate-900">{{ title }}</h2>
-          <div class="mt-6 flex items-center justify-between rounded-[1.5rem] bg-slate-50 p-5">
-            <span class="text-slate-500">Precio unitario</span>
-            <span class="text-xl font-bold text-slate-900">${{ price | number: '1.0-0' }}</span>
+      <div class="grid gap-8 lg:grid-cols-[1.1fr_0.9fr]">
+        <!-- Product summary -->
+        <div class="flex flex-col gap-6">
+          <div class="overflow-hidden rounded-[2rem] border border-slate-100 bg-white shadow-sm">
+            <div class="relative h-64">
+              <div class="absolute inset-0 bg-linear-to-br from-primary/25 to-tertiary/25"></div>
+              <img [src]="itemImage || '/images/dest1.webp?v=2'" [alt]="itemTitle" class="absolute inset-0 h-full w-full object-cover" loading="eager" />
+              <div class="absolute left-5 top-5 flex flex-wrap gap-2">
+                <span class="rounded-full bg-white/90 px-3 py-1 text-xs font-semibold text-primary shadow-sm backdrop-blur">{{ type === 'package' ? 'Paquete' : 'Tour' }}</span>
+                <span *ngIf="itemCategory" class="rounded-full bg-white/90 px-3 py-1 text-xs font-semibold text-primary shadow-sm backdrop-blur">{{ itemCategory }}</span>
+              </div>
+            </div>
+            <div class="p-6">
+              <h2 class="text-2xl font-bold text-tertiary">{{ itemTitle }}</h2>
+              <p *ngIf="itemSubtitle" class="mt-1 font-medium text-slate-500">{{ itemSubtitle }}</p>
+              <p class="mt-3 text-sm leading-relaxed text-slate-600">{{ itemDescription }}</p>
+
+              <div class="mt-5 flex flex-wrap gap-2">
+                <span *ngFor="let d of itemDestinations" class="rounded-full bg-secondary-soft px-3 py-1 text-xs font-semibold text-primary"><i class="ri-map-pin-line mr-1"></i>{{ d }}</span>
+                <span *ngIf="itemDuration && itemDuration !== '—'" class="inline-flex items-center gap-1 rounded-full bg-slate-100 px-3 py-1 text-xs font-medium text-slate-700"><i class="ri-time-line"></i> {{ itemDuration }}</span>
+                <span *ngIf="itemDifficulty" [class]="'rounded-full px-2.5 py-0.5 text-xs font-medium ' + ({Easy:'bg-green-100 text-green-700',Moderate:'bg-amber-100 text-amber-700',Challenging:'bg-red-100 text-red-700'}[itemDifficulty] || 'bg-slate-100 text-slate-700')">{{ itemDifficulty }}</span>
+                <span *ngIf="itemGroup" class="rounded-full bg-slate-100 px-3 py-1 text-xs font-medium text-slate-700">{{ itemGroup }}</span>
+                <span *ngIf="itemService" class="rounded-full bg-slate-100 px-3 py-1 text-xs font-medium text-slate-700">{{ itemService }}</span>
+              </div>
+            </div>
           </div>
-          <div class="mt-3 flex items-center justify-between rounded-[1.5rem] bg-primary/5 p-5">
-            <span class="font-semibold text-slate-700">Total estimado</span>
-            <span class="text-2xl font-bold text-primary">${{ total | number: '1.0-0' }}</span>
+
+          <!-- Price tiers -->
+          <div *ngIf="priceTiers.length" class="rounded-[2rem] border border-slate-100 bg-white p-6 shadow-sm">
+            <p class="text-sm font-semibold uppercase tracking-[0.3em] text-primary">Tarifas</p>
+            <div class="mt-4 space-y-2">
+              <button *ngFor="let tier of priceTiers; let i = index; trackBy: (i, t) => t.label" type="button" (click)="selectTier(i)"
+                class="flex w-full items-center justify-between rounded-xl border px-4 py-3 text-left transition"
+                [class.border-primary]="selectedPriceIndex === i" [class.bg-primary/5]="selectedPriceIndex === i" [class.border-slate-200]="selectedPriceIndex !== i">
+                <span class="font-medium text-slate-800">{{ tier.label }}</span>
+                <span class="font-bold text-primary">{{ currencySymbol(tier.currency) }}{{ tier.amount | number: '1.0-0' }}</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Includes / Excludes -->
+          <div *ngIf="itemIncludes?.length || itemExcludes?.length" class="grid gap-4 sm:grid-cols-2">
+            <div *ngIf="itemIncludes?.length" class="rounded-[2rem] border border-slate-100 bg-white p-6 shadow-sm">
+              <p class="text-sm font-semibold uppercase tracking-[0.3em] text-primary">Incluye</p>
+              <ul class="mt-3 space-y-2 text-sm text-slate-600">
+                <li *ngFor="let inc of itemIncludes; trackBy: (i, inc) => inc.id || i" class="flex items-start gap-2"><i class="ri-check-line mt-0.5 text-primary"></i><span>{{ inc.title }}</span></li>
+              </ul>
+            </div>
+            <div *ngIf="itemExcludes?.length" class="rounded-[2rem] border border-slate-100 bg-white p-6 shadow-sm">
+              <p class="text-sm font-semibold uppercase tracking-[0.3em] text-red-500">No incluye</p>
+              <ul class="mt-3 space-y-2 text-sm text-slate-600">
+                <li *ngFor="let exc of itemExcludes; trackBy: (i, exc) => exc.id || i" class="flex items-start gap-2"><i class="ri-close-line mt-0.5 text-red-400"></i><span>{{ exc.title }}</span></li>
+              </ul>
+            </div>
+          </div>
+
+          <!-- Schedules -->
+          <div *ngIf="itemSchedules?.length" class="rounded-[2rem] border border-slate-100 bg-white p-6 shadow-sm">
+            <p class="text-sm font-semibold uppercase tracking-[0.3em] text-primary">Horarios</p>
+            <div class="mt-3 grid gap-3 sm:grid-cols-2">
+              <div *ngFor="let s of itemSchedules; trackBy: (i, s) => s.id || i" class="rounded-xl bg-slate-50 p-3 text-sm">
+                <p class="font-semibold text-slate-800">Salida {{ s.departure }}</p>
+                <p class="text-slate-500">Recogida {{ s.pickupStart }} · Regreso {{ s.arrival }}</p>
+              </div>
+            </div>
           </div>
         </div>
 
-        <form class="rounded-[2rem] border border-slate-200 bg-white p-8 shadow-sm" (ngSubmit)="submit()" #reservaForm="ngForm">
-          <div class="space-y-4">
-            <label class="block">
+        <!-- Booking form -->
+        <aside class="lg:sticky lg:top-6 h-fit">
+          <form class="rounded-[2rem] border border-slate-100 bg-white p-6 shadow-lg" (ngSubmit)="submit()" #reservaForm="ngForm">
+            <div class="flex items-center gap-3 border-b border-slate-100 pb-4">
+              <img [src]="itemImage || '/images/dest1.webp?v=2'" [alt]="itemTitle" class="h-14 w-14 rounded-xl object-cover" />
+              <div class="min-w-0">
+                <p class="truncate font-semibold text-tertiary">{{ itemTitle }}</p>
+                <p class="text-xs text-slate-400">{{ selectedTier.label }}</p>
+              </div>
+            </div>
+
+            <!-- Travelers stepper -->
+            <div class="mt-5">
               <span class="mb-1 block text-sm font-semibold text-slate-700">Viajeros <span class="text-red-500">*</span></span>
-              <input type="number" min="1" max="20" [(ngModel)]="travelers" name="travelers" #travelersInput="ngModel" required
-                class="w-full rounded-2xl border px-4 py-3 outline-none transition focus:ring-2"
-                [class.border-red-300]="travelersInput.invalid && travelersInput.touched"
-                [class.border-slate-200]="!travelersInput.invalid || !travelersInput.touched" />
-              <span *ngIf="travelersInput.invalid && travelersInput.touched" class="mt-1 block text-xs text-red-500">
-                Debe haber al menos 1 viajero
-              </span>
-            </label>
+              <div class="flex items-center gap-3">
+                <button type="button" (click)="decTravelers()" class="flex h-11 w-11 items-center justify-center rounded-xl border border-slate-200 text-xl font-bold text-slate-600 transition hover:border-primary/40 hover:text-primary" [disabled]="travelers <= 1">−</button>
+                <input type="number" min="1" max="20" [(ngModel)]="travelers" name="travelers" #travelersInput="ngModel" required
+                  class="w-16 rounded-xl border border-slate-200 py-2.5 text-center text-lg font-semibold outline-none focus:border-primary/50 focus:ring-2 focus:ring-primary/5" />
+                <button type="button" (click)="incTravelers()" class="flex h-11 w-11 items-center justify-center rounded-xl border border-slate-200 text-xl font-bold text-slate-600 transition hover:border-primary/40 hover:text-primary" [disabled]="travelers >= 20">+</button>
+              </div>
+              <span *ngIf="travelersInput.invalid && travelersInput.touched" class="mt-1 block text-xs text-red-500">Debe haber al menos 1 viajero</span>
+            </div>
 
-            <label class="block">
-              <span class="mb-1 block text-sm font-semibold text-slate-700">Nombre completo <span class="text-red-500">*</span></span>
-              <input type="text" [(ngModel)]="customerName" name="customerName" #customerNameInput="ngModel" required
-                placeholder="Tu nombre" class="w-full rounded-2xl border px-4 py-3 outline-none transition focus:ring-2"
-                [class.border-red-300]="customerNameInput.invalid && customerNameInput.touched"
-                [class.border-slate-200]="!customerNameInput.invalid || !customerNameInput.touched" />
-              <span *ngIf="customerNameInput.invalid && customerNameInput.touched" class="mt-1 block text-xs text-red-500">
-                El nombre es obligatorio
-              </span>
-            </label>
+            <div class="mt-4 space-y-4">
+              <label class="block">
+                <span class="mb-1 block text-sm font-semibold text-slate-700">Nombre completo <span class="text-red-500">*</span></span>
+                <input type="text" [(ngModel)]="customerName" name="customerName" #customerNameInput="ngModel" required
+                  placeholder="Tu nombre" class="w-full rounded-2xl border border-slate-200 px-4 py-3 outline-none transition focus:border-primary/50 focus:ring-2 focus:ring-primary/5"
+                  [class.border-red-300]="customerNameInput.invalid && customerNameInput.touched" />
+                <span *ngIf="customerNameInput.invalid && customerNameInput.touched" class="mt-1 block text-xs text-red-500">El nombre es obligatorio</span>
+              </label>
 
-            <label class="block">
-              <span class="mb-1 block text-sm font-semibold text-slate-700">Email <span class="text-red-500">*</span></span>
-              <input type="email" [(ngModel)]="customerEmail" name="customerEmail" #customerEmailInput="ngModel" required email
-                placeholder="tucorreo@ejemplo.com" class="w-full rounded-2xl border px-4 py-3 outline-none transition focus:ring-2"
-                [class.border-red-300]="customerEmailInput.invalid && customerEmailInput.touched"
-                [class.border-slate-200]="!customerEmailInput.invalid || !customerEmailInput.touched" />
-              <span *ngIf="customerEmailInput.invalid && customerEmailInput.touched" class="mt-1 block text-xs text-red-500">
-                Ingresa un correo electrónico válido
-              </span>
-            </label>
+              <label class="block">
+                <span class="mb-1 block text-sm font-semibold text-slate-700">Email <span class="text-red-500">*</span></span>
+                <input type="email" [(ngModel)]="customerEmail" name="customerEmail" #customerEmailInput="ngModel" required email
+                  placeholder="tucorreo@ejemplo.com" class="w-full rounded-2xl border border-slate-200 px-4 py-3 outline-none transition focus:border-primary/50 focus:ring-2 focus:ring-primary/5"
+                  [class.border-red-300]="customerEmailInput.invalid && customerEmailInput.touched" />
+                <span *ngIf="customerEmailInput.invalid && customerEmailInput.touched" class="mt-1 block text-xs text-red-500">Ingresa un correo electrónico válido</span>
+              </label>
 
-            <label class="block">
-              <span class="mb-1 block text-sm font-semibold text-slate-700">Teléfono <span class="text-red-500">*</span></span>
-              <input type="tel" [(ngModel)]="customerPhone" name="customerPhone" #customerPhoneInput="ngModel" required minlength="9"
-                placeholder="+51 999 999 999" class="w-full rounded-2xl border px-4 py-3 outline-none transition focus:ring-2"
-                [class.border-red-300]="customerPhoneInput.invalid && customerPhoneInput.touched"
-                [class.border-slate-200]="!customerPhoneInput.invalid || !customerPhoneInput.touched" />
-              <span *ngIf="customerPhoneInput.invalid && customerPhoneInput.touched" class="mt-1 block text-xs text-red-500">
-                Ingresa un teléfono válido (mín. 9 dígitos)
-              </span>
-            </label>
+              <label class="block">
+                <span class="mb-1 block text-sm font-semibold text-slate-700">Teléfono <span class="text-red-500">*</span></span>
+                <input type="tel" [(ngModel)]="customerPhone" name="customerPhone" #customerPhoneInput="ngModel" required minlength="9"
+                  placeholder="+51 999 999 999" class="w-full rounded-2xl border border-slate-200 px-4 py-3 outline-none transition focus:border-primary/50 focus:ring-2 focus:ring-primary/5"
+                  [class.border-red-300]="customerPhoneInput.invalid && customerPhoneInput.touched" />
+                <span *ngIf="customerPhoneInput.invalid && customerPhoneInput.touched" class="mt-1 block text-xs text-red-500">Ingresa un teléfono válido (mín. 9 dígitos)</span>
+              </label>
 
-            <label class="block">
-              <span class="mb-1 block text-sm font-semibold text-slate-700">Fecha deseada <span class="text-red-500">*</span></span>
-              <input type="date" [(ngModel)]="startDate" name="startDate" #startDateInput="ngModel" required
-                class="w-full rounded-2xl border px-4 py-3 outline-none transition focus:ring-2"
-                [class.border-red-300]="startDateInput.invalid && startDateInput.touched"
-                [class.border-slate-200]="!startDateInput.invalid || !startDateInput.touched" />
-              <span *ngIf="startDateInput.invalid && startDateInput.touched" class="mt-1 block text-xs text-red-500">
-                Selecciona una fecha de inicio
-              </span>
-            </label>
+              <label class="block">
+                <span class="mb-1 block text-sm font-semibold text-slate-700">Fecha deseada <span class="text-red-500">*</span></span>
+                <input type="date" [min]="today" [(ngModel)]="startDate" name="startDate" #startDateInput="ngModel" required
+                  class="w-full rounded-2xl border border-slate-200 px-4 py-3 outline-none transition focus:border-primary/50 focus:ring-2 focus:ring-primary/5"
+                  [class.border-red-300]="startDateInput.invalid && startDateInput.touched" />
+                <span *ngIf="startDateInput.invalid && startDateInput.touched" class="mt-1 block text-xs text-red-500">Selecciona una fecha de inicio</span>
+              </label>
 
-            <label class="block">
-              <span class="mb-1 block text-sm font-semibold text-slate-700">Notas (opcional)</span>
-              <textarea [(ngModel)]="notes" name="notes" rows="3"
-                placeholder="Preferencias, alergias, etc." class="w-full rounded-2xl border border-slate-200 px-4 py-3"></textarea>
-            </label>
-          </div>
+              <label class="block">
+                <span class="mb-1 block text-sm font-semibold text-slate-700">Notas (opcional)</span>
+                <textarea [(ngModel)]="notes" name="notes" rows="3" placeholder="Preferencias, alergias, etc." class="w-full rounded-2xl border border-slate-200 px-4 py-3 outline-none transition focus:border-primary/50 focus:ring-2 focus:ring-primary/5"></textarea>
+              </label>
+            </div>
 
-          <p *ngIf="error" class="mt-4 rounded-xl bg-red-50 px-4 py-3 text-sm text-red-600">{{ error }}</p>
+            <!-- Total -->
+            <div class="mt-5 space-y-2 rounded-2xl bg-slate-50 p-4">
+              <div class="flex items-center justify-between text-sm text-slate-500">
+                <span>{{ currencySymbol(selectedTier.currency) }}{{ selectedTier.amount | number: '1.0-0' }} × {{ travelers }} {{ travelers === 1 ? 'viajero' : 'viajeros' }}</span>
+                <span class="font-semibold text-slate-700">{{ currencySymbol(selectedTier.currency) }}{{ total | number: '1.0-0' }}</span>
+              </div>
+              <div class="flex items-center justify-between border-t border-slate-200 pt-2">
+                <span class="font-semibold text-slate-700">Total estimado</span>
+                <span class="text-2xl font-bold text-primary">{{ currencySymbol(selectedTier.currency) }}{{ total | number: '1.0-0' }}</span>
+              </div>
+            </div>
 
-          <button type="submit" [disabled]="submitting || (reservaForm.invalid && reservaForm.submitted)"
-            class="mt-6 w-full rounded-full bg-primary px-6 py-4 font-semibold text-white transition hover:bg-primary-dark disabled:opacity-50">
-            {{ submitting ? 'Enviando...' : 'Enviar reserva' }}
-          </button>
-        </form>
+            <p *ngIf="error" class="mt-4 rounded-xl bg-red-50 px-4 py-3 text-sm text-red-600">{{ error }}</p>
+
+            <button type="submit" [disabled]="submitting || (reservaForm.invalid && reservaForm.submitted)"
+              class="mt-5 w-full rounded-full bg-primary px-6 py-4 font-semibold text-white transition hover:bg-primary-dark disabled:opacity-50">
+              {{ submitting ? 'Enviando...' : 'Enviar reserva' }}
+            </button>
+            <p class="mt-3 text-center text-xs text-slate-400">Te contactaremos para confirmar disponibilidad y pago.</p>
+          </form>
+        </aside>
       </div>
     </ng-container>
 
+    <!-- Empty -->
     <ng-container *ngIf="!isLoading && !error && !success && !item">
       <div class="rounded-[2rem] bg-white p-8 text-center text-slate-600 shadow-sm">
         Selecciona un tour o paquete para reservar.

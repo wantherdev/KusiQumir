@@ -21,7 +21,10 @@ import { NotificationsModule } from "./modules/notifications/notifications.modul
 import { BillingModule } from "./modules/billing/billing.module";
 import { ArticlesModule } from "./modules/articles/articles.module";
 import { ExperiencesModule } from "./modules/experiences/experiences.module";
+import { CategoriesModule } from "./modules/categories/categories.module";
+import { DestinationsModule } from "./modules/destinations/destinations.module";
 import { CsrfModule } from "./modules/csrf/csrf.module";
+import { UploadsModule } from "./modules/uploads/uploads.module";
 import { JwtAuthGuard } from "./modules/auth/jwt-auth.guard";
 import { RolesGuard } from "./modules/auth/roles.guard";
 import { PrismaModule } from "./prisma/prisma.module";
@@ -70,6 +73,9 @@ import { PrismaModule } from "./prisma/prisma.module";
     ArticlesModule,
     ExperiencesModule,
     CsrfModule,
+    UploadsModule,
+    CategoriesModule,
+    DestinationsModule,
   ],
   providers: [
     {

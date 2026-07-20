@@ -7,6 +7,23 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+enum Difficulty {
+  Easy
+  Moderate
+  Challenging
+}
+
+enum GroupType {
+  Shared
+  Private
+}
+
+enum ServiceType {
+  HalfDay
+  FullDay
+  MultiDay
+}
+
 model Role {
   id    String  @id @default(cuid())
   name  String  @unique
@@ -59,226 +76,194 @@ model Guide {
   operations   Operation[]
 }
 
+model Category {
+  id          String @id @default(cuid())
+  slug        String @unique
+  name        String
+  description String?
+  tours       Tour[]
+}
+
 model Tour {
-  id               String   @id @default(cuid())
-  slug             String   @unique
-  name             String
+  id               String         @id @default(cuid())
+  slug             String         @unique
+  code             String         @unique
+  title            String
   subtitle         String?
-  shortDescription String?  @db.Text
-  description      String   @db.Text
-
-  category         String
-  tourType         String
-
-  durationDays     Int
+  shortDescription String
+  description      String
   durationHours    Int
-  durationText     String
-
-  country          String
-  region           String
-  city             String
-
-  meetingPoint     String?
-  endingPoint      String?
-
-  pickup           Boolean @default(false)
-
-  startTime        String?
-  endTime          String?
-
-  difficulty       String?
-
-  altitudeMin      Int?
-  altitudeMax      Int?
-
-  groupType        String?
-
-  featured         Boolean @default(false)
-  status           String  @default("published")
-
-  coverImage       String?
-  video            String?
-
-  currency         String @default("USD")
-  adultPrice       Float?
-  childPrice       Float?
-  discount         Float?
-
-  seoTitle         String?
-  seoDescription   String? @db.Text
-  seoKeywords      Json?
-
-  createdAt        DateTime @default(now())
-  updatedAt        DateTime @updatedAt
-
-  languages        TourLanguage[]
-  highlights       Highlight[]
-  itinerary        Itinerary[]
-  destinations     Destination[]
-  includes         Include[]
-  notIncludes      NotInclude[]
-  recommendations  Recommendation[]
-  requirements     Requirement[]
-  whatToBring      WhatToBring[]
-  faqs             FAQItem[]
-  images           Image[]
+  durationDays     Int
+  difficulty       Difficulty
+  groupType        GroupType
+  serviceType      ServiceType
+  featured         Boolean        @default(false)
+  active           Boolean        @default(true)
+  categoryId       String
+  category         Category       @relation(fields: [categoryId], references: [id])
 
   providerId       String?
-  provider         Provider? @relation(fields: [providerId], references: [id])
+  provider         Provider?      @relation(fields: [providerId], references: [id])
   packages         Package[]
   bookings         Booking[]
   experiences      Experience[]
 
-  @@index([slug])
-  @@index([status])
-  @@index([featured])
-  @@index([country])
-  @@index([category])
-}
+  schedules        TourSchedule[]
+  itineraryDays    ItineraryDay[]
+  destinations     TourDestination[]
+  includes         TourInclude[]
+  excludes         TourExclude[]
+  faqs             TourFaq[]
+  recommendations  TourRecommendation[]
+  requirements     TourRequirement[]
+  prices           TourPrice[]
+  images           TourImage[]
+  seo              TourSeo?
+  metadata         TourMetadata?
+  reviews          Review[]
 
-model TourLanguage {
-  id       String @id @default(cuid())
-  language String
-
-  tourId   String
-  tour     Tour @relation(fields: [tourId], references: [id], onDelete: Cascade)
-
-  @@unique([tourId, language])
-}
-
-model Highlight {
-  id          String @id @default(cuid())
-  title       String
-  description String?
-  icon        String?
-
-  tourId      String
-  tour        Tour @relation(fields: [tourId], references: [id], onDelete: Cascade)
-
-  @@index([tourId])
-}
-
-model Itinerary {
-  id          String @id @default(cuid())
-  day         Int
-  order       Int
-  time        String?
-  title       String
-  description String @db.Text
-  location    String?
-  duration    Int?
-
-  tourId      String
-  tour        Tour @relation(fields: [tourId], references: [id], onDelete: Cascade)
-
-  @@index([tourId])
-  @@index([tourId, day])
+  createdAt        DateTime       @default(now())
+  updatedAt        DateTime       @updatedAt
 }
 
 model Destination {
-  id          String @id @default(cuid())
+  id          String           @id @default(cuid())
+  slug        String           @unique
   name        String
-  type        String?
-  description String? @db.Text
-
-  latitude    Float?
-  longitude   Float?
-
-  altitude    Int?
-  visitTime   Int?
-
-  tourId      String
-  tour        Tour @relation(fields: [tourId], references: [id], onDelete: Cascade)
-
-  images      DestinationImage[]
-
-  @@index([tourId])
-}
-
-model DestinationImage {
-  id            String @id @default(cuid())
-  imageUrl      String
-  alt           String?
-
-  destinationId String
-  destination   Destination @relation(fields: [destinationId], references: [id], onDelete: Cascade)
-}
-
-model Include {
-  id          String @id @default(cuid())
-  title       String
-  description String?
-
-  tourId      String
-  tour        Tour @relation(fields: [tourId], references: [id], onDelete: Cascade)
-
-  @@index([tourId])
-}
-
-model NotInclude {
-  id          String @id @default(cuid())
-  title       String
-  description String?
-
-  tourId      String
-  tour        Tour @relation(fields: [tourId], references: [id], onDelete: Cascade)
-
-  @@index([tourId])
-}
-
-model Recommendation {
-  id          String @id @default(cuid())
-  title       String?
   description String
-
-  tourId      String
-  tour        Tour @relation(fields: [tourId], references: [id], onDelete: Cascade)
-
-  @@index([tourId])
+  tours       TourDestination[]
 }
 
-model Requirement {
+model TourDestination {
+  id            String      @id @default(cuid())
+  tourId        String
+  destinationId String
+  sortOrder     Int
+  tour          Tour        @relation(fields: [tourId], references: [id], onDelete: Cascade)
+  destination   Destination @relation(fields: [destinationId], references: [id])
+}
+
+model ItineraryDay {
+  id        String              @id @default(cuid())
+  day       Int
+  title     String
+  tourId    String
+  tour      Tour                @relation(fields: [tourId], references: [id], onDelete: Cascade)
+  activities ItineraryActivity[]
+}
+
+model ItineraryActivity {
+  id              String       @id @default(cuid())
+  itineraryDayId  String
+  sortOrder       Int
+  time            String?
+  title           String
+  description     String
+  duration        Int
+  itineraryDay    ItineraryDay @relation(fields: [itineraryDayId], references: [id], onDelete: Cascade)
+}
+
+model TourFaq {
+  id        String @id @default(cuid())
+  question  String
+  answer    String
+  sortOrder Int
+  tourId    String
+  tour      Tour   @relation(fields: [tourId], references: [id], onDelete: Cascade)
+}
+
+model TourImage {
+  id       String  @id @default(cuid())
+  url      String
+  alt      String
+  featured Boolean @default(false)
+  sortOrder Int
+  source   String?
+  tourId   String
+  tour     Tour    @relation(fields: [tourId], references: [id], onDelete: Cascade)
+}
+
+model TourPrice {
+  id       String   @id @default(cuid())
+  name     String
+  currency String
+  adult    Decimal
+  child    Decimal?
+  private  Decimal?
+  tourId   String
+  tour     Tour     @relation(fields: [tourId], references: [id], onDelete: Cascade)
+}
+
+model TourSchedule {
+  id          String  @id @default(cuid())
+  departure   String
+  pickupStart String
+  arrival     String
+  language    String?
+  available   Boolean @default(true)
+  tourId      String
+  tour        Tour    @relation(fields: [tourId], references: [id], onDelete: Cascade)
+}
+
+model TourInclude {
+  id          String  @id @default(cuid())
+  title       String
+  description String?
+  tourId      String
+  tour        Tour    @relation(fields: [tourId], references: [id], onDelete: Cascade)
+}
+
+model TourExclude {
+  id          String  @id @default(cuid())
+  title       String
+  description String?
+  tourId      String
+  tour        Tour    @relation(fields: [tourId], references: [id], onDelete: Cascade)
+}
+
+model TourRecommendation {
+  id          String @id @default(cuid())
+  title       String
+  description String
+  tourId      String
+  tour        Tour   @relation(fields: [tourId], references: [id], onDelete: Cascade)
+}
+
+model TourRequirement {
   id          String @id @default(cuid())
   requirement String
-
   tourId      String
-  tour        Tour @relation(fields: [tourId], references: [id], onDelete: Cascade)
-
-  @@index([tourId])
+  tour        Tour   @relation(fields: [tourId], references: [id], onDelete: Cascade)
 }
 
-model WhatToBring {
-  id   String @id @default(cuid())
-  item String
-
-  tourId String
-  tour   Tour @relation(fields: [tourId], references: [id], onDelete: Cascade)
-
-  @@index([tourId])
+model TourSeo {
+  id          String   @id @default(cuid())
+  title       String
+  description String
+  keywords    Json?
+  canonical   String?
+  tourId      String   @unique
+  tour        Tour     @relation(fields: [tourId], references: [id], onDelete: Cascade)
 }
 
-model FAQItem {
-  id       String @id @default(cuid())
-  question String
-  answer   String @db.Text
-
-  tourId   String
-  tour     Tour @relation(fields: [tourId], references: [id], onDelete: Cascade)
-
-  @@index([tourId])
+model TourMetadata {
+  id          String    @id @default(cuid())
+  provider    String?
+  sourceUrl   String?
+  lastUpdated DateTime?
+  tourId      String    @unique
+  tour        Tour      @relation(fields: [tourId], references: [id], onDelete: Cascade)
 }
 
-model Image {
-  id       String @id @default(cuid())
-  url      String
-  alt      String?
-  featured Boolean @default(false)
-  order    Int @default(0)
-
-  tourId   String
-  tour     Tour @relation(fields: [tourId], references: [id], onDelete: Cascade)
-
-  @@index([tourId])
+model Review {
+  id        String   @id @default(cuid())
+  rating    Int
+  comment   String
+  name      String?
+  country   String?
+  createdAt DateTime @default(now())
+  tourId    String
+  tour      Tour     @relation(fields: [tourId], references: [id], onDelete: Cascade)
 }
 
 model Article {
@@ -311,7 +296,7 @@ model Experience {
   location    String?
   duration    String?
   tourId      String?
-  tour        Tour?     @relation(fields: [tourId], references: [id])
+  tour        Tour?     @relation(fields: [tourId], references: [id], onDelete: SetNull)
   status      String    @default("DRAFT")
   featured    Boolean   @default(false)
   sortOrder   Int       @default(0)
@@ -325,43 +310,43 @@ model Experience {
 }
 
 model Package {
-  id          String    @id @default(cuid())
-  name        String
-  description String
-  price       Float
-  featured    Boolean   @default(false)
+  id           String    @id @default(cuid())
+  name         String
+  description  String
+  price        Float
+  featured     Boolean   @default(false)
   durationDays Int?
-  discount    Float?
-  imageUrl    String?
-  included    String?
-  excluded    String?
-  tours       Tour[]
-  bookings    Booking[]
-  createdAt   DateTime  @default(now())
+  discount     Float?
+  imageUrl     String?
+  included     String?
+  excluded     String?
+  tours        Tour[]
+  bookings     Booking[]
+  createdAt    DateTime  @default(now())
 }
 
 model Booking {
-  id         String    @id @default(cuid())
-  customerId String
-  tourId     String?
-  packageId  String?
-  travelers  Int
-  status     String    @default("PENDIENTE")
-  date       DateTime  @default(now())
-  total      Float?
-  unitPrice  Float?
+  id            String    @id @default(cuid())
+  customerId    String
+  tourId        String?
+  packageId     String?
+  travelers     Int
+  status        String    @default("PENDIENTE")
+  date          DateTime  @default(now())
+  total         Float?
+  unitPrice     Float?
   customerName  String?
   customerEmail String?
   customerPhone String?
   startDate     DateTime?
   notes         String?
   canceledAt    DateTime?
-  customer   Customer  @relation(fields: [customerId], references: [id])
-  tour       Tour?     @relation(fields: [tourId], references: [id])
-  package    Package?  @relation(fields: [packageId], references: [id])
-  payment    Payment?
-  operation  Operation?
-  invoice    Invoice?
+  customer      Customer  @relation(fields: [customerId], references: [id])
+  tour          Tour?     @relation(fields: [tourId], references: [id], onDelete: SetNull)
+  package       Package?  @relation(fields: [packageId], references: [id])
+  payment       Payment?
+  operation     Operation?
+  invoice       Invoice?
 
   @@index([customerId, date])
   @@index([status, date])
@@ -409,11 +394,11 @@ model Invoice {
 }
 
 model Document {
-  id         String                 @id @default(cuid())
-  title      String
-  version    String
-  type       String?
-  createdAt  DateTime               @default(now())
+  id          String                 @id @default(cuid())
+  title       String
+  version     String
+  type        String?
+  createdAt   DateTime               @default(now())
   acceptances DocumentAcceptance[]
 }
 

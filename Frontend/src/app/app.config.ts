@@ -16,7 +16,7 @@ export const appConfig: ApplicationConfig = {
   providers: [
     provideBrowserGlobalErrorListeners(),
     provideRouter(routes),
-    provideHttpClient(withFetch(), withInterceptors([authInterceptor, csrfInterceptor])),
+    provideHttpClient(withInterceptors([authInterceptor, csrfInterceptor])),
     provideClientHydration(withEventReplay()),
     provideServiceWorker('ngsw-worker.js', { enabled: !isDevMode(), registrationStrategy: 'registerWhenStable:3000' }),
     {

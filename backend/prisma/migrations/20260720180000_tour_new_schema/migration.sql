@@ -1,3 +1,12 @@
+-- CreateEnum
+CREATE TYPE "Difficulty" AS ENUM ('Easy', 'Moderate', 'Challenging');
+
+-- CreateEnum
+CREATE TYPE "GroupType" AS ENUM ('Shared', 'Private');
+
+-- CreateEnum
+CREATE TYPE "ServiceType" AS ENUM ('HalfDay', 'FullDay', 'MultiDay');
+
 -- CreateTable
 CREATE TABLE "Role" (
     "id" TEXT NOT NULL,
@@ -24,6 +33,7 @@ CREATE TABLE "Customer" (
     "email" TEXT NOT NULL,
     "nationality" TEXT,
     "passport" TEXT,
+    "phone" TEXT,
     "preferences" TEXT,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
@@ -58,24 +68,205 @@ CREATE TABLE "Guide" (
 );
 
 -- CreateTable
+CREATE TABLE "Category" (
+    "id" TEXT NOT NULL,
+    "slug" TEXT NOT NULL,
+    "name" TEXT NOT NULL,
+    "description" TEXT,
+
+    CONSTRAINT "Category_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
 CREATE TABLE "Tour" (
     "id" TEXT NOT NULL,
-    "name" TEXT NOT NULL,
+    "slug" TEXT NOT NULL,
+    "code" TEXT NOT NULL,
+    "title" TEXT NOT NULL,
+    "subtitle" TEXT,
+    "shortDescription" TEXT NOT NULL,
     "description" TEXT NOT NULL,
-    "images" TEXT,
-    "duration" TEXT,
-    "difficulty" TEXT,
-    "price" DOUBLE PRECISION NOT NULL,
-    "itinerary" TEXT,
-    "includes" TEXT,
-    "excludes" TEXT,
-    "location" TEXT,
-    "availability" BOOLEAN NOT NULL DEFAULT true,
+    "durationHours" INTEGER NOT NULL,
+    "durationDays" INTEGER NOT NULL,
+    "difficulty" "Difficulty" NOT NULL,
+    "groupType" "GroupType" NOT NULL,
+    "serviceType" "ServiceType" NOT NULL,
+    "featured" BOOLEAN NOT NULL DEFAULT false,
+    "active" BOOLEAN NOT NULL DEFAULT true,
+    "categoryId" TEXT NOT NULL,
     "providerId" TEXT,
-    "deletedAt" TIMESTAMP(3),
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMP(3) NOT NULL,
 
     CONSTRAINT "Tour_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "Destination" (
+    "id" TEXT NOT NULL,
+    "slug" TEXT NOT NULL,
+    "name" TEXT NOT NULL,
+    "description" TEXT NOT NULL,
+
+    CONSTRAINT "Destination_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "TourDestination" (
+    "id" TEXT NOT NULL,
+    "tourId" TEXT NOT NULL,
+    "destinationId" TEXT NOT NULL,
+    "sortOrder" INTEGER NOT NULL,
+
+    CONSTRAINT "TourDestination_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "ItineraryDay" (
+    "id" TEXT NOT NULL,
+    "day" INTEGER NOT NULL,
+    "title" TEXT NOT NULL,
+    "tourId" TEXT NOT NULL,
+
+    CONSTRAINT "ItineraryDay_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "ItineraryActivity" (
+    "id" TEXT NOT NULL,
+    "itineraryDayId" TEXT NOT NULL,
+    "sortOrder" INTEGER NOT NULL,
+    "time" TEXT,
+    "title" TEXT NOT NULL,
+    "description" TEXT NOT NULL,
+    "duration" INTEGER NOT NULL,
+
+    CONSTRAINT "ItineraryActivity_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "TourFaq" (
+    "id" TEXT NOT NULL,
+    "question" TEXT NOT NULL,
+    "answer" TEXT NOT NULL,
+    "sortOrder" INTEGER NOT NULL,
+    "tourId" TEXT NOT NULL,
+
+    CONSTRAINT "TourFaq_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "TourImage" (
+    "id" TEXT NOT NULL,
+    "url" TEXT NOT NULL,
+    "alt" TEXT NOT NULL,
+    "featured" BOOLEAN NOT NULL DEFAULT false,
+    "sortOrder" INTEGER NOT NULL,
+    "source" TEXT,
+    "tourId" TEXT NOT NULL,
+
+    CONSTRAINT "TourImage_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "TourPrice" (
+    "id" TEXT NOT NULL,
+    "name" TEXT NOT NULL,
+    "currency" TEXT NOT NULL,
+    "adult" DECIMAL(65,30) NOT NULL,
+    "child" DECIMAL(65,30),
+    "private" DECIMAL(65,30),
+    "tourId" TEXT NOT NULL,
+
+    CONSTRAINT "TourPrice_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "TourSchedule" (
+    "id" TEXT NOT NULL,
+    "departure" TEXT NOT NULL,
+    "pickupStart" TEXT NOT NULL,
+    "arrival" TEXT NOT NULL,
+    "language" TEXT,
+    "available" BOOLEAN NOT NULL DEFAULT true,
+    "tourId" TEXT NOT NULL,
+
+    CONSTRAINT "TourSchedule_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "TourInclude" (
+    "id" TEXT NOT NULL,
+    "title" TEXT NOT NULL,
+    "description" TEXT,
+    "tourId" TEXT NOT NULL,
+
+    CONSTRAINT "TourInclude_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "TourExclude" (
+    "id" TEXT NOT NULL,
+    "title" TEXT NOT NULL,
+    "description" TEXT,
+    "tourId" TEXT NOT NULL,
+
+    CONSTRAINT "TourExclude_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "TourRecommendation" (
+    "id" TEXT NOT NULL,
+    "title" TEXT NOT NULL,
+    "description" TEXT NOT NULL,
+    "tourId" TEXT NOT NULL,
+
+    CONSTRAINT "TourRecommendation_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "TourRequirement" (
+    "id" TEXT NOT NULL,
+    "requirement" TEXT NOT NULL,
+    "tourId" TEXT NOT NULL,
+
+    CONSTRAINT "TourRequirement_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "TourSeo" (
+    "id" TEXT NOT NULL,
+    "title" TEXT NOT NULL,
+    "description" TEXT NOT NULL,
+    "keywords" JSONB,
+    "canonical" TEXT,
+    "tourId" TEXT NOT NULL,
+
+    CONSTRAINT "TourSeo_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "TourMetadata" (
+    "id" TEXT NOT NULL,
+    "provider" TEXT,
+    "sourceUrl" TEXT,
+    "lastUpdated" TIMESTAMP(3),
+    "tourId" TEXT NOT NULL,
+
+    CONSTRAINT "TourMetadata_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "Review" (
+    "id" TEXT NOT NULL,
+    "rating" INTEGER NOT NULL,
+    "comment" TEXT NOT NULL,
+    "name" TEXT,
+    "country" TEXT,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "tourId" TEXT NOT NULL,
+
+    CONSTRAINT "Review_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
@@ -125,6 +316,12 @@ CREATE TABLE "Package" (
     "name" TEXT NOT NULL,
     "description" TEXT NOT NULL,
     "price" DOUBLE PRECISION NOT NULL,
+    "featured" BOOLEAN NOT NULL DEFAULT false,
+    "durationDays" INTEGER,
+    "discount" DOUBLE PRECISION,
+    "imageUrl" TEXT,
+    "included" TEXT,
+    "excluded" TEXT,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
     CONSTRAINT "Package_pkey" PRIMARY KEY ("id")
@@ -141,6 +338,10 @@ CREATE TABLE "Booking" (
     "date" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "total" DOUBLE PRECISION,
     "unitPrice" DOUBLE PRECISION,
+    "customerName" TEXT,
+    "customerEmail" TEXT,
+    "customerPhone" TEXT,
+    "startDate" TIMESTAMP(3),
     "notes" TEXT,
     "canceledAt" TIMESTAMP(3),
 
@@ -247,10 +448,22 @@ CREATE UNIQUE INDEX "User_email_key" ON "User"("email");
 CREATE UNIQUE INDEX "Customer_email_key" ON "Customer"("email");
 
 -- CreateIndex
-CREATE INDEX "Tour_availability_idx" ON "Tour"("availability");
+CREATE UNIQUE INDEX "Category_slug_key" ON "Category"("slug");
 
 -- CreateIndex
-CREATE INDEX "Tour_providerId_idx" ON "Tour"("providerId");
+CREATE UNIQUE INDEX "Tour_slug_key" ON "Tour"("slug");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "Tour_code_key" ON "Tour"("code");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "Destination_slug_key" ON "Destination"("slug");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "TourSeo_tourId_key" ON "TourSeo"("tourId");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "TourMetadata_tourId_key" ON "TourMetadata"("tourId");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "Article_slug_key" ON "Article"("slug");
@@ -310,7 +523,55 @@ CREATE INDEX "_PackageToTour_B_index" ON "_PackageToTour"("B");
 ALTER TABLE "User" ADD CONSTRAINT "User_roleId_fkey" FOREIGN KEY ("roleId") REFERENCES "Role"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
+ALTER TABLE "Tour" ADD CONSTRAINT "Tour_categoryId_fkey" FOREIGN KEY ("categoryId") REFERENCES "Category"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
 ALTER TABLE "Tour" ADD CONSTRAINT "Tour_providerId_fkey" FOREIGN KEY ("providerId") REFERENCES "Provider"("id") ON DELETE SET NULL ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "TourDestination" ADD CONSTRAINT "TourDestination_tourId_fkey" FOREIGN KEY ("tourId") REFERENCES "Tour"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "TourDestination" ADD CONSTRAINT "TourDestination_destinationId_fkey" FOREIGN KEY ("destinationId") REFERENCES "Destination"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "ItineraryDay" ADD CONSTRAINT "ItineraryDay_tourId_fkey" FOREIGN KEY ("tourId") REFERENCES "Tour"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "ItineraryActivity" ADD CONSTRAINT "ItineraryActivity_itineraryDayId_fkey" FOREIGN KEY ("itineraryDayId") REFERENCES "ItineraryDay"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "TourFaq" ADD CONSTRAINT "TourFaq_tourId_fkey" FOREIGN KEY ("tourId") REFERENCES "Tour"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "TourImage" ADD CONSTRAINT "TourImage_tourId_fkey" FOREIGN KEY ("tourId") REFERENCES "Tour"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "TourPrice" ADD CONSTRAINT "TourPrice_tourId_fkey" FOREIGN KEY ("tourId") REFERENCES "Tour"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "TourSchedule" ADD CONSTRAINT "TourSchedule_tourId_fkey" FOREIGN KEY ("tourId") REFERENCES "Tour"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "TourInclude" ADD CONSTRAINT "TourInclude_tourId_fkey" FOREIGN KEY ("tourId") REFERENCES "Tour"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "TourExclude" ADD CONSTRAINT "TourExclude_tourId_fkey" FOREIGN KEY ("tourId") REFERENCES "Tour"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "TourRecommendation" ADD CONSTRAINT "TourRecommendation_tourId_fkey" FOREIGN KEY ("tourId") REFERENCES "Tour"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "TourRequirement" ADD CONSTRAINT "TourRequirement_tourId_fkey" FOREIGN KEY ("tourId") REFERENCES "Tour"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "TourSeo" ADD CONSTRAINT "TourSeo_tourId_fkey" FOREIGN KEY ("tourId") REFERENCES "Tour"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "TourMetadata" ADD CONSTRAINT "TourMetadata_tourId_fkey" FOREIGN KEY ("tourId") REFERENCES "Tour"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "Review" ADD CONSTRAINT "Review_tourId_fkey" FOREIGN KEY ("tourId") REFERENCES "Tour"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "Experience" ADD CONSTRAINT "Experience_tourId_fkey" FOREIGN KEY ("tourId") REFERENCES "Tour"("id") ON DELETE SET NULL ON UPDATE CASCADE;

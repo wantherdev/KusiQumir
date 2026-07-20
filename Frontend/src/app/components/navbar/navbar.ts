@@ -6,6 +6,7 @@ import { filter } from 'rxjs/operators';
 import { AuthService } from '../../services/auth.service';
 import { Tour } from '../../services/travel-api.service';
 import { TourStateService } from '../../services/tour-state.service';
+import { environment } from '../../../environments/environment';
 
 @Component({
   selector: 'app-navbar',
@@ -17,8 +18,10 @@ import { TourStateService } from '../../services/tour-state.service';
 export class Navbar {
   isScrolled = false;
   isMobileMenuOpen = false;
+  userMenuOpen = false;
+  mobileDestinosOpen = false;
   tours: Tour[] = [];
-  whatsappNumber = '51987654321';
+  whatsappNumber = environment.whatsappNumber;
   private readonly platformId = inject(PLATFORM_ID);
 
   constructor(
@@ -31,7 +34,18 @@ export class Navbar {
       .pipe(filter((e): e is NavigationEnd => e instanceof NavigationEnd))
       .subscribe(() => {
         this.isMobileMenuOpen = false;
+        this.userMenuOpen = false;
       });
+  }
+
+  get userInitials(): string {
+    const email = this.auth.user()?.email ?? '';
+    const name = email.split('@')[0] || '?';
+    return name
+      .split(/[.\-_]/)
+      .slice(0, 2)
+      .map((p) => p[0]?.toUpperCase() ?? '')
+      .join('');
   }
 
   tourSlug(name: string): string {
@@ -78,6 +92,18 @@ export class Navbar {
 
   toggleMobileMenu() {
     this.isMobileMenuOpen = !this.isMobileMenuOpen;
+  }
+
+  toggleUserMenu($event: Event) {
+    $event.stopPropagation();
+    this.userMenuOpen = !this.userMenuOpen;
+  }
+
+  @HostListener('document:click')
+  closeUserMenu() {
+    if (this.userMenuOpen) {
+      this.userMenuOpen = false;
+    }
   }
 
   logout() {

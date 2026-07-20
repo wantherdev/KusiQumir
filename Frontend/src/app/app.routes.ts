@@ -1,5 +1,6 @@
 import { Routes } from '@angular/router';
 import { adminGuard } from './guards/admin.guard';
+import { authGuard } from './guards/auth.guard';
 import { homeResolver, toursResolver, articlesResolver, experiencesResolver, tourDetailResolver, articleResolver, experienceResolver } from './resolvers/data.resolvers';
 
 export const routes: Routes = [
@@ -17,12 +18,27 @@ export const routes: Routes = [
   { path: 'blog/:slug', loadComponent: () => import('./pages/blog/article/article').then((m) => m.BlogArticle), resolve: { article: articleResolver } },
   { path: 'login', loadComponent: () => import('./pages/auth/login').then((m) => m.Login) },
   { path: 'registro', loadComponent: () => import('./pages/auth/registro/registro').then((m) => m.Registro) },
-  { path: 'mis-reservas', loadComponent: () => import('./pages/cliente/mis-reservas/mis-reservas').then((m) => m.MisReservas) },
-  { path: 'admin/tours', loadComponent: () => import('./pages/admin/dashboard/tours-dashboard').then((m) => m.ToursDashboard), canActivate: [adminGuard] },
-  { path: 'admin/blog', loadComponent: () => import('./pages/admin/dashboard/articles-dashboard').then((m) => m.ArticlesDashboard), canActivate: [adminGuard] },
-  { path: 'admin/experiencias', loadComponent: () => import('./pages/admin/dashboard/experiences-dashboard').then((m) => m.ExperiencesDashboard), canActivate: [adminGuard] },
-  { path: 'admin/paquetes', loadComponent: () => import('./pages/admin/dashboard/packages-dashboard/packages-dashboard').then((m) => m.PackagesDashboard), canActivate: [adminGuard] },
-  { path: 'admin/reservas', loadComponent: () => import('./pages/admin/dashboard/bookings-dashboard').then((m) => m.BookingsDashboard), canActivate: [adminGuard] },
+  { path: 'mis-reservas', canActivate: [authGuard], loadComponent: () => import('./pages/cliente/mis-reservas/mis-reservas').then((m) => m.MisReservas) },
+  { path: 'mi-perfil', canActivate: [authGuard], loadComponent: () => import('./pages/cliente/mi-perfil/mi-perfil').then((m) => m.MiPerfil) },
+  {
+    path: 'admin',
+    canActivate: [adminGuard],
+    loadComponent: () => import('./pages/admin/layout/admin-layout').then((m) => m.AdminLayout),
+    children: [
+      { path: '', loadComponent: () => import('./pages/admin/dashboard-page/admin-dashboard').then((m) => m.AdminDashboard) },
+      { path: 'tours', loadComponent: () => import('./pages/admin/dashboard/tours-dashboard').then((m) => m.ToursDashboard) },
+      { path: 'blog', loadComponent: () => import('./pages/admin/dashboard/articles-dashboard').then((m) => m.ArticlesDashboard) },
+      { path: 'experiencias', loadComponent: () => import('./pages/admin/dashboard/experiences-dashboard').then((m) => m.ExperiencesDashboard) },
+      { path: 'paquetes', loadComponent: () => import('./pages/admin/dashboard/packages-dashboard/packages-dashboard').then((m) => m.PackagesDashboard) },
+      { path: 'reservas', loadComponent: () => import('./pages/admin/dashboard/bookings-dashboard').then((m) => m.BookingsDashboard) },
+      { path: 'clientes', loadComponent: () => import('./pages/admin/dashboard/customers-dashboard').then((m) => m.CustomersDashboard) },
+      { path: 'proveedores', loadComponent: () => import('./pages/admin/dashboard/providers-dashboard').then((m) => m.ProvidersDashboard) },
+      { path: 'guias', loadComponent: () => import('./pages/admin/dashboard/guides-dashboard').then((m) => m.GuidesDashboard) },
+      { path: 'operaciones', loadComponent: () => import('./pages/admin/dashboard/operations-dashboard').then((m) => m.OperationsDashboard) },
+      { path: 'pagos', loadComponent: () => import('./pages/admin/dashboard/payments-dashboard').then((m) => m.PaymentsDashboard) },
+      { path: 'facturacion', loadComponent: () => import('./pages/admin/dashboard/billing-dashboard').then((m) => m.BillingDashboard) },
+    ],
+  },
   { path: 'terminos-y-condiciones', loadComponent: () => import('./pages/legal/terminos/terminos').then((m) => m.Terminos) },
   { path: 'politica-de-privacidad', loadComponent: () => import('./pages/legal/politica-privacidad/politica-privacidad').then((m) => m.Politica) },
   { path: 'cancelaciones-y-reembolsos', loadComponent: () => import('./pages/legal/cancelaciones/cancelaciones').then((m) => m.Cancelaciones) },

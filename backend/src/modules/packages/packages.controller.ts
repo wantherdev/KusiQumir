@@ -14,6 +14,7 @@ import {
   ArrayNotEmpty,
   IsNotEmpty,
   IsNumber,
+  IsString,
   Min,
   IsOptional,
 } from "class-validator";
@@ -67,6 +68,21 @@ class CreatePackageDto {
   @ApiProperty({ description: "Excluye", required: false })
   @IsOptional()
   excluded?: string;
+
+  @ApiProperty({ description: "Slug URL", required: false })
+  @IsOptional()
+  @IsString()
+  slug?: string;
+
+  @ApiProperty({ description: "SEO Title", required: false })
+  @IsOptional()
+  @IsString()
+  seoTitle?: string;
+
+  @ApiProperty({ description: "SEO Description", required: false })
+  @IsOptional()
+  @IsString()
+  seoDescription?: string;
 }
 
 class UpdatePackageDto {
@@ -117,6 +133,21 @@ class UpdatePackageDto {
   @ApiProperty({ description: "Excluye", required: false })
   @IsOptional()
   excluded?: string;
+
+  @ApiProperty({ description: "Slug URL", required: false })
+  @IsOptional()
+  @IsString()
+  slug?: string;
+
+  @ApiProperty({ description: "SEO Title", required: false })
+  @IsOptional()
+  @IsString()
+  seoTitle?: string;
+
+  @ApiProperty({ description: "SEO Description", required: false })
+  @IsOptional()
+  @IsString()
+  seoDescription?: string;
 }
 
 @ApiTags("packages")

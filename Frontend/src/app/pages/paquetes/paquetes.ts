@@ -35,7 +35,7 @@ export class Paquetes implements OnInit {
     const term = this.searchTerm().trim().toLowerCase();
     return this.packages().filter((pkg) => {
       const toursText = (pkg.tours ?? [])
-        .map((t) => t.name ?? '')
+        .map((t) => t.title ?? '')
         .join(' ');
       const searchableText = `${pkg.name} ${toursText}`.toLowerCase();
       const matchesSearch = !term || searchableText.includes(term);

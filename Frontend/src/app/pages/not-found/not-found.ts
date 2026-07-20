@@ -10,7 +10,7 @@ import { RouterLink } from '@angular/router';
     <section class="page-shell flex min-h-[70vh] items-center justify-center px-4 py-20">
       <div class="mx-auto max-w-lg text-center">
         <p class="text-sm font-semibold uppercase tracking-[0.35em] text-primary">Error 404</p>
-        <h1 class="mt-4 text-7xl font-bold text-slate-900">404</h1>
+        <h1 class="mt-4 text-7xl font-bold text-tertiary">404</h1>
         <p class="mt-4 text-xl text-slate-600">Página no encontrada</p>
         <p class="mt-2 text-slate-500">La página que buscas no existe o ha sido movida.</p>
         <div class="mt-10 flex flex-col justify-center gap-3 sm:flex-row">

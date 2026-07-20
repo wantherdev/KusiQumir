@@ -29,7 +29,7 @@ export class CreateArticleDto {
   @ApiProperty({ description: "Tags del artículo", required: false })
   @IsOptional() @IsString() tags?: string;
   @ApiProperty({ description: "Estado del artículo", required: false })
-  @IsOptional() @IsEnum(["DRAFT", "PUBLISHED"]) status?: string;
+  @IsOptional() @IsEnum(["DRAFT", "PUBLISHED", "ARCHIVED"]) status?: string;
 }
 
 export class UpdateArticleDto {
@@ -50,7 +50,7 @@ export class UpdateArticleDto {
   @ApiProperty({ description: "Tags del artículo", required: false })
   @IsOptional() @IsString() tags?: string;
   @ApiProperty({ description: "Estado del artículo", required: false })
-  @IsOptional() @IsEnum(["DRAFT", "PUBLISHED"]) status?: string;
+  @IsOptional() @IsEnum(["DRAFT", "PUBLISHED", "ARCHIVED"]) status?: string;
 }
 
 class FindAllArticlesQuery {

@@ -1,8 +1,9 @@
-import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
-import { Booking } from '../../../services/travel-api.service';
+import { Booking, TravelApiService } from '../../../services/travel-api.service';
 import { LocalBookingsService } from '../../../services/local-bookings.service';
+import { AuthService } from '../../../services/auth.service';
 import { Skeleton } from '../../../components/skeleton/skeleton';
 import { ConfirmDialog } from '../../../components/confirm-dialog/confirm-dialog';
 
@@ -28,7 +29,12 @@ export class MisReservas implements OnInit {
   showConfirm = false;
   pendingCancelId = '';
 
-  constructor(private readonly local: LocalBookingsService) {}
+  constructor(
+    private readonly local: LocalBookingsService,
+    private readonly api: TravelApiService,
+    private readonly auth: AuthService,
+    private readonly cdr: ChangeDetectorRef,
+  ) {}
 
   ngOnInit(): void {
     this.load();
@@ -36,9 +42,33 @@ export class MisReservas implements OnInit {
 
   load(): void {
     this.showConfirm = false;
+    this.successMessage = '';
+    this.errorMessage = '';
     this.isLoading = true;
-    this.items = this.local.bookings();
-    this.isLoading = false;
+    this.cdr.markForCheck();
+
+    const localItems = this.local.bookings();
+
+    if (this.auth.user()) {
+      this.api.getMyBookings().subscribe({
+        next: (server) => {
+          const localOnly = localItems.filter((b) => b.id.startsWith('local-'));
+          this.items = this.sort([...localOnly, ...server]);
+          this.isLoading = false;
+          this.cdr.markForCheck();
+        },
+        error: () => {
+          this.items = localItems;
+          this.isLoading = false;
+          this.errorMessage = 'No se pudieron cargar tus reservas del servidor.';
+          this.cdr.markForCheck();
+        },
+      });
+    } else {
+      this.items = localItems;
+      this.isLoading = false;
+      this.cdr.markForCheck();
+    }
   }
 
   confirmCancel(id: string): void {
@@ -47,9 +77,31 @@ export class MisReservas implements OnInit {
   }
 
   cancelBooking(): void {
-    this.local.cancel(this.pendingCancelId);
-    this.successMessage = 'Reserva cancelada correctamente.';
-    this.load();
+    const id = this.pendingCancelId;
+    if (id.startsWith('local-')) {
+      this.local.cancel(id);
+      this.successMessage = 'Reserva cancelada correctamente.';
+      this.load();
+      return;
+    }
+    this.api.cancelBooking(id).subscribe({
+      next: (booking) => {
+        this.items = this.items.map((b) => (b.id === id ? { ...b, status: booking.status } : b));
+        this.successMessage = 'Reserva cancelada correctamente.';
+        this.showConfirm = false;
+        this.cdr.markForCheck();
+      },
+      error: () => {
+        this.successMessage = '';
+        this.errorMessage = 'No se pudo cancelar la reserva. Inténtalo nuevamente.';
+        this.showConfirm = false;
+        this.cdr.markForCheck();
+      },
+    });
+  }
+
+  private sort(bookings: Booking[]): Booking[] {
+    return [...bookings].sort((a, b) => (b.createdAt ?? '').localeCompare(a.createdAt ?? ''));
   }
 
   trackByFn(index: number, item: Booking): any {

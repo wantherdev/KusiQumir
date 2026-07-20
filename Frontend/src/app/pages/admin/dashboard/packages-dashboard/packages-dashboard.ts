@@ -1,9 +1,10 @@
-import { Component, OnInit, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy, ChangeDetectorRef, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Tour, TravelApiService, TravelPackage } from '../../../../services/travel-api.service';
 import { Skeleton } from '../../../../components/skeleton/skeleton';
 import { ConfirmDialog } from '../../../../components/confirm-dialog/confirm-dialog';
+import { NotificationService } from '../../../../services/notification.service';
 
 @Component({
   selector: 'app-packages-dashboard',
@@ -15,12 +16,26 @@ import { ConfirmDialog } from '../../../../components/confirm-dialog/confirm-dia
 export class PackagesDashboard implements OnInit {
   packages: TravelPackage[] = [];
   tours: Tour[] = [];
+  pageSize = 10;
+  currentPage = 1;
+
+  get pagedItems() {
+    const start = (this.currentPage - 1) * this.pageSize;
+    return this.packages.slice(start, start + this.pageSize);
+  }
+
+  get totalPages() {
+    return Math.max(1, Math.ceil(this.packages.length / this.pageSize));
+  }
+
+  prevPage() { this.currentPage = Math.max(1, this.currentPage - 1); }
+  nextPage() { this.currentPage = Math.min(this.totalPages, this.currentPage + 1); }
+
   isLoading = false;
-  isModalOpen = false;
+  activeView: 'list' | 'form' = 'list';
   selectedPackageId: string | null = null;
   pkgForm: FormGroup;
-  errorMessage = '';
-  successMessage = '';
+  private readonly notification = inject(NotificationService);
   selectedTourIds: Set<string> = new Set();
 
   constructor(
@@ -38,6 +53,9 @@ export class PackagesDashboard implements OnInit {
       imageUrl: [''],
       included: [''],
       excluded: [''],
+      slug: [''],
+      seoTitle: [''],
+      seoDescription: [''],
     });
   }
 
@@ -53,16 +71,16 @@ export class PackagesDashboard implements OnInit {
   }
 
   load(): void {
+    this.currentPage = 1;
     this.isLoading = true;
     this.api.getPackages().subscribe({
       next: (res) => { this.packages = res; this.isLoading = false; this.cdr.markForCheck(); },
-      error: () => { this.errorMessage = 'Error al cargar paquetes.'; this.isLoading = false; this.cdr.markForCheck(); },
+      error: () => { this.notification.show('Error al cargar paquetes.', 'error'); this.isLoading = false; this.cdr.markForCheck(); },
     });
   }
 
-  openModal(pkg?: TravelPackage): void {
+  openForm(pkg?: TravelPackage): void {
     this.selectedPackageId = pkg?.id ?? null;
-    this.errorMessage = '';
     this.selectedTourIds = new Set(pkg?.tours?.map((t) => t.id) ?? []);
     this.pkgForm.reset({
       name: pkg?.name ?? '',
@@ -74,12 +92,15 @@ export class PackagesDashboard implements OnInit {
       imageUrl: pkg?.imageUrl ?? '',
       included: pkg?.included ?? '',
       excluded: pkg?.excluded ?? '',
+      slug: pkg?.slug ?? '',
+      seoTitle: pkg?.seoTitle ?? '',
+      seoDescription: pkg?.seoDescription ?? '',
     });
-    this.isModalOpen = true;
+    this.activeView = 'form';
   }
 
-  closeModal(): void {
-    this.isModalOpen = false;
+  closeForm(): void {
+    this.activeView = 'list';
     this.selectedPackageId = null;
     this.selectedTourIds = new Set();
     this.pkgForm.reset();
@@ -96,7 +117,7 @@ export class PackagesDashboard implements OnInit {
   save(): void {
     if (this.pkgForm.invalid || this.selectedTourIds.size === 0) {
       this.pkgForm.markAllAsTouched();
-      if (this.selectedTourIds.size === 0) this.errorMessage = 'Selecciona al menos un tour.';
+      if (this.selectedTourIds.size === 0) this.notification.show('Selecciona al menos un tour.', 'error');
       return;
     }
 
@@ -111,13 +132,13 @@ export class PackagesDashboard implements OnInit {
 
     request.subscribe({
       next: () => {
-        this.successMessage = this.isEditMode ? 'Paquete actualizado.' : 'Paquete creado.';
-        this.closeModal();
+        this.notification.show(this.isEditMode ? 'Paquete actualizado.' : 'Paquete creado.', 'success');
+        this.closeForm();
         this.load();
         this.cdr.markForCheck();
       },
-      error: (err) => {
-        this.errorMessage = err.error?.message || 'Error al guardar.';
+      error: (err: any) => {
+        this.notification.show(err.error?.message || 'Error al guardar.', 'error');
         this.isLoading = false;
         this.cdr.markForCheck();
       },
@@ -133,9 +154,22 @@ export class PackagesDashboard implements OnInit {
   }
 
   deletePackage(): void {
+    this.isLoading = true;
     this.api.deletePackage(this.pendingDeleteId).subscribe({
-      next: () => { this.successMessage = 'Paquete eliminado.'; this.load(); this.cdr.markForCheck(); },
-      error: (err) => { this.errorMessage = err.error?.message || 'Error al eliminar.'; this.cdr.markForCheck(); },
+      next: () => {
+        this.notification.show('Paquete eliminado.', 'success');
+        this.showConfirm = false;
+        this.pendingDeleteId = '';
+        this.load();
+        this.cdr.markForCheck();
+      },
+      error: (err: any) => {
+        this.notification.show(err.error?.message || 'Error al eliminar.', 'error');
+        this.showConfirm = false;
+        this.pendingDeleteId = '';
+        this.isLoading = false;
+        this.cdr.markForCheck();
+      },
     });
   }
 

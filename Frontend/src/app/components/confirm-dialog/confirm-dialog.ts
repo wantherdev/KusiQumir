@@ -15,7 +15,7 @@ import { CommonModule } from '@angular/common';
             <i class="ri-alert-line text-2xl"></i>
           </div>
           <div>
-            <h3 class="text-lg font-bold text-slate-900">{{ title }}</h3>
+            <h3 class="text-lg font-bold text-tertiary">{{ title }}</h3>
             <p [id]="'confirm-msg-' + uid" class="mt-1 text-sm text-slate-600">{{ message }}</p>
           </div>
         </div>

@@ -15,7 +15,7 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
   return next(cloned).pipe(
     catchError((error: HttpErrorResponse) => {
       if (error.status === 401) {
-        auth.user.set(null);
+        auth.clearUser();
       } else if (error.status >= 500) {
         if (isDevMode()) console.error('[Server Error]', error.status, error.message);
       }

@@ -34,7 +34,7 @@ export class Blog implements OnInit {
   private readonly title = inject(Title);
 
   articles: Article[] = fallbackBlogArticles.map(toArticle);
-  isLoading = true;
+  isLoading = false;
 
   ngOnInit(): void {
     this.title.setTitle('Blog | Kusi Q\'umir');

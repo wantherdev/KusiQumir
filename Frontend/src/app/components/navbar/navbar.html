@@ -1,185 +1,174 @@
 <div
-  class="sticky top-0 z-50 w-full transition-all duration-500 ease-in-out text-[15px]"
-  [ngClass]="isScrolled ? 'top4' : 'top0'"
+  class="sticky top-0 z-50 w-full transition-all duration-300"
+  [ngClass]="isScrolled ? 'nav-scrolled' : 'nav-top'"
 >
-  <div class="mx-auto flex max-w-screen-2xl flex-col gap-4 px-4 py-4 sm:px-6 lg:px-8">
-    <div class="flex items-center justify-between gap-3">
-      <!-- Logo -->
-      <a routerLink="/" class="flex items-center gap-3">
-        <div
-          class="w-12 h-12 rounded-full bg-white shadow-sm flex items-center justify-center overflow-hidden"
+  <div class="container-page flex items-center justify-between gap-4 py-3">
+    <!-- Logo -->
+    <a routerLink="/" class="flex shrink-0 items-center gap-2.5" aria-label="Inicio Kusi Q'umir">
+      <span class="flex h-10 w-10 items-center justify-center overflow-hidden rounded-full bg-white shadow-sm ring-1 ring-black/5 sm:h-11 sm:w-11">
+        <img src="/logo1.svg" alt="Kusi Q'umir" width="44" height="44" class="h-10 w-10 object-contain sm:h-11 sm:w-11" />
+      </span>
+      <span class="hidden text-lg font-bold tracking-tight text-tertiary sm:block">
+        Kusi <span class="text-primary">Q'umir</span>
+      </span>
+    </a>
+
+    <!-- Desktop nav -->
+    <nav class="hidden items-center gap-1 lg:flex">
+      <div class="group relative" tabindex="0">
+        <a
+          routerLink="/destinos"
+          routerLinkActive="nav-link-active"
+          class="nav-link flex items-center gap-1.5"
         >
-           <img src="/logo1.svg" alt="Kusi Q'umir" width="56" height="56" class="h-14 w-14 object-contain" />
-        </div>
-        <span class="hidden sm:inline text-lg font-bold">Kusi Q'umir</span>
-      </a>
-
-      <button
-        type="button"
-        class="inline-flex h-11 w-11 items-center justify-center rounded-full border border-slate-200 text-current shadow-sm transition hover:bg-slate-50 md:hidden"
-        (click)="toggleMobileMenu()"
-        [attr.aria-expanded]="isMobileMenuOpen"
-        aria-label="Abrir menú">
-        <i aria-hidden="true" class="ri-menu-line text-2xl" *ngIf="!isMobileMenuOpen"></i>
-        <i aria-hidden="true" class="ri-close-line text-2xl" *ngIf="isMobileMenuOpen"></i>
-      </button>
-
-      <nav
-        class="hidden md:flex flex-1 items-center justify-center gap-8 text-base font-semibold text-current"
-      >
-        <div class="relative group">
-          <a
-            routerLink="/destinos"
-            routerLinkActive="text-primary"
-            #dest="routerLinkActive"
-            [attr.aria-current]="dest.isActive ? 'page' : null"
-            class="flex items-center gap-2 rounded-md px-3 py-2 transition hover:text-primary">
-            <span>Destinos</span>
-            <i aria-hidden="true" class="ri-arrow-down-s-line text-sm"></i>
-          </a>
-          <div
-            class="absolute left-0 top-full mt-2 w-72 rounded-3xl bg-white p-4 shadow-xl opacity-0 invisible transition-all duration-300 group-hover:visible group-hover:opacity-100"
-          >
-            <div class="max-h-[70vh] space-y-5 overflow-y-auto">
-              <div *ngFor="let group of tourGroups">
-                <div class="mb-2 flex items-center gap-2 px-1">
-                  <i [attr.aria-hidden]="true" class="text-base text-primary {{ group.icon }}"></i>
-                  <span class="text-xs font-bold uppercase tracking-wider text-slate-400">{{ group.label }}</span>
-                </div>
-                <div class="space-y-1 border-l-2 border-primary/15 pl-2">
-<a
-                    *ngFor="let tour of group.tours"
-                    [routerLink]="'/destinos/tour/' + tour.slug"
-                    class="block rounded-xl px-3 py-2 text-sm font-semibold text-slate-700 transition hover:bg-primary hover:text-white"
-                    >{{ tour.name }} <span class="text-xs text-slate-400">{{ tour.durationText }}</span>
-                  </a>
-                </div>
+          <span>Destinos</span>
+          <i class="ri-arrow-down-s-line text-base transition-transform duration-200 group-hover:rotate-180"></i>
+        </a>
+        <div
+          class="invisible absolute left-1/2 top-full z-50 mt-3 w-72 -translate-x-1/2 opacity-0 transition-all duration-200 group-hover:visible group-hover:opacity-100 group-focus-within:visible group-focus-within:opacity-100"
+        >
+          <div class="rounded-2xl bg-white p-3 shadow-xl ring-1 ring-black/5">
+            <div *ngFor="let group of tourGroups" class="px-1 py-1.5">
+              <p class="mb-1 flex items-center gap-2 px-2 text-[11px] font-bold uppercase tracking-wider text-slate-400">
+                <i [ngClass]="group.icon" class="text-primary"></i>{{ group.label }}
+              </p>
+              <div class="space-y-0.5">
+                <a
+                  *ngFor="let tour of group.tours"
+                  [routerLink]="['/destinos/tour', tour.slug]"
+                  class="block rounded-xl px-3 py-2 text-sm font-medium text-slate-600 transition hover:bg-primary/10 hover:text-primary"
+                  >{{ tour.title }}</a
+                >
               </div>
             </div>
           </div>
         </div>
-
-         <a routerLink="/paquetes" routerLinkActive="text-primary" #paq="routerLinkActive" [attr.aria-current]="paq.isActive ? 'page' : null" class="rounded-md px-3 py-2 transition hover:text-primary">Paquetes</a>
-         <a routerLink="/experiencias" routerLinkActive="text-primary" #exp="routerLinkActive" [attr.aria-current]="exp.isActive ? 'page' : null" class="rounded-md px-3 py-2 transition hover:text-primary">Experiencias</a>
-         <a routerLink="/nosotros" routerLinkActive="text-primary" #nos="routerLinkActive" [attr.aria-current]="nos.isActive ? 'page' : null" class="rounded-md px-3 py-2 transition hover:text-primary">Nosotros</a>
-         <a routerLink="/blog" routerLinkActive="text-primary" #blg="routerLinkActive" [attr.aria-current]="blg.isActive ? 'page' : null" class="rounded-md px-3 py-2 transition hover:text-primary">Blog</a>
-         <a routerLink="/contacto" routerLinkActive="text-primary" #cnt="routerLinkActive" [attr.aria-current]="cnt.isActive ? 'page' : null" class="rounded-md px-3 py-2 transition hover:text-primary">Contacto</a>
-
-        <!-- Mis Reservas (cliente público, en localStorage) -->
-        <a routerLink="/mis-reservas" routerLinkActive="text-primary" #res="routerLinkActive" [attr.aria-current]="res.isActive ? 'page' : null" class="rounded-md px-3 py-2 transition hover:text-primary">
-          Mis Reservas
-        </a>
-
-        <!-- Admin dropdown (solo ADMIN) -->
-        <div *ngIf="auth.user()?.role === 'ADMIN'" class="relative group">
-          <button class="flex items-center gap-2 rounded-md px-3 py-2 transition hover:text-primary">
-            <span>Admin</span>
-            <i aria-hidden="true" class="ri-arrow-down-s-line text-sm"></i>
-          </button>
-          <div class="absolute left-0 top-full mt-2 w-48 rounded-3xl bg-white p-4 shadow-xl opacity-0 invisible transition-all duration-300 group-hover:visible group-hover:opacity-100">
-            <div class="space-y-2">
-              <a routerLink="/admin/tours" class="block rounded-xl px-3 py-2 text-sm font-semibold text-slate-700 transition hover:bg-primary hover:text-white">Tours</a>
-              <a routerLink="/admin/paquetes" class="block rounded-xl px-3 py-2 text-sm font-semibold text-slate-700 transition hover:bg-primary hover:text-white">Paquetes</a>
-              <a routerLink="/admin/reservas" class="block rounded-xl px-3 py-2 text-sm font-semibold text-slate-700 transition hover:bg-primary hover:text-white">Reservas</a>
-              <a routerLink="/admin/blog" class="block rounded-xl px-3 py-2 text-sm font-semibold text-slate-700 transition hover:bg-primary hover:text-white">Blog</a>
-              <a routerLink="/admin/experiencias" class="block rounded-xl px-3 py-2 text-sm font-semibold text-slate-700 transition hover:bg-primary hover:text-white">Experiencias</a>
-              <button (click)="logout()" class="block w-full text-left rounded-xl px-3 py-2 text-sm font-semibold text-slate-700 transition hover:bg-primary hover:text-white">Cerrar sesión</button>
-            </div>
-          </div>
-        </div>
-      </nav>
-
-      <div class="hidden md:flex items-center gap-3 text-[1rem]">
-        <a
-          href="https://wa.me/{{ whatsappNumber }}"
-          class="flex items-center gap-2 rounded-full border border-primary px-4 py-2 text-primary transition hover:bg-primary hover:text-white"
-        >
-          <i aria-hidden="true" class="ri-whatsapp-line"></i>
-          <span class="hidden md:inline">Reserva rápida</span>
-        </a>
-        <a
-          routerLink="/contacto"
-          class="rounded-full border border-primary px-5 py-2 text-primary font-semibold transition hover:bg-primary hover:text-white">
-          Solicitar Cotización
-        </a>
       </div>
+
+      <a routerLink="/paquetes" routerLinkActive="nav-link-active" #paq="routerLinkActive" [attr.aria-current]="paq.isActive ? 'page' : null" class="nav-link">Paquetes</a>
+      <a routerLink="/experiencias" routerLinkActive="nav-link-active" #exp="routerLinkActive" [attr.aria-current]="exp.isActive ? 'page' : null" class="nav-link">Experiencias</a>
+      <a routerLink="/nosotros" routerLinkActive="nav-link-active" #nos="routerLinkActive" [attr.aria-current]="nos.isActive ? 'page' : null" class="nav-link">Nosotros</a>
+      <a routerLink="/blog" routerLinkActive="nav-link-active" #blg="routerLinkActive" [attr.aria-current]="blg.isActive ? 'page' : null" class="nav-link">Blog</a>
+      <a routerLink="/contacto" routerLinkActive="nav-link-active" #cnt="routerLinkActive" [attr.aria-current]="cnt.isActive ? 'page' : null" class="nav-link">Contacto</a>
+    </nav>
+
+    <!-- Right cluster -->
+    <div class="flex items-center gap-2 sm:gap-3">
+      <a
+        [href]="'https://wa.me/' + whatsappNumber"
+        target="_blank"
+        rel="noopener"
+        aria-label="WhatsApp"
+        class="hidden h-10 w-10 items-center justify-center rounded-full bg-primary/10 text-primary transition hover:bg-primary hover:text-white sm:flex"
+      >
+        <i class="ri-whatsapp-line text-lg" aria-hidden="true"></i>
+      </a>
+
+      <!-- Logged out -->
+      <div class="hidden items-center gap-3 lg:flex" *ngIf="!auth.user()">
+        <a routerLink="/login" class="text-sm font-medium text-slate-600 transition hover:text-primary">Iniciar sesión</a>
+        <a routerLink="/contacto" class="btn-primary">Cotizar viaje</a>
+      </div>
+
+      <!-- Logged in: account menu -->
+      <div class="relative hidden lg:block" *ngIf="auth.user()">
+        <button
+          type="button"
+          (click)="toggleUserMenu($event)"
+          class="flex items-center gap-2 rounded-full py-1 pl-1 pr-3 transition hover:bg-slate-100"
+          [attr.aria-expanded]="userMenuOpen"
+          aria-label="Menú de cuenta"
+        >
+          <span class="flex h-8 w-8 items-center justify-center rounded-full bg-primary text-sm font-semibold text-white">{{ userInitials }}</span>
+          <i class="ri-arrow-down-s-line text-slate-400 transition-transform" [class.rotate-180]="userMenuOpen"></i>
+        </button>
+        <div
+          *ngIf="userMenuOpen"
+          (click)="$event.stopPropagation()"
+          class="absolute right-0 top-full mt-2 w-56 rounded-2xl bg-white p-2 shadow-xl ring-1 ring-black/5"
+        >
+          <div class="px-3 py-2">
+            <p class="truncate text-sm font-semibold text-tertiary">{{ auth.user()?.email }}</p>
+          </div>
+          <div class="my-1 h-px bg-slate-100"></div>
+          <a routerLink="/mi-perfil" class="menu-item"><i class="ri-user-line" aria-hidden="true"></i> Mi Perfil</a>
+          <a routerLink="/mis-reservas" class="menu-item"><i class="ri-ticket-line" aria-hidden="true"></i> Mis Reservas</a>
+          <a *ngIf="auth.user()?.role === 'ADMIN'" routerLink="/admin" class="menu-item"><i class="ri-dashboard-line" aria-hidden="true"></i> Dashboard</a>
+          <div class="my-1 h-px bg-slate-100"></div>
+          <button type="button" (click)="logout()" class="menu-item w-full text-left text-red-600">
+            <i class="ri-logout-box-line" aria-hidden="true"></i> Cerrar sesión
+          </button>
+        </div>
+      </div>
+
+      <!-- Mobile toggle -->
+      <button
+        type="button"
+        (click)="toggleMobileMenu()"
+        [attr.aria-expanded]="isMobileMenuOpen"
+        aria-label="Abrir menú"
+        class="flex h-10 w-10 items-center justify-center rounded-full border border-slate-200 text-slate-700 transition hover:bg-slate-50 lg:hidden"
+      >
+        <i class="ri-menu-line text-xl" *ngIf="!isMobileMenuOpen"></i>
+        <i class="ri-close-line text-xl" *ngIf="isMobileMenuOpen"></i>
+      </button>
     </div>
+  </div>
 
-    <div
-      class="overflow-hidden transition-all duration-300 md:hidden"
-      [ngClass]="isMobileMenuOpen ? 'max-h-[800px] opacity-100 py-4' : 'max-h-0 opacity-0 py-0'"
-    >
-      <div class="rounded-3xl bg-white p-4 shadow-xl ring-1 ring-slate-200">
-        <div class="space-y-1 text-sm font-semibold text-slate-700">
-          <a
-            routerLink="/destinos"
-            class="block rounded-xl px-3 py-2 transition hover:bg-primary hover:text-white">Destinos</a>
-          <div class="space-y-1 rounded-2xl bg-slate-50 p-3">
+  <!-- Mobile drawer -->
+  <div
+    class="overflow-hidden border-t border-slate-100 bg-white transition-all duration-300 lg:hidden"
+    [ngClass]="isMobileMenuOpen ? 'max-h-[90vh] overflow-y-auto opacity-100' : 'max-h-0 opacity-0'"
+  >
+    <div class="container-page space-y-1 py-4">
+      <div>
+        <button
+          type="button"
+          (click)="mobileDestinosOpen = !mobileDestinosOpen"
+          class="flex w-full items-center justify-between rounded-xl px-3 py-3 text-base font-semibold text-slate-800"
+          [attr.aria-expanded]="mobileDestinosOpen"
+        >
+          <span>Destinos</span>
+          <i class="ri-arrow-down-s-line transition-transform" [class.rotate-180]="mobileDestinosOpen"></i>
+        </button>
+        <div *ngIf="mobileDestinosOpen" class="space-y-3 pb-2 pl-3">
+          <div *ngFor="let group of tourGroups">
+            <p class="mb-1 flex items-center gap-2 px-2 text-[11px] font-bold uppercase tracking-wider text-slate-400">
+              <i [ngClass]="group.icon" class="text-primary"></i>{{ group.label }}
+            </p>
             <a
-              *ngFor="let tour of tours"
-              [routerLink]="'/destinos/tour/' + tour.slug"
-              class="block rounded-lg px-3 py-2 text-slate-700 transition hover:bg-primary hover:text-white">
-              {{ tour.name }}
-            </a>
-          </div>
-          <a
-            routerLink="/paquetes"
-            routerLinkActive="bg-primary/10 text-primary"
-            #paqm="routerLinkActive"
-            [attr.aria-current]="paqm.isActive ? 'page' : null"
-            class="block rounded-xl px-3 py-2 transition hover:bg-primary hover:text-white">Paquetes</a>
-           <a
-              routerLink="/experiencias"
-              routerLinkActive="bg-primary/10 text-primary"
-              #expm="routerLinkActive"
-              [attr.aria-current]="expm.isActive ? 'page' : null"
-              class="block rounded-xl px-3 py-2 transition hover:bg-primary hover:text-white">Experiencias</a>
-           <a
-              routerLink="/nosotros"
-              routerLinkActive="bg-primary/10 text-primary"
-              #nosm="routerLinkActive"
-              [attr.aria-current]="nosm.isActive ? 'page' : null"
-              class="block rounded-xl px-3 py-2 transition hover:bg-primary hover:text-white">Nosotros</a>
-           <a
-              routerLink="/blog"
-              routerLinkActive="bg-primary/10 text-primary"
-              #blgm="routerLinkActive"
-              [attr.aria-current]="blgm.isActive ? 'page' : null"
-              class="block rounded-xl px-3 py-2 transition hover:bg-primary hover:text-white">Blog</a>
-           <a
-             routerLink="/contacto"
-             routerLinkActive="bg-primary/10 text-primary"
-             #cntm="routerLinkActive"
-             [attr.aria-current]="cntm.isActive ? 'page' : null"
-              class="block rounded-xl px-3 py-2 transition hover:bg-primary hover:text-white">Contacto</a>
-
-          <a routerLink="/mis-reservas" routerLinkActive="bg-primary/10 text-primary" #resm="routerLinkActive" [attr.aria-current]="resm.isActive ? 'page' : null" class="block rounded-xl px-3 py-2 transition hover:bg-primary hover:text-white">Mis Reservas</a>
-
-          <div *ngIf="auth.user()?.role === 'ADMIN'" class="space-y-1">
-            <p class="px-3 py-1 text-xs font-semibold uppercase tracking-wider text-gray-400">Admin</p>
-            <a routerLink="/admin/tours" class="block rounded-xl px-3 py-2 transition hover:bg-primary hover:text-white">Tours</a>
-            <a routerLink="/admin/paquetes" class="block rounded-xl px-3 py-2 transition hover:bg-primary hover:text-white">Paquetes</a>
-            <a routerLink="/admin/reservas" class="block rounded-xl px-3 py-2 transition hover:bg-primary hover:text-white">Reservas</a>
-            <a routerLink="/admin/blog" class="block rounded-xl px-3 py-2 transition hover:bg-primary hover:text-white">Blog</a>
-            <a routerLink="/admin/experiencias" class="block rounded-xl px-3 py-2 transition hover:bg-primary hover:text-white">Experiencias</a>
-            <button (click)="logout()" class="block w-full text-left rounded-xl px-3 py-2 transition hover:bg-primary hover:text-white">Cerrar sesión</button>
+              *ngFor="let tour of group.tours"
+              [routerLink]="['/destinos/tour', tour.slug]"
+              class="block rounded-lg px-3 py-2 text-sm text-slate-600"
+              >{{ tour.title }}</a
+            >
           </div>
         </div>
+      </div>
 
-        <div class="mt-4 flex flex-col gap-3 border-t border-slate-200 pt-4">
-          <a
-            href="https://wa.me/{{ whatsappNumber }}"
-            class="inline-flex items-center justify-center gap-2 rounded-full border border-primary bg-white px-4 py-2 text-primary transition hover:bg-primary hover:text-white"
-          >
-            <i aria-hidden="true" class="ri-whatsapp-line"></i>
-            <span>WhatsApp</span>
-          </a>
-          <a
-            routerLink="/contacto"
-            class="inline-flex items-center justify-center rounded-full border border-primary bg-white px-4 py-2 text-primary font-semibold transition hover:bg-primary hover:text-white">
-            Cotizar Viaje
-          </a>
-        </div>
+      <a routerLink="/paquetes" class="mobile-link">Paquetes</a>
+      <a routerLink="/experiencias" class="mobile-link">Experiencias</a>
+      <a routerLink="/nosotros" class="mobile-link">Nosotros</a>
+      <a routerLink="/blog" class="mobile-link">Blog</a>
+      <a routerLink="/contacto" class="mobile-link">Contacto</a>
+
+      <div class="!mt-4 space-y-3 border-t border-slate-100 pt-4">
+        <a *ngIf="!auth.user()" routerLink="/login" class="mobile-link">Iniciar sesión</a>
+        <a *ngIf="auth.user()" routerLink="/mi-perfil" class="mobile-link">Mi Perfil</a>
+        <a *ngIf="auth.user()" routerLink="/mis-reservas" class="mobile-link">Mis Reservas</a>
+        <a *ngIf="auth.user()?.role === 'ADMIN'" routerLink="/admin" class="mobile-link">Dashboard</a>
+        <a
+          [href]="'https://wa.me/' + whatsappNumber"
+          target="_blank"
+          rel="noopener"
+          class="flex items-center justify-center gap-2 rounded-full border border-primary bg-white px-4 py-3 font-semibold text-primary"
+        >
+          <i class="ri-whatsapp-line" aria-hidden="true"></i> WhatsApp
+        </a>
+        <a routerLink="/contacto" class="btn-primary w-full justify-center">Cotizar viaje</a>
+        <button *ngIf="auth.user()" type="button" (click)="logout()" class="mobile-link w-full text-left text-red-600">
+          Cerrar sesión
+        </button>
       </div>
     </div>
   </div>

@@ -54,6 +54,13 @@ class CreateBookingDto {
   notes?: string;
 }
 
+class UpdateBookingStatusDto {
+  @ApiProperty({ description: "Nuevo estado de la reserva", required: true, enum: ["PENDIENTE", "CONFIRMADA", "COMPLETADA", "CANCELADA"] })
+  @IsNotEmpty()
+  @IsString()
+  status!: string;
+}
+
 class FindAllBookingsQuery {
   @ApiProperty({ description: "Límite de resultados", required: false })
   @IsOptional() @IsString() take?: string;
@@ -118,7 +125,7 @@ export class BookingsController {
   @Patch(":id/status")
   @Roles("ADMIN")
   @ApiOperation({ summary: "Actualizar estado de reserva (admin)" })
-  updateStatus(@Param("id") id: string, @Body("status") status: string) {
-    return this.bookingsService.updateStatus(id, status);
+  updateStatus(@Param("id") id: string, @Body() body: UpdateBookingStatusDto) {
+    return this.bookingsService.updateStatus(id, body.status);
   }
 }

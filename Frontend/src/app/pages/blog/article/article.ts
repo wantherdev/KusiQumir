@@ -43,10 +43,10 @@ import { Article } from '../../../services/travel-api.service';
             <span *ngIf="article.category" class="inline-block rounded-full bg-amber-50 px-4 py-1 text-sm font-medium text-primary">
               {{ article.category }}
             </span>
-            <h1 class="mt-4 text-3xl font-bold text-slate-900 sm:text-4xl">{{ article.title }}</h1>
+            <h1 class="mt-4 text-3xl font-bold text-tertiary sm:text-4xl">{{ article.title }}</h1>
             <p class="mt-2 text-sm text-slate-400">{{ article.publishedAt ? (article.publishedAt | date:'longDate') : '' }}</p>
           </div>
-          <div class="mt-8 prose prose-slate max-w-none" [innerHTML]="safeContent"></div>
+          <div class="mt-8 prose prose-slate prose-headings:text-[#0f172a] prose-a:text-primary prose-img:rounded-2xl max-w-none" [innerHTML]="safeContent"></div>
         </ng-container>
       </div>
     </section>

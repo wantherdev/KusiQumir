@@ -1,18 +1,19 @@
 <div class="min-h-screen bg-slate-50 px-4 py-8 sm:px-6 lg:px-8">
   <div class="mx-auto max-w-7xl">
     <div class="mb-8">
-      <h1 class="text-3xl font-bold text-slate-900">Reservas</h1>
+      <h1 class="text-3xl font-bold text-tertiary">Reservas</h1>
       <p class="mt-2 text-sm text-slate-600">Administra las reservas de los clientes.</p>
     </div>
 
-    <p *ngIf="successMessage" class="mb-4 rounded-2xl bg-green-50 p-4 text-sm text-green-800">{{ successMessage }}</p>
-    <p *ngIf="errorMessage" class="mb-4 rounded-2xl bg-red-50 p-4 text-sm text-red-800">{{ errorMessage }}</p>
+    <div class="mb-4">
+      <input type="text" [(ngModel)]="searchQuery" placeholder="Buscar por cliente..." class="w-full max-w-xs rounded-2xl border border-slate-200 px-4 py-2 text-sm outline-none transition focus:border-primary focus:ring-2 focus:ring-primary/10" />
+    </div>
 
     <div class="mb-4 flex flex-wrap gap-2">
       <button (click)="setFilter('')" class="rounded-full px-4 py-1 text-sm" [class.bg-primary]="!statusFilter" [class.text-white]="!statusFilter" [class.bg-gray-200]="statusFilter">Todas</button>
       <button (click)="setFilter('PENDIENTE')" class="rounded-full px-4 py-1 text-sm" [class.bg-yellow-500]="statusFilter==='PENDIENTE'" [class.text-white]="statusFilter==='PENDIENTE'" [class.bg-gray-200]="statusFilter!=='PENDIENTE'">Pendientes</button>
       <button (click)="setFilter('CONFIRMADA')" class="rounded-full px-4 py-1 text-sm" [class.bg-green-600]="statusFilter==='CONFIRMADA'" [class.text-white]="statusFilter==='CONFIRMADA'" [class.bg-gray-200]="statusFilter!=='CONFIRMADA'">Confirmadas</button>
-      <button (click)="setFilter('COMPLETADA')" class="rounded-full px-4 py-1 text-sm" [class.bg-blue-600]="statusFilter==='COMPLETADA'" [class.text-white]="statusFilter==='COMPLETADA'" [class.bg-gray-200]="statusFilter!=='COMPLETADA'">Completadas</button>
+      <button (click)="setFilter('COMPLETADA')" class="rounded-full px-4 py-1 text-sm" [class.bg-primary]="statusFilter==='COMPLETADA'" [class.text-white]="statusFilter==='COMPLETADA'" [class.bg-gray-200]="statusFilter!=='COMPLETADA'">Completadas</button>
       <button (click)="setFilter('CANCELADA')" class="rounded-full px-4 py-1 text-sm" [class.bg-red-600]="statusFilter==='CANCELADA'" [class.text-white]="statusFilter==='CANCELADA'" [class.bg-gray-200]="statusFilter!=='CANCELADA'">Canceladas</button>
     </div>
 
@@ -20,8 +21,8 @@
       <app-skeleton *ngFor="let _ of [].constructor(5)" variant="table-row" [rows]="1" [cols]="7" />
     </div>
     <div class="overflow-x-auto overflow-hidden rounded-2xl bg-white shadow">
-      <p *ngIf="items.length === 0" class="p-8 text-center text-slate-500">No hay reservas.</p>
-      <table *ngIf="items.length" class="min-w-full divide-y divide-slate-200">
+      <p *ngIf="!isLoading && filteredBookings.length === 0" class="p-8 text-center text-slate-500">No hay reservas.</p>
+      <table *ngIf="filteredBookings.length" class="min-w-full divide-y divide-slate-200">
         <thead class="bg-slate-50">
           <tr>
             <th class="px-4 py-3 text-left text-xs font-medium uppercase text-slate-500">Cliente</th>
@@ -34,23 +35,30 @@
           </tr>
         </thead>
         <tbody class="divide-y divide-slate-200">
-          <tr *ngFor="let b of items; trackBy: trackByFn">
-            <td class="px-4 py-3 text-sm">{{ b.customer?.name || b.customerId?.slice(0,8) }}</td>
-            <td class="px-4 py-3 text-sm">{{ b.tour?.name || b.package?.name || '-' }}</td>
+          <tr *ngFor="let b of pagedItems; trackBy: trackByFn" (click)="openDetail(b)" class="cursor-pointer hover:bg-slate-50">
+            <td class="px-4 py-3 text-sm">{{ b.customer?.name || b.customerName || b.customerId?.slice(0,8) }}</td>
+            <td class="px-4 py-3 text-sm">{{ b.tour?.title || b.package?.name || '-' }}</td>
             <td class="px-4 py-3 text-sm">{{ b.travelers }}</td>
             <td class="px-4 py-3 text-sm font-medium">${{ b.total }}</td>
             <td class="px-4 py-3 text-sm">{{ b.status }}</td>
             <td class="px-4 py-3 text-sm">{{ b.date | date:'shortDate' }}</td>
-            <td class="px-4 py-3 text-right text-sm">
+            <td class="px-4 py-3 text-right text-sm" (click)="$event.stopPropagation()">
               <ng-container [ngSwitch]="b.status">
                 <button *ngSwitchCase="'PENDIENTE'" (click)="updateStatus(b.id, 'CONFIRMADA')" class="mr-2 text-green-600 hover:text-green-900">Confirmar</button>
-                <button *ngSwitchCase="'CONFIRMADA'" (click)="updateStatus(b.id, 'COMPLETADA')" class="mr-2 text-blue-600 hover:text-blue-900">Completar</button>
+                <button *ngSwitchCase="'CONFIRMADA'" (click)="updateStatus(b.id, 'COMPLETADA')" class="mr-2 text-primary hover:text-primary-dark">Completar</button>
               </ng-container>
               <button *ngIf="b.status === 'PENDIENTE' || b.status === 'CONFIRMADA'" (click)="confirmCancel(b.id)" class="text-red-600 hover:text-red-900">Cancelar</button>
             </td>
           </tr>
         </tbody>
       </table>
+      <div *ngIf="totalPages > 1" class="flex items-center justify-between border-t border-slate-200 px-6 py-3">
+        <p class="text-sm text-slate-600">Página {{ currentPage }} de {{ totalPages }}</p>
+        <div class="flex gap-2">
+          <button (click)="prevPage()" [disabled]="currentPage === 1" class="rounded-xl border border-slate-300 px-4 py-2 text-sm disabled:opacity-50">Anterior</button>
+          <button (click)="nextPage()" [disabled]="currentPage === totalPages" class="rounded-xl border border-slate-300 px-4 py-2 text-sm disabled:opacity-50">Siguiente</button>
+        </div>
+      </div>
     </div>
   </div>
 </div>
@@ -64,3 +72,92 @@
   (confirmed)="cancelBooking()"
   (cancelled)="showConfirm = false"
 ></app-confirm-dialog>
+
+<div *ngIf="selectedBooking" class="fixed inset-0 z-50 overflow-y-auto bg-slate-900/50 p-4" (click)="closeDetail()">
+  <div class="mx-auto mt-12 max-w-2xl rounded-2xl bg-white p-6 shadow-xl" (click)="$event.stopPropagation()">
+    <div class="mb-5 flex items-center justify-between">
+      <h2 class="text-xl font-semibold">Detalle de reserva</h2>
+      <button (click)="closeDetail()" aria-label="Cerrar" class="text-2xl text-slate-400 hover:text-slate-600">&times;</button>
+    </div>
+
+    <div class="space-y-4">
+      <div>
+        <h3 class="text-sm font-semibold uppercase text-slate-500">Cliente</h3>
+        <p class="text-tertiary">{{ selectedBooking.customerName || selectedBooking.customer?.name || '-' }}</p>
+        <p class="text-sm text-slate-500">{{ selectedBooking.customerEmail || selectedBooking.customer?.email || '-' }}</p>
+        <p class="text-sm text-slate-500">{{ selectedBooking.customerPhone || '-' }}</p>
+      </div>
+
+      <hr class="border-slate-200" />
+
+      <div>
+        <h3 class="text-sm font-semibold uppercase text-slate-500">Tour / Paquete</h3>
+        <p class="text-tertiary">{{ selectedBooking.tour?.title || selectedBooking.package?.name || '-' }}</p>
+      </div>
+
+      <hr class="border-slate-200" />
+
+      <div class="grid grid-cols-3 gap-4">
+        <div>
+          <h3 class="text-sm font-semibold uppercase text-slate-500">Viajeros</h3>
+          <p class="text-tertiary">{{ selectedBooking.travelers }}</p>
+        </div>
+        <div>
+          <h3 class="text-sm font-semibold uppercase text-slate-500">Precio unitario</h3>
+          <p class="text-tertiary">{{ selectedBooking.unitPrice != null ? '$' + selectedBooking.unitPrice : '-' }}</p>
+        </div>
+        <div>
+          <h3 class="text-sm font-semibold uppercase text-slate-500">Total</h3>
+          <p class="font-semibold text-tertiary">${{ selectedBooking.total }}</p>
+        </div>
+      </div>
+
+      <hr class="border-slate-200" />
+
+      <div>
+        <h3 class="text-sm font-semibold uppercase text-slate-500">Estado</h3>
+        <span class="inline-block rounded-full px-3 py-1 text-xs font-semibold"
+          [class.bg-yellow-100]="selectedBooking.status === 'PENDIENTE'"
+          [class.text-yellow-800]="selectedBooking.status === 'PENDIENTE'"
+          [class.bg-green-100]="selectedBooking.status === 'CONFIRMADA'"
+          [class.text-green-800]="selectedBooking.status === 'CONFIRMADA'"
+          [class.bg-blue-100]="selectedBooking.status === 'COMPLETADA'"
+          [class.text-blue-800]="selectedBooking.status === 'COMPLETADA'"
+          [class.bg-red-100]="selectedBooking.status === 'CANCELADA'"
+          [class.text-red-800]="selectedBooking.status === 'CANCELADA'"
+          [class.bg-slate-100]="!['PENDIENTE','CONFIRMADA','COMPLETADA','CANCELADA'].includes(selectedBooking.status)"
+          [class.text-slate-800]="!['PENDIENTE','CONFIRMADA','COMPLETADA','CANCELADA'].includes(selectedBooking.status)"
+        >{{ selectedBooking.status }}</span>
+      </div>
+
+      <hr class="border-slate-200" />
+
+      <div class="grid grid-cols-2 gap-4">
+        <div>
+          <h3 class="text-sm font-semibold uppercase text-slate-500">Fecha de reserva</h3>
+          <p class="text-tertiary">{{ selectedBooking.date | date:'shortDate' }}</p>
+        </div>
+        <div>
+          <h3 class="text-sm font-semibold uppercase text-slate-500">Fecha de inicio</h3>
+          <p class="text-tertiary">{{ selectedBooking.startDate ? (selectedBooking.startDate | date:'shortDate') : '-' }}</p>
+        </div>
+      </div>
+
+      <hr class="border-slate-200" />
+
+      <div>
+        <h3 class="text-sm font-semibold uppercase text-slate-500">Notas</h3>
+        <p class="text-tertiary">{{ selectedBooking.notes || 'Sin notas' }}</p>
+      </div>
+
+      <div class="flex flex-wrap gap-2 pt-2" (click)="$event.stopPropagation()">
+        <ng-container [ngSwitch]="selectedBooking.status">
+          <button *ngSwitchCase="'PENDIENTE'" (click)="updateStatus(selectedBooking.id, 'CONFIRMADA')" class="rounded-2xl bg-green-600 px-4 py-2 text-sm text-white hover:bg-green-700">Confirmar</button>
+          <button *ngSwitchCase="'CONFIRMADA'" (click)="updateStatus(selectedBooking.id, 'COMPLETADA')" class="rounded-2xl bg-primary px-4 py-2 text-sm text-white hover:bg-primary-dark">Completar</button>
+        </ng-container>
+        <button *ngIf="selectedBooking.status === 'PENDIENTE' || selectedBooking.status === 'CONFIRMADA'" (click)="confirmCancel(selectedBooking.id)" class="rounded-2xl bg-red-600 px-4 py-2 text-sm text-white hover:bg-red-700">Cancelar</button>
+  </div>
+</div>
+
+  </div>
+</div>

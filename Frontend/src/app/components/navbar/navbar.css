@@ -1,10 +1,95 @@
-.top0 {
+.nav-top {
   color: #556ea3;
   background-color: rgba(255, 255, 255, 0.85);
   backdrop-filter: blur(8px);
 }
-.top4 {
+
+.nav-scrolled {
   color: #556ea3;
   background-color: white;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.164);
+}
+
+.nav-link {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.5rem 0.875rem;
+  border-radius: 0.75rem;
+  font-size: 0.9375rem;
+  font-weight: 500;
+  color: #475569;
+  transition: color 0.2s ease, background-color 0.2s ease;
+}
+
+.nav-link:hover {
+  color: var(--color-primary);
+  background-color: color-mix(in srgb, var(--color-primary) 10%, transparent);
+}
+
+.nav-link-active {
+  color: var(--color-primary);
+  background-color: color-mix(in srgb, var(--color-primary) 12%, transparent);
+  font-weight: 600;
+}
+
+.btn-primary {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  border-radius: 9999px;
+  background-color: var(--color-primary);
+  padding: 0.5rem 1.25rem;
+  font-size: 0.9375rem;
+  font-weight: 600;
+  color: white;
+  transition: background-color 0.2s ease, box-shadow 0.2s ease;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.08);
+}
+
+.btn-primary:hover {
+  background-color: var(--color-primary-dark);
+  box-shadow: 0 4px 12px rgba(0, 171, 170, 0.3);
+}
+
+.menu-item {
+  display: flex;
+  align-items: center;
+  gap: 0.625rem;
+  border-radius: 0.75rem;
+  padding: 0.625rem 0.75rem;
+  font-size: 0.9375rem;
+  font-weight: 500;
+  color: #475569;
+  transition: color 0.2s ease, background-color 0.2s ease;
+}
+
+.menu-item:hover {
+  color: var(--color-primary);
+  background-color: color-mix(in srgb, var(--color-primary) 10%, transparent);
+}
+
+.mobile-link {
+  display: block;
+  border-radius: 0.75rem;
+  padding: 0.75rem 0.75rem;
+  font-size: 1rem;
+  font-weight: 500;
+  color: #334155;
+  transition: color 0.2s ease, background-color 0.2s ease;
+}
+
+.mobile-link:hover {
+  color: var(--color-primary);
+  background-color: color-mix(in srgb, var(--color-primary) 10%, transparent);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .nav-top,
+  .nav-scrolled,
+  .nav-link,
+  .btn-primary,
+  .menu-item,
+  .mobile-link {
+    transition: none;
+  }
 }

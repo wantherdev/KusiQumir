@@ -19,7 +19,7 @@ export class BookingsService {
   ) {}
 
   private bookingInclude = {
-    tour: { select: { id: true, name: true, adultPrice: true, coverImage: true, slug: true, durationText: true } },
+    tour: { select: { id: true, title: true, slug: true, durationDays: true, durationHours: true } },
     package: { select: { id: true, name: true, price: true } },
     customer: { select: { id: true, name: true, email: true } },
   } satisfies Prisma.BookingInclude;
@@ -92,10 +92,12 @@ export class BookingsService {
       throw new BadRequestException("Debe especificar tourId o packageId, no ambos");
     }
 
-    const bookingData: any = {
+    const bookingData: Record<string, unknown> = {
       travelers: payload.travelers,
       notes: payload.notes,
       status: "PENDIENTE",
+      unitPrice: 0,
+      total: 0,
     };
 
     if (payload.customerName) bookingData.customerName = payload.customerName;
@@ -131,10 +133,10 @@ export class BookingsService {
     let unitPrice = 0;
     if (payload.tourId) {
       const tour = await this.prisma.tour.findFirst({
-        where: { id: payload.tourId, status: "published" },
+        where: { id: payload.tourId, active: true },
       });
       if (!tour) throw new NotFoundException("Tour no disponible");
-      unitPrice = tour.adultPrice ?? 0;
+      unitPrice = 0;
       bookingData.tour = { connect: { id: tour.id } };
     } else if (payload.packageId) {
       const pkg = await this.prisma.package.findUnique({ where: { id: payload.packageId } });
@@ -147,11 +149,11 @@ export class BookingsService {
     bookingData.total = unitPrice * payload.travelers;
 
     const booking = await this.prisma.booking.create({
-      data: bookingData,
+      data: bookingData as Prisma.BookingCreateInput,
       include: this.bookingInclude,
     }) as any;
 
-    const itemName = booking.tour?.name ?? booking.package?.name ?? "";
+    const itemName = booking.tour?.title ?? booking.package?.name ?? "";
     const waLink = this.whatsapp.generateWaLink({
       id: booking.id,
       customerName: booking.customer.name,

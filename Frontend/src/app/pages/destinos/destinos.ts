@@ -4,11 +4,12 @@ import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { Meta, Title } from '@angular/platform-browser';
 import { Skeleton } from '../../components/skeleton/skeleton';
+import { TourCard } from '../../components/tour-card/tour-card';
 import { Tour } from '../../services/travel-api.service';
 
 @Component({
   selector: 'app-destinos',
-  imports: [CommonModule, FormsModule, RouterLink, Skeleton],
+  imports: [CommonModule, FormsModule, RouterLink, Skeleton, TourCard],
   templateUrl: './destinos.html',
   styleUrl: '../page.css',
 })
@@ -16,7 +17,7 @@ export class Destinos implements OnInit {
   readonly tours = signal<Tour[]>([]);
   readonly isLoading = signal(false);
   readonly searchTerm = signal('');
-  readonly selectedRegion = signal('all');
+  readonly selectedCategory = signal('all');
   readonly selectedTourId = signal<string | null>(null);
 
   readonly visibleTours = computed(() => {
@@ -24,18 +25,18 @@ export class Destinos implements OnInit {
     return this.tours().filter((tour) => {
       const matchesSearch =
         !term ||
-        `${tour.name} ${tour.description} ${tour.city} ${tour.region}`
+        `${tour.title} ${tour.description} ${tour.durationDays} ${tour.category?.name ?? ''}`
           .toLowerCase()
           .includes(term);
-      const matchesRegion =
-        this.selectedRegion() === 'all' || tour.region === this.selectedRegion();
-      return matchesSearch && matchesRegion;
+      const matchesCategory =
+        this.selectedCategory() === 'all' || tour.category?.name === this.selectedCategory();
+      return matchesSearch && matchesCategory;
     });
   });
 
-  readonly availableRegions = computed(() =>
+  readonly availableCategories = computed(() =>
     Array.from(
-      new Set(this.tours().map((tour) => tour.region).filter((l): l is string => !!l)),
+      new Set(this.tours().map((t) => t.category?.name).filter((c): c is string => !!c)),
     ),
   );
 
@@ -73,7 +74,7 @@ export class Destinos implements OnInit {
 
     this.route.queryParams.subscribe((params) => {
       if (params['search']) this.searchTerm.set(params['search']);
-      if (params['region']) this.selectedRegion.set(params['region']);
+      if (params['category']) this.selectedCategory.set(params['category']);
     });
   }
 
@@ -82,7 +83,7 @@ export class Destinos implements OnInit {
       relativeTo: this.route,
       queryParams: {
         search: this.searchTerm() || null,
-        region: this.selectedRegion() !== 'all' ? this.selectedRegion() : null,
+        category: this.selectedCategory() !== 'all' ? this.selectedCategory() : null,
       },
       queryParamsHandling: 'merge',
       replaceUrl: true,
@@ -93,7 +94,12 @@ export class Destinos implements OnInit {
     this.selectedTourId.set(tourId);
   }
 
-  trackByFn(index: number, item: Tour): any {
-    return item.id ?? index;
+  priceLabel(tour: Tour): string {
+    const adult = tour.prices?.[0]?.adult;
+    return adult != null ? `$${adult.toLocaleString('en-US')}` : 'Consultar';
+  }
+
+  onImgError(event: Event): void {
+    (event.target as HTMLImageElement).style.opacity = '0';
   }
 }

@@ -1,9 +1,10 @@
-import { Component, OnInit, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy, ChangeDetectorRef, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { Experience, ExperiencePayload, TravelApiService } from '../../../services/travel-api.service';
+import { Experience, ExperiencePayload, Tour, TravelApiService } from '../../../services/travel-api.service';
 import { Skeleton } from '../../../components/skeleton/skeleton';
 import { ConfirmDialog } from '../../../components/confirm-dialog/confirm-dialog';
+import { NotificationService } from '../../../services/notification.service';
 
 @Component({
   selector: 'app-experiences-dashboard',
@@ -14,12 +15,27 @@ import { ConfirmDialog } from '../../../components/confirm-dialog/confirm-dialog
 })
 export class ExperiencesDashboard implements OnInit {
   items: Experience[] = [];
+  tours: Tour[] = [];
+  pageSize = 10;
+  currentPage = 1;
+
+  get pagedItems() {
+    const start = (this.currentPage - 1) * this.pageSize;
+    return this.items.slice(start, start + this.pageSize);
+  }
+
+  get totalPages() {
+    return Math.max(1, Math.ceil(this.items.length / this.pageSize));
+  }
+
+  prevPage() { this.currentPage = Math.max(1, this.currentPage - 1); }
+  nextPage() { this.currentPage = Math.min(this.totalPages, this.currentPage + 1); }
+
   isLoading = false;
-  isModalOpen = false;
+  activeView: 'list' | 'form' = 'list';
   selectedId: string | null = null;
   form: FormGroup;
-  errorMessage = '';
-  successMessage = '';
+  private readonly notification = inject(NotificationService);
 
   constructor(
     private readonly api: TravelApiService,
@@ -44,18 +60,22 @@ export class ExperiencesDashboard implements OnInit {
   }
 
   ngOnInit(): void {
-    this.load();
-  }
-
-  load(): void {
-    this.isLoading = true;
-    this.api.getExperiencesAdmin().subscribe({
-      next: (items) => { this.items = items; this.isLoading = false; this.cdr.markForCheck(); },
-      error: () => { this.errorMessage = 'Error al cargar experiencias.'; this.isLoading = false; this.cdr.markForCheck(); },
+    this.loadItems();
+    this.api.getTours().subscribe({
+      next: (res) => { this.tours = res.items; this.cdr.markForCheck(); },
     });
   }
 
-  open(item?: Experience): void {
+  loadItems(): void {
+    this.currentPage = 1;
+    this.isLoading = true;
+    this.api.getExperiencesAdmin().subscribe({
+      next: (items) => { this.items = items; this.isLoading = false; this.cdr.markForCheck(); },
+      error: () => { this.notification.show('Error al cargar experiencias.', 'error'); this.isLoading = false; this.cdr.markForCheck(); },
+    });
+  }
+
+  openForm(item?: Experience): void {
     this.selectedId = item?.id ?? null;
     this.form.reset({
       title: item?.title ?? '',
@@ -72,26 +92,38 @@ export class ExperiencesDashboard implements OnInit {
       sortOrder: item?.sortOrder ?? 0,
       publishedAt: item?.publishedAt ?? '',
     });
-    this.isModalOpen = true;
+    this.activeView = 'form';
   }
 
-  close(): void {
-    this.isModalOpen = false;
+  closeForm(): void {
+    this.activeView = 'list';
     this.selectedId = null;
     this.form.reset();
   }
 
-  save(): void {
-    if (this.form.invalid) return;
+  saveItem(): void {
+    if (this.form.invalid) {
+      this.form.markAllAsTouched();
+      this.notification.show('Completa los campos obligatorios marcados en rojo.', 'error');
+      return;
+    }
     this.isLoading = true;
     const payload = this.form.getRawValue() as ExperiencePayload;
     const req = this.selectedId
       ? this.api.updateExperience(this.selectedId, payload)
       : this.api.createExperience(payload);
     req.subscribe({
-      next: () => { this.successMessage = 'Experiencia guardada.'; this.close(); this.load(); this.cdr.markForCheck(); },
-      error: (err) => { this.errorMessage = err.error?.message || 'Error al guardar.'; this.isLoading = false; this.cdr.markForCheck(); },
+      next: () => { this.notification.show('Experiencia guardada.', 'success'); this.closeForm(); this.loadItems(); this.cdr.markForCheck(); },
+      error: (err: any) => { this.notification.show(err.error?.message || 'Error al guardar.', 'error'); this.isLoading = false; this.cdr.markForCheck(); },
     });
+  }
+
+  generateSlug(): void {
+    const title = this.form.get('title')?.value;
+    if (title) {
+      const slug = title.toLowerCase().replace(/[^a-z0-9áéíóúñü\s-]/g, '').replace(/[\s]+/g, '-').replace(/-{2,}/g, '-').replace(/^-+|-+$/g, '');
+      this.form.patchValue({ slug });
+    }
   }
 
   trackByFn(index: number, item: Experience): string | number {
@@ -106,10 +138,23 @@ export class ExperiencesDashboard implements OnInit {
     this.showConfirm = true;
   }
 
-  delete(): void {
+  deleteItem(): void {
+    this.isLoading = true;
     this.api.deleteExperience(this.pendingDeleteId).subscribe({
-      next: () => { this.successMessage = 'Experiencia eliminada.'; this.load(); this.cdr.markForCheck(); },
-      error: () => { this.errorMessage = 'Error al eliminar.'; this.cdr.markForCheck(); },
+      next: () => {
+        this.notification.show('Experiencia eliminada.', 'success');
+        this.showConfirm = false;
+        this.pendingDeleteId = "";
+        this.loadItems();
+        this.cdr.markForCheck();
+      },
+      error: () => {
+        this.notification.show('Error al eliminar.', 'error');
+        this.showConfirm = false;
+        this.pendingDeleteId = "";
+        this.isLoading = false;
+        this.cdr.markForCheck();
+      },
     });
   }
 }

@@ -3,12 +3,14 @@ import { CommonModule } from '@angular/common';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { Meta, Title } from '@angular/platform-browser';
 import { Skeleton } from '../../components/skeleton/skeleton';
+import { TourCard } from '../../components/tour-card/tour-card';
 import { Tour, TravelPackage } from '../../services/travel-api.service';
 import type { HomeData } from '../../resolvers/data.resolvers';
+import { environment } from '../../../environments/environment';
 
 @Component({
   selector: 'app-home',
-  imports: [CommonModule, RouterLink, Skeleton],
+  imports: [CommonModule, RouterLink, Skeleton, TourCard],
   templateUrl: './home.html',
   styleUrl: './home.css',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -17,7 +19,7 @@ export class Home implements OnInit {
   tours: Tour[] = [];
   featuredPackages: TravelPackage[] = [];
   isLoading = true;
-  whatsappNumber = '51987654321';
+  whatsappNumber = environment.whatsappNumber;
 
   private readonly route = inject(ActivatedRoute);
   private readonly meta = inject(Meta);

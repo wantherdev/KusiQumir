@@ -58,6 +58,9 @@ export const envValidationSchema = Joi.object({
   NOTIFICATIONS_ENABLED: Joi.boolean().default(false).messages({
     "boolean.base": "NOTIFICATIONS_ENABLED debe ser true o false",
   }),
+  CSRF_SKIP_PATHS: Joi.string().default("auth/csrf,auth/login,auth/register,health").messages({
+    "string.base": "CSRF_SKIP_PATHS debe ser un string de rutas separadas por coma",
+  }),
 });
 
 export type EnvConfig = {
@@ -75,4 +78,5 @@ export type EnvConfig = {
   PRISMA_MAX_RETRIES: number;
   PRISMA_RETRY_DELAY: number;
   NOTIFICATIONS_ENABLED: boolean;
+  CSRF_SKIP_PATHS: string;
 };
