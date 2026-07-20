@@ -77,7 +77,7 @@ export class Reservar implements OnInit {
   }
 
   get price(): number {
-    return this.item ? (this.item as Tour).price ?? (this.item as TravelPackage).price : 0;
+    return this.item ? (this.item as Tour).adultPrice ?? (this.item as TravelPackage).price : 0;
   }
 
   get total(): number {

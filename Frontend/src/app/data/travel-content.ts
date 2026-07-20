@@ -1,6 +1,18 @@
-import type { Destination, TravelPackage } from '../services/travel-api.service';
+import type { TravelPackage } from '../services/travel-api.service';
 
-export const fallbackDestinations: Destination[] = [
+export interface FallbackDestination {
+  id: number;
+  name: string;
+  slug: string;
+  description: string;
+  region: string;
+  price: string;
+  duration: string;
+  highlights: string[];
+  imageUrl?: string | null;
+}
+
+export const fallbackDestinations: FallbackDestination[] = [
   {
     id: 101,
     name: 'Cusco',
@@ -8,8 +20,8 @@ export const fallbackDestinations: Destination[] = [
     description:
       'La capital histórica del Imperio Inca.',
     region: 'Cusco',
-    price: 980,
-    duration: 3,
+    price: '980',
+    duration: '3',
     highlights: ['Plaza de Armas', 'Sacsayhuamán', 'Qorikancha'],
     imageUrl: '/images/dest1.webp?v=2',
   },
@@ -20,8 +32,8 @@ export const fallbackDestinations: Destination[] = [
     description:
       'Territorio agrícola andino.',
     region: 'Cusco',
-    price: 760,
-    duration: 2,
+    price: '760',
+    duration: '2',
     highlights: ['Pisac', 'Ollantaytambo', 'Maras'],
     imageUrl: '/images/dest2.webp?v=2',
   },
@@ -32,8 +44,8 @@ export const fallbackDestinations: Destination[] = [
     description:
       'Una maravilla del mundo.',
     region: 'Cusco',
-    price: 1200,
-    duration: 2,
+    price: '1200',
+    duration: '2',
     highlights: ['Santuario Histórico', 'Tren Vistadome', 'Aguas Calientes'],
     imageUrl: '/images/dest3.webp?v=2',
   },
@@ -44,8 +56,8 @@ export const fallbackDestinations: Destination[] = [
     description:
       'El lago navegable más alto del mundo.',
     region: 'Puno',
-    price: 890,
-    duration: 3,
+    price: '890',
+    duration: '3',
     highlights: ['Amantaní', 'Taquile', 'Uros'],
     imageUrl: '/images/dest4.webp?v=2',
   },

@@ -47,13 +47,8 @@ export class Navbar {
       .trim();
   }
 
-  private daysOf(duration: string | null | undefined): number {
-    if (!duration) return 99;
-    const lowered = duration.toLowerCase();
-    if (lowered.includes('medio') || lowered.includes('1/2') || lowered.includes('mediat')) return 0.5;
-    const match = lowered.match(/(\d+)\s*d/i);
-    if (match) return parseInt(match[1], 10);
-    return 99;
+  private daysOf(tour: Tour): number {
+    return tour.durationDays;
   }
 
   get tourGroups(): { label: string; icon: string; tours: Tour[] }[] {
@@ -65,7 +60,7 @@ export class Navbar {
     ];
     const buckets: Tour[][] = order.map(() => []);
     for (const t of this.tours) {
-      const d = this.daysOf(t.duration);
+      const d = this.daysOf(t);
       const idx = order.findIndex((o) => d <= o.max);
       buckets[idx === -1 ? buckets.length - 1 : idx].push(t);
     }

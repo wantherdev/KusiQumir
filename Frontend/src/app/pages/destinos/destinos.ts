@@ -24,18 +24,18 @@ export class Destinos implements OnInit {
     return this.tours().filter((tour) => {
       const matchesSearch =
         !term ||
-        `${tour.name} ${tour.description} ${tour.location}`
+        `${tour.name} ${tour.description} ${tour.city} ${tour.region}`
           .toLowerCase()
           .includes(term);
       const matchesRegion =
-        this.selectedRegion() === 'all' || tour.location === this.selectedRegion();
+        this.selectedRegion() === 'all' || tour.region === this.selectedRegion();
       return matchesSearch && matchesRegion;
     });
   });
 
   readonly availableRegions = computed(() =>
     Array.from(
-      new Set(this.tours().map((tour) => tour.location).filter((l): l is string => !!l)),
+      new Set(this.tours().map((tour) => tour.region).filter((l): l is string => !!l)),
     ),
   );
 

@@ -4,42 +4,139 @@ import { Observable } from 'rxjs';
 
 import { API_URL } from '../tokens/api-url';
 
-export interface Destination {
-  id: number;
-  name: string;
-  slug: string;
-  description: string;
-  region: string;
-  price: number;
-  duration: number;
-  highlights: string[];
-  imageUrl?: string | null;
-  createdAt?: string;
-  updatedAt?: string;
+export interface TourLanguage {
+  id: string;
+  language: string;
 }
 
-export interface PackageDestination {
+export interface Highlight {
   id: string;
-  packageId: string;
-  destinationId: number;
-  destination: Destination;
+  title: string;
+  description?: string;
+  icon?: string;
+}
+
+export interface ItineraryItem {
+  id: string;
+  day: number;
+  order: number;
+  time?: string;
+  title: string;
+  description: string;
+  location?: string;
+  duration?: number;
+}
+
+export interface Destination {
+  id: string;
+  name: string;
+  type?: string;
+  description?: string;
+  latitude?: number;
+  longitude?: number;
+  altitude?: number;
+  visitTime?: number;
+  images?: DestinationImage[];
+}
+
+export interface DestinationImage {
+  id: string;
+  imageUrl: string;
+  alt?: string;
+}
+
+export interface Include {
+  id: string;
+  title: string;
+  description?: string;
+}
+
+export interface NotInclude {
+  id: string;
+  title: string;
+  description?: string;
+}
+
+export interface Recommendation {
+  id: string;
+  title?: string;
+  description: string;
+}
+
+export interface Requirement {
+  id: string;
+  requirement: string;
+}
+
+export interface WhatToBring {
+  id: string;
+  item: string;
+}
+
+export interface FAQItem {
+  id: string;
+  question: string;
+  answer: string;
+}
+
+export interface TourImage {
+  id: string;
+  url: string;
+  alt?: string;
+  featured: boolean;
+  order: number;
 }
 
 export interface Tour {
   id: string;
+  slug: string;
   name: string;
+  subtitle?: string;
+  shortDescription?: string;
   description: string;
-  price: number;
-  duration: string;
-  images?: string | null;
-  difficulty?: string | null;
-  itinerary?: string | null;
-  includes?: string | null;
-  excludes?: string | null;
-  location?: string | null;
-  availability: boolean;
-  providerId?: string | null;
-  createdAt?: string;
+  category: string;
+  tourType: string;
+  durationDays: number;
+  durationHours: number;
+  durationText: string;
+  country: string;
+  region: string;
+  city: string;
+  meetingPoint?: string;
+  endingPoint?: string;
+  pickup: boolean;
+  startTime?: string;
+  endTime?: string;
+  difficulty?: string;
+  altitudeMin?: number;
+  altitudeMax?: number;
+  groupType?: string;
+  featured: boolean;
+  status: string;
+  coverImage?: string;
+  video?: string;
+  currency: string;
+  adultPrice: number;
+  childPrice?: number;
+  discount?: number;
+  seoTitle?: string;
+  seoDescription?: string;
+  seoKeywords?: string[];
+  providerId?: string;
+  sourceUrl?: string;
+  createdAt: string;
+  updatedAt: string;
+  languages: TourLanguage[];
+  highlights: Highlight[];
+  itinerary: ItineraryItem[];
+  destinations: Destination[];
+  includes: Include[];
+  notIncludes: NotInclude[];
+  recommendations: Recommendation[];
+  requirements: Requirement[];
+  whatToBring: WhatToBring[];
+  faqs: FAQItem[];
+  images: TourImage[];
 }
 
 export interface PaginatedResponse<T> {
@@ -47,7 +144,7 @@ export interface PaginatedResponse<T> {
   nextCursor: string | null;
 }
 
-export type TourPayload = Omit<Tour, 'id' | 'createdAt'>;
+export type TourPayload = Omit<Tour, 'id' | 'createdAt' | 'updatedAt' | 'languages' | 'highlights' | 'itinerary' | 'destinations' | 'includes' | 'notIncludes' | 'recommendations' | 'requirements' | 'whatToBring' | 'faqs' | 'images'>;
 
 export interface Booking {
   id: string;
@@ -172,6 +269,10 @@ export class TravelApiService {
 
   getTourById(id: string): Observable<Tour> {
     return this.http.get<Tour>(`${this.apiUrl}/tours/${id}`);
+  }
+
+  getTourBySlug(slug: string): Observable<Tour> {
+    return this.http.get<Tour>(`${this.apiUrl}/tours/slug/${slug}`);
   }
 
   createTour(payload: TourPayload): Observable<Tour> {

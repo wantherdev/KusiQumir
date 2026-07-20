@@ -35,8 +35,8 @@ export class DestinoRedirect implements OnInit {
     if (keywords?.length) {
       try {
         const res = await firstValueFrom(this.travelApi.getTours());
-        const match = res.items.find((t) => {
-          const haystack = `${t.name} ${t.location ?? ''}`.toLowerCase();
+const match = res.items.find((t) => {
+          const haystack = `${t.name} ${t.city ?? ''} ${t.region ?? ''}`.toLowerCase();
           return keywords.some((kw) => haystack.includes(kw));
         });
         if (match) {

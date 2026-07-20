@@ -86,10 +86,10 @@
               <div class="p-8">
                 <div class="flex flex-wrap gap-2">
                   <span class="rounded-full bg-amber-50 px-3 py-1 text-sm font-medium text-primary">
-                    {{ tour.location || 'Perú' }}
+                    {{ tour.region || tour.city || 'Perú' }}
                   </span>
                   <span class="rounded-full bg-slate-100 px-3 py-1 text-sm font-medium text-slate-700">
-                    {{ tour.duration }}
+                    {{ tour.durationText }}
                   </span>
                 </div>
                 <h2 class="mt-4 text-2xl font-bold text-slate-900">{{ tour.name }}</h2>
@@ -97,7 +97,7 @@
                 <div class="mt-6 flex items-center justify-between text-sm text-slate-500">
                   <span>Desde</span>
                   <span class="text-xl font-bold text-slate-900"
-                    >\${{ tour.price | number: '1.0-0' }}</span
+                    >\${{ tour.adultPrice | number: '1.0-0' }}</span
                   >
                 </div>
               </div>
@@ -121,7 +121,7 @@
             <div class="mt-6 flex items-center justify-between rounded-[1.5rem] border border-slate-200 px-5 py-4">
               <div>
                 <p class="text-sm text-slate-500">Desde</p>
-                <p class="text-xl font-bold text-slate-900">\${{ tour.price | number: '1.0-0' }}</p>
+                <p class="text-xl font-bold text-slate-900">\${{ tour.adultPrice | number: '1.0-0' }}</p>
               </div>
               <a routerLink="/paquetes" class="rounded-full bg-primary px-4 py-2 font-semibold text-white">
                 >Ver paquetes

@@ -1,5 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { of } from 'rxjs';
+import { ActivatedRoute } from '@angular/router';
 import { fallbackPackages } from '../../data/travel-content';
 import { TravelApiService } from '../../services/travel-api.service';
 
@@ -18,6 +19,14 @@ describe('Paquetes', () => {
           useValue: {
             getPackages: () => of(fallbackPackages),
             createReservation: () => of({}),
+          },
+        },
+        {
+          provide: ActivatedRoute,
+          useValue: {
+            queryParamMap: of({ get: () => null }),
+            params: of({}),
+            snapshot: { paramMap: { get: () => null } },
           },
         },
       ],

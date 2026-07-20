@@ -33,7 +33,7 @@
         <div>
           <div class="overflow-hidden rounded-[2rem] shadow-xl">
             <img
-              [src]="tour.images || '/images/dest1.webp?v=2'"
+              [src]="tour.coverImage || '/images/dest1.webp?v=2'"
               [alt]="tour.name"
               width="800" height="400"
               loading="lazy"
@@ -44,7 +44,7 @@
 
         <div class="flex flex-col justify-center">
           <p class="text-sm font-semibold uppercase tracking-[0.35em] text-primary">
-            {{ tour.location || 'Perú' }}
+            {{ tour.city }}{{ tour.region ? ', ' + tour.region : '' }}
           </p>
           <h1 class="mt-3 text-4xl font-bold text-slate-900 sm:text-5xl">{{ tour.name }}</h1>
           <p class="mt-4 text-lg text-slate-600">{{ tour.description }}</p>
@@ -53,12 +53,12 @@
             <div class="rounded-[1.5rem] bg-slate-50 p-4 text-center">
               <i aria-hidden="true" class="ri-money-dollar-circle-line text-2xl text-primary"></i>
               <p class="mt-1 text-sm text-slate-500">Desde</p>
-              <p class="text-xl font-bold text-slate-900">${{ tour.price | number: '1.0-0' }}</p>
+              <p class="text-xl font-bold text-slate-900">${{ tour.adultPrice | number: '1.0-0' }}</p>
             </div>
             <div class="rounded-[1.5rem] bg-slate-50 p-4 text-center">
               <i aria-hidden="true" class="ri-time-line text-2xl text-primary"></i>
               <p class="mt-1 text-sm text-slate-500">Duración</p>
-              <p class="text-xl font-bold text-slate-900">{{ tour.duration }}</p>
+              <p class="text-xl font-bold text-slate-900">{{ tour.durationText }}</p>
             </div>
             <div class="rounded-[1.5rem] bg-slate-50 p-4 text-center">
               <i aria-hidden="true" class="ri-signal-tower-line text-2xl text-primary"></i>
@@ -68,8 +68,8 @@
             <div class="rounded-[1.5rem] bg-slate-50 p-4 text-center">
               <i aria-hidden="true" class="ri-checkbox-circle-line text-2xl text-primary"></i>
               <p class="mt-1 text-sm text-slate-500">Disponibilidad</p>
-              <p class="text-xl font-bold" [ngClass]="tour.availability ? 'text-green-600' : 'text-red-500'">
-                {{ tour.availability ? 'Disponible' : 'No disponible' }}
+              <p class="text-xl font-bold" [ngClass]="tour.status === 'published' ? 'text-green-600' : 'text-red-500'">
+                {{ tour.status === 'published' ? 'Disponible' : 'No disponible' }}
               </p>
             </div>
           </div>
@@ -92,14 +92,14 @@
         </div>
       </div>
 
-      <div *ngIf="tour.includes || tour.excludes" class="grid gap-6 lg:grid-cols-2">
+      <div *ngIf="tour.includes || tour.notIncludes" class="grid gap-6 lg:grid-cols-2">
         <div *ngIf="tour.includes" class="rounded-[2rem] border border-slate-200 bg-white p-8 shadow-sm">
           <p class="text-sm font-semibold uppercase tracking-[0.3em] text-primary">Incluye</p>
           <div class="mt-4 text-slate-600 whitespace-pre-line">{{ tour.includes }}</div>
         </div>
-        <div *ngIf="tour.excludes" class="rounded-[2rem] border border-slate-200 bg-white p-8 shadow-sm">
+        <div *ngIf="tour.notIncludes" class="rounded-[2rem] border border-slate-200 bg-white p-8 shadow-sm">
           <p class="text-sm font-semibold uppercase tracking-[0.3em] text-primary">No incluye</p>
-          <div class="mt-4 text-slate-600 whitespace-pre-line">{{ tour.excludes }}</div>
+          <div class="mt-4 text-slate-600 whitespace-pre-line">{{ tour.notIncludes }}</div>
         </div>
       </div>
 
