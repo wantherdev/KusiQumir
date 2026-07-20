@@ -49,7 +49,7 @@
                 <div class="space-y-1 border-l-2 border-primary/15 pl-2">
 <a
                     *ngFor="let tour of group.tours"
-                    [routerLink]="'/destinos/tour/' + tour.id"
+                    [routerLink]="'/destinos/tour/' + tour.slug"
                     class="block rounded-xl px-3 py-2 text-sm font-semibold text-slate-700 transition hover:bg-primary hover:text-white"
                     >{{ tour.name }} <span class="text-xs text-slate-400">{{ tour.durationText }}</span>
                   </a>
@@ -117,7 +117,7 @@
           <div class="space-y-1 rounded-2xl bg-slate-50 p-3">
             <a
               *ngFor="let tour of tours"
-              [routerLink]="'/destinos/tour/' + tour.id"
+              [routerLink]="'/destinos/tour/' + tour.slug"
               class="block rounded-lg px-3 py-2 text-slate-700 transition hover:bg-primary hover:text-white">
               {{ tour.name }}
             </a>

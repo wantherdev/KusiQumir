@@ -51,9 +51,9 @@ export const experiencesResolver: ResolveFn<Experience[]> = () => {
 
 export const tourDetailResolver: ResolveFn<Tour | null> = (route: ActivatedRouteSnapshot) => {
   const api = inject(TravelApiService);
-  const id = route.paramMap.get('id');
-  if (!id) return of(null);
-  return api.getTourById(id).pipe(catchError(() => of(null)));
+  const slug = route.paramMap.get('slug');
+  if (!slug) return of(null);
+  return api.getTourBySlug(slug).pipe(catchError(() => of(null)));
 };
 
 export const articleResolver: ResolveFn<Article | null> = (route: ActivatedRouteSnapshot) => {

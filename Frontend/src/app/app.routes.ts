@@ -6,7 +6,7 @@ export const routes: Routes = [
   { path: '', loadComponent: () => import('./pages/home/home').then((m) => m.Home), resolve: { home: homeResolver } },
   { path: 'destinos', loadComponent: () => import('./pages/destinos/destinos').then((m) => m.Destinos), resolve: { tours: toursResolver } },
   { path: 'destinos/:slug', loadComponent: () => import('./pages/destinos/destino-redirect/destino-redirect').then((m) => m.DestinoRedirect) },
-  { path: 'destinos/tour/:id', loadComponent: () => import('./pages/destinos/tour-detail/tour-detail').then((m) => m.TourDetail), resolve: { tour: tourDetailResolver } },
+  { path: 'destinos/tour/:slug', loadComponent: () => import('./pages/destinos/tour-detail/tour-detail').then((m) => m.TourDetail), resolve: { tour: tourDetailResolver } },
   { path: 'reservar', loadComponent: () => import('./pages/reservar/reservar').then((m) => m.Reservar) },
   { path: 'paquetes', loadComponent: () => import('./pages/paquetes/paquetes').then((m) => m.Paquetes) },
   { path: 'experiencias', loadComponent: () => import('./pages/experiencias/experiencias').then((m) => m.Experiencias), resolve: { experiences: experiencesResolver } },
