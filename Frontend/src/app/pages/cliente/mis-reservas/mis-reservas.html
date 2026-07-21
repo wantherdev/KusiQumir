@@ -1,8 +1,8 @@
-<div class="min-h-screen bg-gray-50 px-4 py-8 sm:px-6 lg:px-8">
+<div class="min-h-screen bg-slate-50 px-4 py-8 sm:px-6 lg:px-8">
   <div class="mx-auto max-w-7xl">
     <div class="mb-8">
       <h1 class="text-3xl font-bold text-tertiary">Mis Reservas</h1>
-      <p class="mt-2 text-sm text-gray-600">Consulta y administra tus reservas de viaje.</p>
+      <p class="mt-2 text-sm text-slate-600">Consulta y administra tus reservas de viaje.</p>
     </div>
 
     <p *ngIf="successMessage" class="mb-4 rounded-lg bg-green-50 p-4 text-sm text-green-800">{{ successMessage }}</p>
@@ -12,15 +12,15 @@
       <app-skeleton *ngFor="let _ of [].constructor(3)" variant="table-row" [rows]="1" [cols]="5" />
     </div>
 
-    <div *ngIf="!isLoading && items.length === 0" class="rounded-lg bg-white p-12 text-center shadow">
-      <p class="text-gray-500">No tienes reservas aún.</p>
-      <a routerLink="/paquetes" class="mt-4 inline-block rounded-full bg-primary px-6 py-2 text-sm font-semibold text-white transition hover:bg-primary-dark">
+    <div *ngIf="!isLoading && items.length === 0" class="panel p-12 text-center">
+      <p class="text-slate-500">No tienes reservas aún.</p>
+      <a routerLink="/paquetes" class="mt-4 inline-block btn-primary">
         Explorar paquetes
       </a>
     </div>
 
     <div *ngIf="items.length" class="space-y-4">
-      <div *ngFor="let b of items; trackBy: trackByFn" class="rounded-lg bg-white p-6 shadow transition hover:shadow-md">
+      <div *ngFor="let b of items; trackBy: trackByFn" class="panel p-6 transition hover:shadow-md">
         <div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
           <div class="flex-1 space-y-1">
             <div class="flex items-center gap-3">
@@ -29,10 +29,10 @@
                 {{ b.status }}
               </span>
             </div>
-            <p class="text-sm text-gray-500">
+            <p class="text-sm text-slate-500">
               {{ b.travelers }} viajero(s) &middot; ${{ b.total }} &middot; {{ b.date | date:'shortDate' }}
             </p>
-            <p *ngIf="b.startDate" class="text-sm text-gray-500">
+            <p *ngIf="b.startDate" class="text-sm text-slate-500">
               Inicio: {{ b.startDate | date:'shortDate' }}
             </p>
           </div>

@@ -1,33 +1,21 @@
 <section class="page-shell px-4 py-20 sm:px-6 lg:px-8">
   <div class="mx-auto flex max-w-7xl flex-col gap-10">
-    <div class="page-hero rounded-[2rem] p-8 sm:p-12">
-      <p class="text-sm font-semibold uppercase tracking-[0.35em] text-primary">Nosotros</p>
-      <h1 class="mt-4 text-4xl font-bold text-tertiary sm:text-5xl">
-        Tu operador de confianza para viajar por el Perú
-      </h1>
-      <p class="mt-4 max-w-3xl text-lg text-slate-600">
-        Kusi Q'umir nace para ofrecer viajes claros, seguros y profundamente conectados con la
-        cultura local.
-      </p>
-      <div class="mt-8 flex flex-wrap gap-3">
-        <span
-          class="rounded-full border border-primary/20 bg-white/70 px-4 py-2 text-sm font-semibold text-primary"
-          >+10 años</span
-        >
-        <span
-          class="rounded-full border border-primary/20 bg-white/70 px-4 py-2 text-sm font-semibold text-primary"
-          >Atención cercana</span
-        >
-        <span
-          class="rounded-full border border-primary/20 bg-white/70 px-4 py-2 text-sm font-semibold text-primary"
-          >Viajes responsables</span
-        >
+    <app-page-hero
+      variant="light"
+      eyebrow="Nosotros"
+      title="Tu operador de confianza para viajar por el Perú"
+      description="Kusi Q'umir nace para ofrecer viajes claros, seguros y profundamente conectados con la cultura local."
+    >
+      <div class="flex flex-wrap gap-3">
+        <span class="rounded-full border border-primary/20 bg-white/70 px-4 py-2 text-sm font-semibold text-primary">+10 años</span>
+        <span class="rounded-full border border-primary/20 bg-white/70 px-4 py-2 text-sm font-semibold text-primary">Atención cercana</span>
+        <span class="rounded-full border border-primary/20 bg-white/70 px-4 py-2 text-sm font-semibold text-primary">Viajes responsables</span>
       </div>
-    </div>
+    </app-page-hero>
 
     <div class="grid gap-6 lg:grid-cols-[1.1fr_0.9fr]">
       <article
-        class="page-card group overflow-hidden rounded-[1.75rem] bg-white transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl"
+        class="page-card group overflow-hidden bg-white transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl"
       >
         <img
           src="https://images.unsplash.com/photo-1527631746610-bca00a040d60?auto=format&fit=crop&w=1200&q=80"
@@ -53,7 +41,7 @@
           </p>
         </div>
       </article>
-      <article class="page-card overflow-hidden rounded-[1.75rem] bg-white">
+      <article class="page-card overflow-hidden bg-white">
         <img
           src="https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?auto=format&fit=crop&w=1200&q=80"
           alt="Paisaje peruano con viajeros"
@@ -96,7 +84,7 @@
           perder la calidez humana que marca la diferencia.
         </p>
       </div>
-      <div class="rounded-[1.75rem] bg-slate-50 p-6">
+      <div class="rounded-2xl bg-slate-50 p-6">
         <ul class="space-y-4 text-slate-600">
           <li class="rounded-2xl bg-white p-4 shadow-sm">
             • Más de una década de experiencia operando viajes en el Perú.

@@ -1,31 +1,17 @@
 <section class="page-shell px-4 py-20 sm:px-6 lg:px-8">
   <div class="mx-auto flex max-w-7xl flex-col gap-10">
-    <div class="page-hero rounded-[2rem] p-8 sm:p-12">
-      <p class="text-sm font-semibold uppercase tracking-[0.35em] text-primary">
-        Paquetes turísticos
-      </p>
-      <h1 class="mt-4 text-4xl font-bold text-tertiary sm:text-5xl">
-        Itinerarios a medida para descubrir el Perú con comodidad
-      </h1>
-      <p class="mt-4 max-w-3xl text-lg text-slate-600">
-        Diseñamos viajes completos con transporte, alojamiento, guías y logística para que cada día
-        sea claro, seguro y memorable.
-      </p>
-      <div class="mt-8 flex flex-wrap gap-3">
-        <span
-          class="rounded-full border border-primary/20 bg-white/70 px-4 py-2 text-sm font-semibold text-primary"
-          >Transporte incluido</span
-        >
-        <span
-          class="rounded-full border border-primary/20 bg-white/70 px-4 py-2 text-sm font-semibold text-primary"
-          >Guías locales</span
-        >
-        <span
-          class="rounded-full border border-primary/20 bg-white/70 px-4 py-2 text-sm font-semibold text-primary"
-          >Asistencia 24/7</span
-        >
+    <app-page-hero
+      variant="light"
+      eyebrow="Paquetes turísticos"
+      title="Itinerarios a medida para descubrir el Perú con comodidad"
+      description="Diseñamos viajes completos con transporte, alojamiento, guías y logística para que cada día sea claro, seguro y memorable."
+    >
+      <div class="flex flex-wrap gap-3">
+        <span class="rounded-full border border-primary/20 bg-white/70 px-4 py-2 text-sm font-semibold text-primary">Transporte incluido</span>
+        <span class="rounded-full border border-primary/20 bg-white/70 px-4 py-2 text-sm font-semibold text-primary">Guías locales</span>
+        <span class="rounded-full border border-primary/20 bg-white/70 px-4 py-2 text-sm font-semibold text-primary">Asistencia 24/7</span>
       </div>
-    </div>
+    </app-page-hero>
 
     @if (isLoading()) {
       <div class="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
@@ -82,7 +68,7 @@
               (click)="selectPackage(pkg.id)"
               [class.ring-2]="selectedPackageId() === pkg.id"
               [class.ring-primary]="selectedPackageId() === pkg.id"
-              class="page-card group cursor-pointer overflow-hidden rounded-[1.75rem] bg-white transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl">
+              class="page-card group cursor-pointer overflow-hidden bg-white transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl">
               <img
                 [src]="pkg.imageUrl || '/images/pack1.webp?v=2'"
                 [alt]="pkg.name"

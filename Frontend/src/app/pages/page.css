@@ -8,6 +8,7 @@
 }
 
 .page-card {
-  border: 1px solid rgba(15, 23, 42, 0.08);
-  box-shadow: 0 20px 45px -25px rgba(15, 23, 42, 0.28);
+  border: 1px solid #e2e8f0;
+  border-radius: 2rem;
+  box-shadow: 0 1px 2px rgba(15, 23, 42, 0.05);
 }

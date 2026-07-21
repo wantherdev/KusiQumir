@@ -4,6 +4,7 @@ import { FormsModule, NgForm } from '@angular/forms';
 import { Meta, Title } from '@angular/platform-browser';
 import { firstValueFrom } from 'rxjs';
 import { TravelApiService } from '../../services/travel-api.service';
+import { PageHero } from '../../components/page-hero/page-hero';
 import { NotificationService } from '../../services/notification.service';
 import { environment } from '../../../environments/environment';
 
@@ -16,17 +17,17 @@ interface ContactForm {
 
 @Component({
   selector: 'app-contacto',
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, PageHero],
   template: `
     <section class="page-shell px-4 py-20 sm:px-6 lg:px-8">
       <div class="mx-auto max-w-4xl">
-        <div class="page-hero rounded-[2rem] p-8 text-center sm:p-12">
-          <p class="text-sm font-semibold uppercase tracking-[0.35em] text-primary">Contacto</p>
-          <h1 class="mt-4 text-4xl font-bold text-tertiary sm:text-5xl">¿Listo para tu próxima aventura?</h1>
-          <p class="mx-auto mt-4 max-w-2xl text-lg text-slate-600">
-            Cuéntanos qué buscas y te responderemos a la brevedad para diseñar juntos la experiencia perfecta en Perú.
-          </p>
-        </div>
+        <app-page-hero
+          variant="light"
+          [centered]="true"
+          eyebrow="Contacto"
+          title="¿Listo para tu próxima aventura?"
+          description="Cuéntanos qué buscas y te responderemos a la brevedad para diseñar juntos la experiencia perfecta en Perú."
+        />
 
         <div class="mt-10 grid gap-10 lg:grid-cols-[1fr_0.7fr]">
           <form #contactForm="ngForm" (ngSubmit)="onSubmit(contactForm)" class="rounded-[2rem] border border-slate-200 bg-white p-8 shadow-sm">
@@ -40,7 +41,7 @@ interface ContactForm {
                 required
                 minlength="3"
                 #nameCtrl="ngModel"
-                class="w-full rounded-xl border border-slate-300 px-4 py-3 text-sm outline-none transition focus:border-primary"
+                class="input"
                 placeholder="Tu nombre"
               />
               <p *ngIf="nameCtrl.invalid && (nameCtrl.dirty || nameCtrl.touched)" class="mt-1 text-xs text-red-500">Mínimo 3 caracteres</p>
@@ -56,7 +57,7 @@ interface ContactForm {
                 required
                 email
                 #emailCtrl="ngModel"
-                class="w-full rounded-xl border border-slate-300 px-4 py-3 text-sm outline-none transition focus:border-primary"
+                class="input"
                 placeholder="tucorreo@ejemplo.com"
               />
               <p *ngIf="emailCtrl.invalid && (emailCtrl.dirty || emailCtrl.touched)" class="mt-1 text-xs text-red-500">Ingresa un correo válido</p>
@@ -70,7 +71,7 @@ interface ContactForm {
                 name="phone"
                 [(ngModel)]="form.phone"
                 #phoneCtrl="ngModel"
-                class="w-full rounded-xl border border-slate-300 px-4 py-3 text-sm outline-none transition focus:border-primary"
+                class="input"
                 placeholder="+51 999 888 777"
               />
             </div>
@@ -85,7 +86,7 @@ interface ContactForm {
                 required
                 minlength="10"
                 #msgCtrl="ngModel"
-                class="w-full rounded-xl border border-slate-300 px-4 py-3 text-sm outline-none transition focus:border-primary"
+                class="input"
                 placeholder="Cuéntanos sobre tu viaje ideal..."
               ></textarea>
               <p *ngIf="msgCtrl.invalid && (msgCtrl.dirty || msgCtrl.touched)" class="mt-1 text-xs text-red-500">Mínimo 10 caracteres</p>
@@ -94,7 +95,7 @@ interface ContactForm {
             <button
               type="submit"
               [disabled]="contactForm.invalid || submitting"
-              class="w-full rounded-full bg-primary px-8 py-3 font-semibold text-white transition hover:bg-primary-dark disabled:cursor-not-allowed disabled:opacity-50"
+              class="btn-primary w-full disabled:cursor-not-allowed disabled:opacity-50"
             >
               {{ submitting ? 'Enviando…' : 'Enviar mensaje' }}
             </button>

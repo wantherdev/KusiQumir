@@ -1,7 +1,7 @@
 <section class="py-16 bg-slate-50">
   <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
     <article
-      class="relative overflow-hidden rounded-[2rem] border border-slate-200 bg-white shadow-2xl shadow-slate-200/40"
+      class="relative overflow-hidden rounded-[2rem] border border-slate-200 bg-white shadow-sm"
     >
       <div class="pointer-events-none absolute inset-x-0 top-20 flex justify-center opacity-10">
         <span
@@ -11,10 +11,9 @@
         >
       </div>
       <header
-        class="relative overflow-hidden rounded-b-[2rem] bg-linear-to-r from-[#00abaa] to-[#556ea3] px-6 py-12 sm:px-12"
+        class="relative overflow-hidden rounded-b-[2rem] bg-linear-to-r from-primary to-primary-dark px-6 py-12 sm:px-12"
       >
         <div
-          class="absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(255,255,255,0.18),transparent_28%),radial-gradient(circle_at_bottom_right,rgba(255,255,255,0.14),transparent_24%)]"
         ></div>
         <div class="relative">
           <p class="text-sm font-semibold uppercase tracking-[0.32em] text-white/80">
@@ -100,14 +99,14 @@
                   <label class="block">
                     <span class="text-sm font-medium text-slate-700">Nombre completo <span class="text-red-500">*</span></span>
                     <input type="text" name="nombre" [(ngModel)]="form.nombre" #nombreCtrl="ngModel" required minlength="3" placeholder="Juan Pérez"
-                      class="mt-2 w-full rounded-3xl border bg-slate-50 px-4 py-3 text-sm text-tertiary outline-none transition focus:border-primary focus:ring-4 focus:ring-[#00abaa]/20"
+                      class="mt-2 w-full rounded-2xl border bg-slate-50 px-4 py-3 text-sm text-tertiary outline-none transition focus:border-primary focus:ring-2 focus:ring-primary/20"
                       [class.border-slate-300]="!nombreCtrl.invalid || !nombreCtrl.touched" [class.border-red-300]="nombreCtrl.invalid && nombreCtrl.touched" />
                     <span *ngIf="nombreCtrl.invalid && nombreCtrl.touched" class="mt-1 text-xs text-red-500">Mínimo 3 caracteres</span>
                   </label>
                   <label class="block">
                     <span class="text-sm font-medium text-slate-700">Documento de identidad <span class="text-red-500">*</span></span>
                     <input type="text" name="documento" [(ngModel)]="form.documento" #docCtrl="ngModel" required placeholder="DNI 12345678"
-                      class="mt-2 w-full rounded-3xl border bg-slate-50 px-4 py-3 text-sm text-tertiary outline-none transition focus:border-primary focus:ring-4 focus:ring-[#00abaa]/20"
+                      class="mt-2 w-full rounded-2xl border bg-slate-50 px-4 py-3 text-sm text-tertiary outline-none transition focus:border-primary focus:ring-2 focus:ring-primary/20"
                       [class.border-slate-300]="!docCtrl.invalid || !docCtrl.touched" [class.border-red-300]="docCtrl.invalid && docCtrl.touched" />
                     <span *ngIf="docCtrl.invalid && docCtrl.touched" class="mt-1 text-xs text-red-500">Campo obligatorio</span>
                   </label>
@@ -116,14 +115,14 @@
                   <label class="block">
                     <span class="text-sm font-medium text-slate-700">Correo electrónico <span class="text-red-500">*</span></span>
                     <input type="email" name="correo" [(ngModel)]="form.correo" #correoCtrl="ngModel" required email placeholder="correo@ejemplo.com"
-                      class="mt-2 w-full rounded-3xl border bg-slate-50 px-4 py-3 text-sm text-tertiary outline-none transition focus:border-primary focus:ring-4 focus:ring-[#00abaa]/20"
+                      class="mt-2 w-full rounded-2xl border bg-slate-50 px-4 py-3 text-sm text-tertiary outline-none transition focus:border-primary focus:ring-2 focus:ring-primary/20"
                       [class.border-slate-300]="!correoCtrl.invalid || !correoCtrl.touched" [class.border-red-300]="correoCtrl.invalid && correoCtrl.touched" />
                     <span *ngIf="correoCtrl.invalid && correoCtrl.touched" class="mt-1 text-xs text-red-500">Ingresa un correo válido</span>
                   </label>
                   <label class="block">
                     <span class="text-sm font-medium text-slate-700">Teléfono / WhatsApp <span class="text-red-500">*</span></span>
                     <input type="tel" name="telefono" [(ngModel)]="form.telefono" #telCtrl="ngModel" required placeholder="+51 9 1234 5678"
-                      class="mt-2 w-full rounded-3xl border bg-slate-50 px-4 py-3 text-sm text-tertiary outline-none transition focus:border-primary focus:ring-4 focus:ring-[#00abaa]/20"
+                      class="mt-2 w-full rounded-2xl border bg-slate-50 px-4 py-3 text-sm text-tertiary outline-none transition focus:border-primary focus:ring-2 focus:ring-primary/20"
                       [class.border-slate-300]="!telCtrl.invalid || !telCtrl.touched" [class.border-red-300]="telCtrl.invalid && telCtrl.touched" />
                     <span *ngIf="telCtrl.invalid && telCtrl.touched" class="mt-1 text-xs text-red-500">Campo obligatorio</span>
                   </label>
@@ -136,20 +135,20 @@
                   <label class="block">
                     <span class="text-sm font-medium text-slate-700">Nombre del tour o servicio <span class="text-red-500">*</span></span>
                     <input type="text" name="servicio" [(ngModel)]="form.servicio" #servCtrl="ngModel" required placeholder="Tour Valle Sagrado"
-                      class="mt-2 w-full rounded-3xl border bg-slate-50 px-4 py-3 text-sm text-tertiary outline-none transition focus:border-primary focus:ring-4 focus:ring-[#00abaa]/20"
+                      class="mt-2 w-full rounded-2xl border bg-slate-50 px-4 py-3 text-sm text-tertiary outline-none transition focus:border-primary focus:ring-2 focus:ring-primary/20"
                       [class.border-slate-300]="!servCtrl.invalid || !servCtrl.touched" [class.border-red-300]="servCtrl.invalid && servCtrl.touched" />
                     <span *ngIf="servCtrl.invalid && servCtrl.touched" class="mt-1 text-xs text-red-500">Campo obligatorio</span>
                   </label>
                   <label class="block">
                     <span class="text-sm font-medium text-slate-700">Código de reserva</span>
                     <input type="text" name="reserva" [(ngModel)]="form.reserva" placeholder="KQ-2026-045"
-                      class="mt-2 w-full rounded-3xl border border-slate-300 bg-slate-50 px-4 py-3 text-sm text-tertiary outline-none transition focus:border-primary focus:ring-4 focus:ring-[#00abaa]/20" />
+                      class="mt-2 w-full rounded-2xl border border-slate-300 bg-slate-50 px-4 py-3 text-sm text-tertiary outline-none transition focus:border-primary focus:ring-2 focus:ring-primary/20" />
                   </label>
                 </div>
                 <label class="block">
                   <span class="text-sm font-medium text-slate-700">Fecha del servicio <span class="text-red-500">*</span></span>
                   <input type="date" name="fechaServicio" [(ngModel)]="form.fechaServicio" #fechaCtrl="ngModel" required
-                    class="mt-2 w-full rounded-3xl border bg-slate-50 px-4 py-3 text-sm text-tertiary outline-none transition focus:border-primary focus:ring-4 focus:ring-[#00abaa]/20"
+                    class="mt-2 w-full rounded-2xl border bg-slate-50 px-4 py-3 text-sm text-tertiary outline-none transition focus:border-primary focus:ring-2 focus:ring-primary/20"
                     [class.border-slate-300]="!fechaCtrl.invalid || !fechaCtrl.touched" [class.border-red-300]="fechaCtrl.invalid && fechaCtrl.touched" />
                   <span *ngIf="fechaCtrl.invalid && fechaCtrl.touched" class="mt-1 text-xs text-red-500">Campo obligatorio</span>
                 </label>
@@ -160,7 +159,7 @@
                 <label class="block">
                   <span class="text-sm font-medium text-slate-700">Motivo del reclamo <span class="text-red-500">*</span></span>
                   <select name="motivo" [(ngModel)]="form.motivo" #motivoCtrl="ngModel" required
-                    class="mt-2 w-full rounded-3xl border bg-slate-50 px-4 py-3 text-sm text-tertiary outline-none transition focus:border-primary focus:ring-4 focus:ring-[#00abaa]/20"
+                    class="mt-2 w-full rounded-2xl border bg-slate-50 px-4 py-3 text-sm text-tertiary outline-none transition focus:border-primary focus:ring-2 focus:ring-primary/20"
                     [class.border-slate-300]="!motivoCtrl.invalid || !motivoCtrl.touched" [class.border-red-300]="motivoCtrl.invalid && motivoCtrl.touched">
                     <option value="">Seleccione un motivo</option>
                     <option value="servicio_no_prestado">Servicio no prestado</option>
@@ -176,14 +175,14 @@
                   <span class="text-sm font-medium text-slate-700">Descripción del reclamo <span class="text-red-500">*</span></span>
                   <textarea name="descripcion" rows="6" [(ngModel)]="form.descripcion" #descCtrl="ngModel" required minlength="10"
                     placeholder="Describa con detalle lo sucedido"
-                    class="mt-2 w-full rounded-3xl border bg-slate-50 px-4 py-3 text-sm text-tertiary outline-none transition focus:border-primary focus:ring-primary"
+                    class="mt-2 w-full rounded-2xl border bg-slate-50 px-4 py-3 text-sm text-tertiary outline-none transition focus:border-primary focus:ring-primary"
                     [class.border-slate-300]="!descCtrl.invalid || !descCtrl.touched" [class.border-red-300]="descCtrl.invalid && descCtrl.touched"></textarea>
                   <span *ngIf="descCtrl.invalid && descCtrl.touched" class="mt-1 text-xs text-red-500">Mínimo 10 caracteres</span>
                 </label>
                 <label class="block">
                   <span class="text-sm font-medium text-slate-700">Documentos de respaldo</span>
                   <input type="text" name="documentos" [(ngModel)]="form.documentos" placeholder="Factura, voucher, correo, contrato"
-                    class="mt-2 w-full rounded-3xl border border-slate-300 bg-slate-50 px-4 py-3 text-sm text-tertiary outline-none transition focus:border-primary focus:ring-4 focus:ring-[#00abaa]/20" />
+                    class="mt-2 w-full rounded-2xl border border-slate-300 bg-slate-50 px-4 py-3 text-sm text-tertiary outline-none transition focus:border-primary focus:ring-2 focus:ring-primary/20" />
                 </label>
               </fieldset>
 
@@ -201,7 +200,7 @@
               </fieldset>
 
               <button type="submit" [disabled]="claimForm.invalid || submitting"
-                class="mt-8 inline-flex w-full items-center justify-center rounded-full bg-linear-to-r from-[#00abaa] to-[#556ea3] px-6 py-3 text-sm font-semibold uppercase tracking-[0.2em] text-white shadow-lg shadow-[#00abaa]/20 transition hover:brightness-110 focus:outline-none focus:ring-primary disabled:opacity-50">
+                class="mt-8 inline-flex w-full items-center justify-center rounded-full bg-linear-to-r from-primary to-primary-dark px-6 py-3 text-sm font-semibold uppercase tracking-[0.2em] text-white shadow-lg shadow-primary/20 transition hover:brightness-110 focus:outline-none focus:ring-primary disabled:opacity-50">
                 {{ submitting ? 'Enviando...' : 'Enviar reclamo' }}
               </button>
             </ng-container>

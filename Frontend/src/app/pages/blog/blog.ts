@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { Meta, Title } from '@angular/platform-browser';
 import { Article } from '../../services/travel-api.service';
+import { PageHero } from '../../components/page-hero/page-hero';
 import { fallbackBlogArticles, type BlogArticle } from '../../data/travel-content';
 
 const toArticle = (fb: BlogArticle): Article => ({
@@ -23,7 +24,7 @@ const toArticle = (fb: BlogArticle): Article => ({
 
 @Component({
   selector: 'app-blog',
-  imports: [CommonModule, RouterLink],
+  imports: [CommonModule, RouterLink, PageHero],
   templateUrl: './blog.html',
   styleUrl: '../page.css',
   changeDetection: ChangeDetectionStrategy.OnPush,

@@ -39,7 +39,7 @@
 
           <!-- Gallery -->
           <div>
-            <div class="relative overflow-hidden rounded-[2rem] shadow-xl">
+            <div class="relative overflow-hidden rounded-[2rem] shadow-sm">
               <div class="absolute inset-0 bg-linear-to-br from-primary/25 to-tertiary/25"></div>
               <img
                 [src]="(tour.images && tour.images[selectedImage()]?.url) || '/images/dest1.webp?v=2'"
@@ -89,22 +89,22 @@
 
           <!-- Quick facts -->
           <div class="grid grid-cols-2 gap-4 sm:grid-cols-4">
-            <div class="rounded-[1.5rem] bg-slate-50 p-4 text-center">
+            <div class="rounded-2xl bg-slate-50 p-4 text-center">
               <i class="ri-time-line text-2xl text-primary"></i>
               <p class="mt-1 text-xs text-slate-500">Duración</p>
               <p class="text-base font-bold text-tertiary">{{ tour.durationDays }}{{ tour.durationDays ? 'd' : '' }} {{ tour.durationHours }}h</p>
             </div>
-            <div class="rounded-[1.5rem] bg-slate-50 p-4 text-center">
+            <div class="rounded-2xl bg-slate-50 p-4 text-center">
               <i class="ri-signal-tower-line text-2xl text-primary"></i>
               <p class="mt-1 text-xs text-slate-500">Dificultad</p>
               <p class="text-base font-bold text-tertiary">{{ tour.difficulty || '—' }}</p>
             </div>
-            <div class="rounded-[1.5rem] bg-slate-50 p-4 text-center">
+            <div class="rounded-2xl bg-slate-50 p-4 text-center">
               <i class="ri-group-line text-2xl text-primary"></i>
               <p class="mt-1 text-xs text-slate-500">Servicio</p>
               <p class="text-base font-bold text-tertiary">{{ tour.serviceType === 'HalfDay' ? 'Medio día' : tour.serviceType === 'FullDay' ? 'Día completo' : 'Multi días' }}</p>
             </div>
-            <div class="rounded-[1.5rem] bg-slate-50 p-4 text-center">
+            <div class="rounded-2xl bg-slate-50 p-4 text-center">
               <i class="ri-checkbox-circle-line text-2xl text-primary"></i>
               <p class="mt-1 text-xs text-slate-500">Disponibilidad</p>
               <p class="text-base font-bold" [ngClass]="tour.active ? 'text-green-600' : 'text-red-500'">{{ tour.active ? 'Disponible' : 'No disponible' }}</p>

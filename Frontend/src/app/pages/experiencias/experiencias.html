@@ -1,22 +1,17 @@
 <section class="page-shell px-4 py-20 sm:px-6 lg:px-8">
   <div class="mx-auto flex max-w-7xl flex-col gap-10">
-    <div class="page-hero rounded-[2rem] p-8 sm:p-12">
-      <p class="text-sm font-semibold uppercase tracking-[0.35em] text-primary">
-        Experiencias auténticas
-      </p>
-      <h1 class="mt-4 text-4xl font-bold text-tertiary sm:text-5xl">
-        Vivencias que unen cultura, paisaje y comunidad
-      </h1>
-      <p class="mt-4 max-w-3xl text-lg text-slate-600">
-        Desde talleres de textiles hasta caminatas guiadas, cada experiencia está pensada para
-        conectar con la esencia del Perú.
-      </p>
-      <div class="mt-8 flex flex-wrap gap-3">
+    <app-page-hero
+      variant="light"
+      eyebrow="Experiencias auténticas"
+      title="Vivencias que unen cultura, paisaje y comunidad"
+      description="Desde talleres de textiles hasta caminadas guiadas, cada experiencia está pensada para conectar con la esencia del Perú."
+    >
+      <div class="flex flex-wrap gap-3">
         <span class="rounded-full border border-primary/20 bg-white/70 px-4 py-2 text-sm font-semibold text-primary">Autenticidad</span>
         <span class="rounded-full border border-primary/20 bg-white/70 px-4 py-2 text-sm font-semibold text-primary">Guía local</span>
         <span class="rounded-full border border-primary/20 bg-white/70 px-4 py-2 text-sm font-semibold text-primary">Acompañamiento</span>
       </div>
-    </div>
+    </app-page-hero>
 
     <div *ngIf="isLoading" class="flex min-h-[40vh] items-center justify-center">
       <i class="ri-loader-4-line animate-spin text-4xl text-primary" aria-hidden="true"></i>
@@ -26,7 +21,7 @@
       <a
         *ngFor="let exp of experiencias; trackBy: trackByFn"
         [routerLink]="['/experiencias', exp.slug]"
-        class="page-card group block overflow-hidden rounded-[1.75rem] bg-white transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl"
+        class="page-card group block overflow-hidden bg-white transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl"
       >
         <img
           [src]="exp.coverImage || '/images/placeholder.svg'"

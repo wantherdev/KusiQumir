@@ -1,68 +1,68 @@
-<div class="min-h-screen bg-gray-50 px-4 py-8 sm:px-6 lg:px-8">
+<div class="min-h-screen bg-slate-50 px-4 py-8 sm:px-6 lg:px-8">
   <div class="mx-auto max-w-2xl">
     <div class="mb-8">
       <h1 class="text-3xl font-bold text-tertiary">Mi Perfil</h1>
-      <p class="mt-2 text-sm text-gray-600">Administra tu información personal.</p>
+      <p class="mt-2 text-sm text-slate-600">Administra tu información personal.</p>
     </div>
 
-    <div *ngIf="isLoading" class="rounded-lg bg-white p-8 shadow">
+    <div *ngIf="isLoading" class="panel p-8">
       <app-skeleton variant="text" [rows]="6"></app-skeleton>
     </div>
 
-    <div *ngIf="noProfile" class="rounded-lg bg-white p-12 text-center shadow">
-      <p class="text-gray-500">Aún no tienes un perfil de cliente.</p>
-      <p class="mt-1 text-sm text-gray-400">Crea una reserva para que tu perfil se genere automáticamente.</p>
+    <div *ngIf="noProfile" class="panel p-12 text-center">
+      <p class="text-slate-500">Aún no tienes un perfil de cliente.</p>
+      <p class="mt-1 text-sm text-slate-400">Crea una reserva para que tu perfil se genere automáticamente.</p>
       <a routerLink="/paquetes" class="mt-4 inline-block rounded-full bg-primary px-6 py-2 text-sm font-semibold text-white transition hover:bg-primary-dark">
         Explorar paquetes
       </a>
     </div>
 
-    <div *ngIf="!isLoading && !noProfile && profile" class="rounded-lg bg-white p-8 shadow">
+    <div *ngIf="!isLoading && !noProfile && profile" class="panel p-8">
       <p *ngIf="errorMessage" class="mb-4 rounded-lg bg-red-50 p-3 text-sm text-red-800">{{ errorMessage }}</p>
 
       <form (ngSubmit)="save()" #profileForm="ngForm">
-        <div class="mb-6 border-b border-gray-200 pb-4">
-          <p class="text-sm text-gray-500">Correo: <strong>{{ profile.email }}</strong></p>
+        <div class="mb-6 border-b border-slate-200 pb-4">
+          <p class="text-sm text-slate-500">Correo: <strong>{{ profile.email }}</strong></p>
         </div>
 
         <div class="space-y-5">
           <label class="block">
-            <span class="text-sm font-semibold text-gray-700">Nombre completo <span class="text-red-500">*</span></span>
+            <span class="text-sm font-semibold text-slate-700">Nombre completo <span class="text-red-500">*</span></span>
             <input type="text" [(ngModel)]="form.name" name="name" required
-              class="mt-2 w-full rounded-3xl border border-gray-200 px-4 py-3 text-sm outline-none transition focus:border-primary focus:ring-2 focus:ring-primary/10" />
+              class="mt-2 w-full input" />
           </label>
 
           <label class="block">
-            <span class="text-sm font-semibold text-gray-700">Teléfono</span>
+            <span class="text-sm font-semibold text-slate-700">Teléfono</span>
             <input type="tel" [(ngModel)]="form.phone" name="phone"
-              class="mt-2 w-full rounded-3xl border border-gray-200 px-4 py-3 text-sm outline-none transition focus:border-primary focus:ring-2 focus:ring-primary/10" />
+              class="mt-2 w-full input" />
           </label>
 
           <label class="block">
-            <span class="text-sm font-semibold text-gray-700">Nacionalidad</span>
+            <span class="text-sm font-semibold text-slate-700">Nacionalidad</span>
             <input type="text" [(ngModel)]="form.nationality" name="nationality"
-              class="mt-2 w-full rounded-3xl border border-gray-200 px-4 py-3 text-sm outline-none transition focus:border-primary focus:ring-2 focus:ring-primary/10" />
+              class="mt-2 w-full input" />
           </label>
 
           <label class="block">
-            <span class="text-sm font-semibold text-gray-700">Pasaporte / DNI</span>
+            <span class="text-sm font-semibold text-slate-700">Pasaporte / DNI</span>
             <input type="text" [(ngModel)]="form.passport" name="passport"
-              class="mt-2 w-full rounded-3xl border border-gray-200 px-4 py-3 text-sm outline-none transition focus:border-primary focus:ring-2 focus:ring-primary/10" />
+              class="mt-2 w-full input" />
           </label>
 
           <label class="block">
-            <span class="text-sm font-semibold text-gray-700">Preferencias de viaje</span>
+            <span class="text-sm font-semibold text-slate-700">Preferencias de viaje</span>
             <textarea [(ngModel)]="form.preferences" name="preferences" rows="3"
-              class="mt-2 w-full rounded-3xl border border-gray-200 px-4 py-3 text-sm outline-none transition focus:border-primary focus:ring-2 focus:ring-primary/10"></textarea>
+              class="mt-2 w-full input"></textarea>
           </label>
         </div>
 
         <div class="mt-8 flex items-center gap-4">
           <button type="submit" [disabled]="isSaving || profileForm.invalid"
-            class="rounded-full bg-primary px-8 py-2.5 text-sm font-semibold text-white transition hover:bg-primary-dark disabled:cursor-not-allowed disabled:bg-gray-400">
+            class="btn-primary disabled:bg-slate-400">
             {{ isSaving ? 'Guardando...' : 'Guardar cambios' }}
           </button>
-          <a routerLink="/mis-reservas" class="text-sm text-gray-500 underline hover:text-gray-700">
+          <a routerLink="/mis-reservas" class="text-sm text-slate-500 underline hover:text-slate-700">
             Ver mis reservas
           </a>
         </div>

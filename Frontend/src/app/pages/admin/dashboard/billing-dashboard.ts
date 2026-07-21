@@ -16,7 +16,7 @@ import { NotificationService } from '../../../services/notification.service';
             <h1 class="text-3xl font-bold text-tertiary">Facturación</h1>
             <p class="mt-2 text-sm text-slate-600">Administra las facturas emitidas a clientes.</p>
           </div>
-          <button *ngIf="activeView === 'list'" (click)="openForm()" class="inline-flex items-center gap-2 rounded-2xl bg-primary px-4 py-2 text-sm font-medium text-white transition hover:bg-primary-dark">
+          <button *ngIf="activeView === 'list'" (click)="openForm()" class="inline-flex items-center gap-2 btn-primary px-4 py-2 text-sm font-medium text-white transition hover:bg-primary-dark">
             <i aria-hidden="true" class="ri-add-line"></i>
             Nueva factura
           </button>
@@ -35,7 +35,7 @@ import { NotificationService } from '../../../services/notification.service';
             <i aria-hidden="true" class="ri-file-list-3-line text-5xl text-slate-300"></i>
             <span class="text-lg font-medium text-slate-500">No hay facturas registradas</span>
             <span class="text-sm text-slate-400">Crea una nueva factura para comenzar.</span>
-            <button (click)="openForm()" class="mt-2 inline-flex items-center gap-2 rounded-2xl bg-primary px-4 py-2 text-sm font-medium text-white transition hover:bg-primary-dark">
+            <button (click)="openForm()" class="mt-2 inline-flex items-center gap-2 btn-primary px-4 py-2 text-sm font-medium text-white transition hover:bg-primary-dark">
               <i aria-hidden="true" class="ri-add-line"></i>
               Crear factura
             </button>
@@ -135,7 +135,7 @@ import { NotificationService } from '../../../services/notification.service';
             <p class="text-xs text-slate-400">Campos con <span class="text-red-500">*</span> son obligatorios.</p>
             <div class="flex gap-3">
               <button type="button" (click)="closeForm()" class="rounded-xl border border-slate-300 px-5 py-2.5 text-sm font-medium text-slate-700 transition hover:bg-slate-50">Cancelar</button>
-              <button (click)="save()" [disabled]="saving" class="inline-flex items-center gap-2 rounded-xl bg-primary px-5 py-2.5 text-sm font-medium text-white transition hover:bg-primary-dark disabled:opacity-50 disabled:cursor-not-allowed">
+              <button (click)="save()" [disabled]="saving" class="inline-flex items-center gap-2 btn-primary px-5 py-2.5 text-sm font-medium text-white transition hover:bg-primary-dark disabled:opacity-50 disabled:cursor-not-allowed">
                 <i *ngIf="saving" aria-hidden="true" class="ri-loader-4-line animate-spin"></i>
                 {{ saving ? 'Guardando...' : 'Guardar' }}
               </button>

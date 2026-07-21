@@ -10,11 +10,11 @@
     </div>
 
     <div class="mb-4 flex flex-wrap gap-2">
-      <button (click)="setFilter('')" class="rounded-full px-4 py-1 text-sm" [class.bg-primary]="!statusFilter" [class.text-white]="!statusFilter" [class.bg-gray-200]="statusFilter">Todas</button>
-      <button (click)="setFilter('PENDIENTE')" class="rounded-full px-4 py-1 text-sm" [class.bg-yellow-500]="statusFilter==='PENDIENTE'" [class.text-white]="statusFilter==='PENDIENTE'" [class.bg-gray-200]="statusFilter!=='PENDIENTE'">Pendientes</button>
-      <button (click)="setFilter('CONFIRMADA')" class="rounded-full px-4 py-1 text-sm" [class.bg-green-600]="statusFilter==='CONFIRMADA'" [class.text-white]="statusFilter==='CONFIRMADA'" [class.bg-gray-200]="statusFilter!=='CONFIRMADA'">Confirmadas</button>
-      <button (click)="setFilter('COMPLETADA')" class="rounded-full px-4 py-1 text-sm" [class.bg-primary]="statusFilter==='COMPLETADA'" [class.text-white]="statusFilter==='COMPLETADA'" [class.bg-gray-200]="statusFilter!=='COMPLETADA'">Completadas</button>
-      <button (click)="setFilter('CANCELADA')" class="rounded-full px-4 py-1 text-sm" [class.bg-red-600]="statusFilter==='CANCELADA'" [class.text-white]="statusFilter==='CANCELADA'" [class.bg-gray-200]="statusFilter!=='CANCELADA'">Canceladas</button>
+      <button (click)="setFilter('')" class="rounded-full px-4 py-1 text-sm" [class.bg-primary]="!statusFilter" [class.text-white]="!statusFilter" [class.bg-slate-200]="statusFilter">Todas</button>
+      <button (click)="setFilter('PENDIENTE')" class="rounded-full px-4 py-1 text-sm" [class.bg-yellow-500]="statusFilter==='PENDIENTE'" [class.text-white]="statusFilter==='PENDIENTE'" [class.bg-slate-200]="statusFilter!=='PENDIENTE'">Pendientes</button>
+      <button (click)="setFilter('CONFIRMADA')" class="rounded-full px-4 py-1 text-sm" [class.bg-green-600]="statusFilter==='CONFIRMADA'" [class.text-white]="statusFilter==='CONFIRMADA'" [class.bg-slate-200]="statusFilter!=='CONFIRMADA'">Confirmadas</button>
+      <button (click)="setFilter('COMPLETADA')" class="rounded-full px-4 py-1 text-sm" [class.bg-primary]="statusFilter==='COMPLETADA'" [class.text-white]="statusFilter==='COMPLETADA'" [class.bg-slate-200]="statusFilter!=='COMPLETADA'">Completadas</button>
+      <button (click)="setFilter('CANCELADA')" class="rounded-full px-4 py-1 text-sm" [class.bg-red-600]="statusFilter==='CANCELADA'" [class.text-white]="statusFilter==='CANCELADA'" [class.bg-slate-200]="statusFilter!=='CANCELADA'">Canceladas</button>
     </div>
 
     <div *ngIf="isLoading" class="space-y-2">
@@ -153,7 +153,7 @@
       <div class="flex flex-wrap gap-2 pt-2" (click)="$event.stopPropagation()">
         <ng-container [ngSwitch]="selectedBooking.status">
           <button *ngSwitchCase="'PENDIENTE'" (click)="updateStatus(selectedBooking.id, 'CONFIRMADA')" class="rounded-2xl bg-green-600 px-4 py-2 text-sm text-white hover:bg-green-700">Confirmar</button>
-          <button *ngSwitchCase="'CONFIRMADA'" (click)="updateStatus(selectedBooking.id, 'COMPLETADA')" class="rounded-2xl bg-primary px-4 py-2 text-sm text-white hover:bg-primary-dark">Completar</button>
+          <button *ngSwitchCase="'CONFIRMADA'" (click)="updateStatus(selectedBooking.id, 'COMPLETADA')" class="btn-primary px-4 py-2 text-sm text-white hover:bg-primary-dark">Completar</button>
         </ng-container>
         <button *ngIf="selectedBooking.status === 'PENDIENTE' || selectedBooking.status === 'CONFIRMADA'" (click)="confirmCancel(selectedBooking.id)" class="rounded-2xl bg-red-600 px-4 py-2 text-sm text-white hover:bg-red-700">Cancelar</button>
   </div>

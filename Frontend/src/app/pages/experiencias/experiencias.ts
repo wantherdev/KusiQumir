@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { Meta, Title } from '@angular/platform-browser';
 import { Experience } from '../../services/travel-api.service';
+import { PageHero } from '../../components/page-hero/page-hero';
 
 const fallbackExperiences: Experience[] = [
   {
@@ -73,7 +74,7 @@ const fallbackExperiences: Experience[] = [
 
 @Component({
   selector: 'app-experiencias',
-  imports: [CommonModule, RouterLink],
+  imports: [CommonModule, RouterLink, PageHero],
   templateUrl: './experiencias.html',
   styleUrl: '../page.css',
   changeDetection: ChangeDetectionStrategy.OnPush,

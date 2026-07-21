@@ -109,6 +109,6 @@ export class MisReservas implements OnInit {
   }
 
   getStatusColor(status: string): string {
-    return STATUS_COLORS[status] || 'bg-gray-100 text-gray-800';
+    return STATUS_COLORS[status] || 'bg-slate-100 text-slate-800';
   }
 }

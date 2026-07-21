@@ -1,5 +1,5 @@
 <div class="mx-auto max-w-xl px-4 py-12 sm:px-6 lg:px-8">
-  <div class="rounded-3xl border border-slate-200 bg-white p-8 shadow-xl">
+  <div class="panel p-8">
     <h1 class="text-3xl font-bold text-tertiary">Crear cuenta</h1>
     <p class="mt-2 text-sm text-slate-600">
       Regístrate para gestionar tus reservas y mucho más.
@@ -16,7 +16,7 @@
             #emailInput="ngModel"
             required
             email
-            class="mt-2 w-full rounded-3xl border px-4 py-3 text-sm outline-none transition focus:ring-2 focus:border-primary focus:ring-primary/10"
+            class="input mt-2"
             [class.border-red-300]="emailInput.invalid && emailInput.touched"
             [class.border-slate-200]="!emailInput.invalid || !emailInput.touched"
           />
@@ -35,7 +35,7 @@
               #passwordInput="ngModel"
               required
               minlength="6"
-              class="mt-2 w-full rounded-3xl border px-4 py-3 text-sm outline-none transition focus:ring-2 focus:border-primary focus:ring-primary/10"
+              class="input mt-2"
               [class.border-red-300]="passwordInput.invalid && passwordInput.touched"
               [class.border-slate-200]="!passwordInput.invalid || !passwordInput.touched"
             />
@@ -57,7 +57,7 @@
               name="confirmPassword"
               #confirmInput="ngModel"
               required
-              class="mt-2 w-full rounded-3xl border px-4 py-3 text-sm outline-none transition focus:ring-2 focus:border-primary focus:ring-primary/10"
+              class="input mt-2"
               [class.border-red-300]="confirmInput.touched && (confirmInput.invalid || (password !== confirmPassword))"
               [class.border-slate-200]="!confirmInput.touched || (!confirmInput.invalid && password === confirmPassword)"
             />
@@ -75,7 +75,7 @@
         <button
           type="submit"
           [disabled]="isSubmitting || registerForm.invalid"
-          class="inline-flex items-center justify-center rounded-3xl bg-primary px-6 py-3 text-sm font-semibold text-white transition hover:bg-primary-dark disabled:cursor-not-allowed disabled:bg-slate-400"
+          class="btn-primary disabled:cursor-not-allowed disabled:bg-slate-400"
         >
           {{ isSubmitting ? 'Registrando...' : 'Crear cuenta' }}
         </button>

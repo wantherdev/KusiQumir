@@ -4,12 +4,13 @@ import { FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
 import { Meta, Title } from '@angular/platform-browser';
 import { Skeleton } from '../../components/skeleton/skeleton';
+import { PageHero } from '../../components/page-hero/page-hero';
 import { NotificationService } from '../../services/notification.service';
 import { TravelApiService, TravelPackage } from '../../services/travel-api.service';
 
 @Component({
   selector: 'app-paquetes',
-  imports: [CommonModule, FormsModule, RouterLink, Skeleton],
+  imports: [CommonModule, FormsModule, RouterLink, Skeleton, PageHero],
   templateUrl: './paquetes.html',
   styleUrl: '../page.css',
 })

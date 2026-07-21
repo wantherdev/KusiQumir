@@ -1,26 +1,23 @@
 <section class="page-shell px-4 py-20 sm:px-6 lg:px-8">
   <div class="mx-auto flex max-w-7xl flex-col gap-10">
-    <div class="page-hero rounded-[2rem] p-8 sm:p-12">
-      <p class="text-sm font-semibold uppercase tracking-[0.35em] text-primary">Blog</p>
-      <h1 class="mt-4 text-4xl font-bold text-tertiary sm:text-5xl">
-        Consejos, guías y relatos para preparar tu próximo viaje
-      </h1>
-      <p class="mt-4 max-w-3xl text-lg text-slate-600">
-        Encuentra contenido útil sobre Cusco, Machu Picchu, la ruta del Valle Sagrado y la mejor
-        forma de viajar al Perú.
-      </p>
-      <div class="mt-8 flex flex-wrap gap-3">
+    <app-page-hero
+      variant="light"
+      eyebrow="Blog"
+      title="Consejos, guías y relatos para preparar tu próximo viaje"
+      description="Encuentra contenido útil sobre Cusco, Machu Picchu, la ruta del Valle Sagrado y la mejor forma de viajar al Perú."
+    >
+      <div class="flex flex-wrap gap-3">
         <span class="rounded-full border border-primary/20 bg-white/70 px-4 py-2 text-sm font-semibold text-primary">Guías prácticas</span>
         <span class="rounded-full border border-primary/20 bg-white/70 px-4 py-2 text-sm font-semibold text-primary">Consejos reales</span>
         <span class="rounded-full border border-primary/20 bg-white/70 px-4 py-2 text-sm font-semibold text-primary">Preparación completa</span>
       </div>
-    </div>
+    </app-page-hero>
 
     <div class="grid gap-6 lg:grid-cols-3">
       <a
         *ngFor="let article of articles; trackBy: trackByFn"
         [routerLink]="['/blog', article.slug]"
-        class="page-card group block overflow-hidden rounded-[1.75rem] bg-white transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl"
+        class="page-card group block overflow-hidden bg-white transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl"
       >
         <img [src]="article.coverImage || '/images/placeholder.svg'" [alt]="article.imageAlt || article.title" width="400" height="192" class="h-48 w-full object-cover" loading="lazy" />
         <div class="p-8">

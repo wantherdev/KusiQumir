@@ -1,9 +1,10 @@
 import { Component, OnInit, inject, ChangeDetectionStrategy } from '@angular/core';
 import { Meta, Title } from '@angular/platform-browser';
+import { PageHero } from '../../components/page-hero/page-hero';
 
 @Component({
   selector: 'app-nosotros',
-  imports: [],
+  imports: [PageHero],
   templateUrl: './nosotros.html',
   styleUrl: '../page.css',
   changeDetection: ChangeDetectionStrategy.OnPush,
