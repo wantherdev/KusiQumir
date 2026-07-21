@@ -15,154 +15,185 @@ import { API_URL } from '../../../tokens/api-url';
   imports: [CommonModule, FormsModule, Skeleton, ConfirmDialog],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
-    <div *ngIf="activeView === 'list'" class="rounded-2xl bg-white p-6 shadow-sm">
-      <div class="mb-6 flex items-center justify-between">
-        <div>
-          <h2 class="text-xl font-bold text-tertiary">Proveedores</h2>
-          <p class="mt-1 text-sm text-slate-500">{{ providers.length }} registrados</p>
+    <div class="min-h-screen bg-linear-to-br from-slate-50 to-secondary-soft px-4 py-8 sm:px-6 lg:px-8">
+      <div class="mx-auto max-w-7xl">
+
+        <!-- ====== LIST VIEW ====== -->
+        <div *ngIf="activeView === 'list'">
+
+          <!-- Hero header -->
+          <header class="animate-slide-up relative mb-6 overflow-hidden rounded-2xl bg-linear-to-r from-primary to-primary-dark p-6 text-white shadow-lg shadow-primary/20 sm:p-8">
+            <div class="pointer-events-none absolute inset-0 opacity-20" style="background-image: radial-gradient(circle at 18% 22%, rgba(255,255,255,0.9) 1px, transparent 1px); background-size: 24px 24px;"></div>
+            <div class="relative flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+              <div>
+                <p class="text-xs font-semibold uppercase tracking-[0.2em] text-white/70">Panel de administración</p>
+                <h1 class="mt-1 flex items-center gap-2 text-2xl font-bold sm:text-3xl">
+                  <i class="ri-truck-line"></i> Proveedores
+                </h1>
+                <p class="mt-1 text-sm text-white/85">{{ providers.length }} registrados</p>
+              </div>
+              <div class="flex items-center gap-2">
+                <button (click)="openForm()" class="inline-flex items-center gap-2 rounded-xl bg-white px-5 py-2.5 text-sm font-bold text-primary shadow-lg transition-all hover:scale-[1.02] hover:shadow-xl active:scale-[0.98]">
+                  <i class="ri-building-2-add-line text-lg"></i>
+                  Nuevo Proveedor
+                </button>
+              </div>
+            </div>
+          </header>
+
+          <div class="mb-5">
+            <div class="relative w-full max-w-md">
+              <i class="ri-search-line absolute left-4 top-1/2 -translate-y-1/2 text-slate-400"></i>
+              <input [(ngModel)]="searchQuery" (ngModelChange)="onSearch()" placeholder="Buscar por nombre, tipo o contacto…"
+                class="w-full rounded-xl border border-slate-200 bg-white py-3 pl-11 pr-10 text-sm outline-none transition-all focus:border-primary/40 focus:ring-2 focus:ring-primary/5 placeholder:text-slate-400" />
+              <button *ngIf="searchQuery" (click)="searchQuery=''; onSearch()" class="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 transition hover:text-slate-700">
+                <i class="ri-close-line text-lg"></i>
+              </button>
+            </div>
+          </div>
+
+          <ng-container *ngIf="isLoading; else loaded">
+            <div class="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
+              <app-skeleton variant="table-row" [rows]="5" [cols]="6"></app-skeleton>
+            </div>
+          </ng-container>
+
+          <ng-template #loaded>
+            <div *ngIf="error" class="flex flex-col items-center gap-3 py-12 text-center">
+              <i class="ri-error-warning-line text-4xl text-red-400"></i>
+              <p class="text-sm text-slate-600">{{ error }}</p>
+              <button (click)="load()" class="inline-flex items-center gap-1.5 rounded-lg border border-slate-200 bg-white px-4 py-2 text-sm font-medium text-slate-700 shadow-sm transition hover:border-primary/30 hover:bg-primary/5 hover:text-primary">
+                Reintentar
+              </button>
+            </div>
+
+            <div *ngIf="!error && filtered.length === 0" class="py-16 text-center text-sm text-slate-400">
+              <i class="ri-building-2-line mb-2 block text-4xl text-slate-300"></i>
+              No se encontraron proveedores.
+            </div>
+
+            <div *ngIf="filtered.length > 0" class="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
+              <div class="overflow-x-auto">
+                <table class="w-full text-left text-sm">
+                  <thead>
+                    <tr class="border-b border-slate-100 bg-slate-50/80 text-xs font-semibold uppercase tracking-wider text-slate-500">
+                      <th class="px-5 py-4">Nombre</th>
+                      <th class="px-5 py-4">Tipo</th>
+                      <th class="px-5 py-4">Contacto</th>
+                      <th class="px-5 py-4">Contrato</th>
+                      <th class="px-5 py-4">Servicios</th>
+                      <th class="px-5 py-4">Registrado</th>
+                      <th class="px-5 py-4 text-right">Acciones</th>
+                    </tr>
+                  </thead>
+                  <tbody class="divide-y divide-slate-50">
+                    <tr *ngFor="let p of pagedItems; trackBy: trackByFn" class="transition hover:bg-secondary-soft">
+                      <td class="px-5 py-4 font-medium text-tertiary">{{ p.name }}</td>
+                      <td class="px-5 py-4">
+                        <span class="rounded-full bg-primary/10 px-2.5 py-0.5 text-xs font-medium text-primary">{{ p.type }}</span>
+                      </td>
+                      <td class="px-5 py-4 text-slate-600">{{ p.contact }}</td>
+                      <td class="px-5 py-4 text-slate-600">{{ p.contract || '—' }}</td>
+                      <td class="px-5 py-4 text-slate-600 max-w-[160px] truncate" [title]="p.services || ''">{{ p.services || '—' }}</td>
+                      <td class="px-5 py-4 text-slate-500">{{ p.createdAt | date:'shortDate' }}</td>
+                      <td class="px-5 py-4 text-right">
+                        <button (click)="confirmDelete(p)" class="inline-flex items-center gap-1.5 rounded-lg border border-slate-200 bg-white px-3 py-1.5 text-xs font-medium text-red-600 shadow-sm transition-all hover:border-red-200 hover:bg-red-50">
+                          <i class="ri-delete-bin-6-line"></i> Eliminar
+                        </button>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+
+              <div *ngIf="totalPages > 1" class="flex items-center justify-between border-t border-slate-100 px-5 py-3">
+                <button (click)="prevPage()" [class.invisible]="currentPage === 1" class="inline-flex items-center gap-1 rounded-lg border border-slate-200 px-3.5 py-2 text-xs font-medium text-slate-600 transition hover:border-primary/30 hover:text-primary">
+                  <i class="ri-arrow-left-s-line"></i> Anterior
+                </button>
+                <span class="text-xs text-slate-500">Pág. {{ currentPage }} de {{ totalPages }}</span>
+                <button (click)="nextPage()" [class.invisible]="currentPage === totalPages" class="inline-flex items-center gap-1 rounded-lg border border-slate-200 px-3.5 py-2 text-xs font-medium text-slate-600 transition hover:border-primary/30 hover:text-primary">
+                  Siguiente <i class="ri-arrow-right-s-line"></i>
+                </button>
+              </div>
+            </div>
+          </ng-template>
         </div>
-        <button (click)="openForm()" class="flex items-center gap-2 rounded-full bg-primary px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-primary-dark">
-          <i class="ri-building-2-add-line text-lg"></i>
-          Nuevo Proveedor
-        </button>
-      </div>
 
-      <div class="mb-4">
-        <div class="relative">
-          <i class="ri-search-line absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400"></i>
-          <input [(ngModel)]="searchQuery" (ngModelChange)="onSearch()" placeholder="Buscar por nombre, tipo o contacto…"
-            class="w-full rounded-full border border-slate-200 py-2.5 pl-10 pr-4 text-sm outline-none transition focus:border-blue-400 focus:ring-2 focus:ring-blue-100" />
-        </div>
-      </div>
-
-      <ng-container *ngIf="isLoading; else loaded">
-        <app-skeleton variant="table-row" [rows]="5" [cols]="6"></app-skeleton>
-      </ng-container>
-
-      <ng-template #loaded>
-        <div *ngIf="error" class="flex flex-col items-center gap-3 py-12 text-center">
-          <i class="ri-error-warning-line text-4xl text-red-400"></i>
-          <p class="text-sm text-slate-600">{{ error }}</p>
-          <button (click)="load()" class="rounded-full bg-slate-100 px-5 py-2 text-sm font-medium text-slate-700 transition hover:bg-slate-200">
-            Reintentar
-          </button>
-        </div>
-
-        <div *ngIf="!error && filtered.length === 0" class="py-12 text-center text-sm text-slate-400">
-          <i class="ri-building-2-line mb-2 block text-3xl"></i>
-          No se encontraron proveedores.
-        </div>
-
-        <div *ngIf="filtered.length > 0" class="overflow-x-auto">
-          <table class="w-full text-left text-sm">
-            <thead>
-              <tr class="border-b border-slate-100 text-xs font-semibold uppercase text-slate-500">
-                <th class="py-3 pr-4">Nombre</th>
-                <th class="py-3 pr-4">Tipo</th>
-                <th class="py-3 pr-4">Contacto</th>
-                <th class="py-3 pr-4">Contrato</th>
-                <th class="py-3 pr-4">Servicios</th>
-                <th class="py-3 pr-4">Registrado</th>
-                <th class="py-3 text-right">Acciones</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr *ngFor="let p of pagedItems; trackBy: trackByFn" class="border-b border-slate-50 transition hover:bg-slate-50/50">
-                <td class="py-3 pr-4 font-medium text-tertiary">{{ p.name }}</td>
-                <td class="py-3 pr-4">
-                  <span class="rounded-full bg-blue-50 px-2.5 py-0.5 text-xs font-medium text-blue-700">{{ p.type }}</span>
-                </td>
-                <td class="py-3 pr-4 text-slate-600">{{ p.contact }}</td>
-                <td class="py-3 pr-4 text-slate-600">{{ p.contract || '—' }}</td>
-                <td class="py-3 pr-4 text-slate-600 max-w-[160px] truncate" [title]="p.services || ''">{{ p.services || '—' }}</td>
-                <td class="py-3 pr-4 text-slate-500">{{ p.createdAt | date:'shortDate' }}</td>
-                <td class="py-3 text-right">
-                  <button (click)="confirmDelete(p)" class="inline-flex items-center gap-1.5 rounded-full bg-red-50 px-3.5 py-1.5 text-xs font-medium text-red-600 transition hover:bg-red-100">
-                    <i class="ri-delete-bin-6-line"></i>
-                    Eliminar
-                  </button>
-                </td>
-              </tr>
-            </tbody>
-          </table>
-
-          <div *ngIf="totalPages > 1" class="mt-4 flex items-center justify-between border-t border-slate-100 pt-4">
-            <button (click)="prevPage()" [class.invisible]="currentPage === 1" class="flex items-center gap-1 text-sm text-slate-600 hover:text-tertiary">
-              <i class="ri-arrow-left-s-line"></i> Anterior
-            </button>
-            <span class="text-xs text-slate-500">Pág. {{ currentPage }} de {{ totalPages }}</span>
-            <button (click)="nextPage()" [class.invisible]="currentPage === totalPages" class="flex items-center gap-1 text-sm text-slate-600 hover:text-tertiary">
-              Siguiente <i class="ri-arrow-right-s-line"></i>
-            </button>
+        <!-- ====== FORM VIEW ====== -->
+        <div *ngIf="activeView === 'form'">
+          <div class="animate-slide-up overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
+            <div class="flex items-center justify-between border-b border-slate-100 px-6 py-4">
+              <div class="flex items-center gap-4">
+                <button (click)="closeForm()" class="inline-flex items-center gap-1.5 rounded-lg px-2 py-1 text-sm font-medium text-slate-500 transition hover:bg-slate-100 hover:text-slate-800">
+                  <i class="ri-arrow-left-line"></i> Volver
+                </button>
+                <div class="h-6 w-px bg-slate-200"></div>
+                <h3 class="text-lg font-bold text-tertiary">
+                  <i class="ri-building-2-add-line mr-2 text-primary"></i>
+                  Nuevo Proveedor
+                </h3>
+              </div>
+            </div>
+            <div class="p-6">
+              <div class="space-y-4">
+                <div>
+                  <label class="mb-1.5 block text-xs font-semibold text-slate-700">Nombre <span class="text-red-500">*</span></label>
+                  <input [(ngModel)]="form.name" placeholder="Nombre del proveedor"
+                    class="w-full rounded-lg border border-slate-200 px-3.5 py-2.5 text-sm outline-none transition focus:border-primary/50 focus:ring-2 focus:ring-primary/5" />
+                </div>
+                <div class="flex gap-4">
+                  <div class="flex-1">
+                    <label class="mb-1.5 block text-xs font-semibold text-slate-700">Tipo <span class="text-red-500">*</span></label>
+                    <input [(ngModel)]="form.type" placeholder="Hotel, DMC, Transporte…"
+                      class="w-full rounded-lg border border-slate-200 px-3.5 py-2.5 text-sm outline-none transition focus:border-primary/50 focus:ring-2 focus:ring-primary/5" />
+                  </div>
+                  <div class="flex-1">
+                    <label class="mb-1.5 block text-xs font-semibold text-slate-700">Contacto <span class="text-red-500">*</span></label>
+                    <input [(ngModel)]="form.contact" placeholder="Email o teléfono"
+                      class="w-full rounded-lg border border-slate-200 px-3.5 py-2.5 text-sm outline-none transition focus:border-primary/50 focus:ring-2 focus:ring-primary/5" />
+                  </div>
+                </div>
+                <div>
+                  <label class="mb-1.5 block text-xs font-semibold text-slate-700">Contrato</label>
+                  <input [(ngModel)]="form.contract" placeholder="Detalles del contrato"
+                    class="w-full rounded-lg border border-slate-200 px-3.5 py-2.5 text-sm outline-none transition focus:border-primary/50 focus:ring-2 focus:ring-primary/5" />
+                </div>
+                <div class="flex gap-4">
+                  <div class="flex-1">
+                    <label class="mb-1.5 block text-xs font-semibold text-slate-700">Comisión</label>
+                    <input [(ngModel)]="form.commission" placeholder="10%"
+                      class="w-full rounded-lg border border-slate-200 px-3.5 py-2.5 text-sm outline-none transition focus:border-primary/50 focus:ring-2 focus:ring-primary/5" />
+                  </div>
+                  <div class="flex-1">
+                    <label class="mb-1.5 block text-xs font-semibold text-slate-700">Servicios</label>
+                    <input [(ngModel)]="form.services" placeholder="Alojamiento, Tours…"
+                      class="w-full rounded-lg border border-slate-200 px-3.5 py-2.5 text-sm outline-none transition focus:border-primary/50 focus:ring-2 focus:ring-primary/5" />
+                  </div>
+                </div>
+              </div>
+              <div class="mt-6 flex justify-end gap-3 border-t border-slate-100 pt-4">
+                <button (click)="closeForm()" class="inline-flex items-center gap-1.5 rounded-lg border border-slate-200 bg-white px-4 py-2 text-sm font-medium text-slate-700 shadow-sm transition hover:border-primary/30 hover:bg-primary/5 hover:text-primary">
+                  Cancelar
+                </button>
+                <button (click)="save()" [disabled]="saving" class="inline-flex items-center gap-2 rounded-xl bg-linear-to-r from-primary to-primary-dark px-5 py-2.5 text-sm font-semibold text-white shadow-lg shadow-primary/20 transition hover:shadow-xl disabled:opacity-50 disabled:cursor-not-allowed">
+                  <i *ngIf="saving" class="ri-loader-4-line animate-spin"></i>
+                  {{ saving ? 'Guardando…' : 'Guardar' }}
+                </button>
+              </div>
+            </div>
           </div>
         </div>
-      </ng-template>
+
+        <app-confirm-dialog
+          [visible]="showConfirm"
+          title="Eliminar Proveedor"
+          [message]="'¿Eliminar a «' + pendingDelete?.name + '»? Esta acción no se puede deshacer.'"
+          (confirmed)="deleteItem()"
+          (cancelled)="showConfirm = false"
+        ></app-confirm-dialog>
+
+      </div>
     </div>
-
-    <div *ngIf="activeView === 'form'" class="rounded-2xl bg-white p-6 shadow-sm border">
-      <div class="mb-6 flex items-center justify-between">
-        <h3 class="text-lg font-bold text-tertiary">Nuevo Proveedor</h3>
-        <button (click)="closeForm()" class="flex items-center gap-2 rounded-full border border-slate-200 px-4 py-2 text-sm font-semibold text-slate-700 transition hover:bg-slate-50">
-          <i class="ri-arrow-left-line"></i>
-          Volver
-        </button>
-      </div>
-      <div class="space-y-4">
-        <div>
-          <label class="mb-1.5 block text-xs font-semibold text-slate-700">Nombre <span class="text-red-500">*</span></label>
-          <input [(ngModel)]="form.name" placeholder="Nombre del proveedor"
-            class="w-full rounded-xl border border-slate-200 px-4 py-2.5 text-sm outline-none transition focus:border-blue-400 focus:ring-2 focus:ring-blue-100" />
-        </div>
-        <div class="flex gap-4">
-          <div class="flex-1">
-            <label class="mb-1.5 block text-xs font-semibold text-slate-700">Tipo <span class="text-red-500">*</span></label>
-            <input [(ngModel)]="form.type" placeholder="Hotel, DMC, Transporte…"
-              class="w-full rounded-xl border border-slate-200 px-4 py-2.5 text-sm outline-none transition focus:border-blue-400 focus:ring-2 focus:ring-blue-100" />
-          </div>
-          <div class="flex-1">
-            <label class="mb-1.5 block text-xs font-semibold text-slate-700">Contacto <span class="text-red-500">*</span></label>
-            <input [(ngModel)]="form.contact" placeholder="Email o teléfono"
-              class="w-full rounded-xl border border-slate-200 px-4 py-2.5 text-sm outline-none transition focus:border-blue-400 focus:ring-2 focus:ring-blue-100" />
-          </div>
-        </div>
-        <div>
-          <label class="mb-1.5 block text-xs font-semibold text-slate-700">Contrato</label>
-          <input [(ngModel)]="form.contract" placeholder="Detalles del contrato"
-            class="w-full rounded-xl border border-slate-200 px-4 py-2.5 text-sm outline-none transition focus:border-blue-400 focus:ring-2 focus:ring-blue-100" />
-        </div>
-        <div class="flex gap-4">
-          <div class="flex-1">
-            <label class="mb-1.5 block text-xs font-semibold text-slate-700">Comisión</label>
-            <input [(ngModel)]="form.commission" placeholder="10%"
-              class="w-full rounded-xl border border-slate-200 px-4 py-2.5 text-sm outline-none transition focus:border-blue-400 focus:ring-2 focus:ring-blue-100" />
-          </div>
-          <div class="flex-1">
-            <label class="mb-1.5 block text-xs font-semibold text-slate-700">Servicios</label>
-            <input [(ngModel)]="form.services" placeholder="Alojamiento, Tours…"
-              class="w-full rounded-xl border border-slate-200 px-4 py-2.5 text-sm outline-none transition focus:border-blue-400 focus:ring-2 focus:ring-blue-100" />
-          </div>
-        </div>
-      </div>
-      <div class="mt-6 flex justify-end gap-3">
-        <button (click)="closeForm()" class="rounded-full border border-slate-200 px-5 py-2 text-sm font-semibold text-slate-700 transition hover:bg-slate-50">
-          Cancelar
-        </button>
-        <button (click)="save()" [disabled]="saving"
-          class="flex items-center gap-2 rounded-full bg-primary px-5 py-2 text-sm font-semibold text-white transition hover:bg-primary-dark disabled:opacity-50">
-          <i *ngIf="saving" class="ri-loader-4-line animate-spin"></i>
-          {{ saving ? 'Guardando…' : 'Guardar' }}
-        </button>
-      </div>
-    </div>
-
-    <app-confirm-dialog
-      [visible]="showConfirm"
-      title="Eliminar Proveedor"
-      [message]="'¿Eliminar a «' + pendingDelete?.name + '»? Esta acción no se puede deshacer.'"
-      (confirmed)="deleteItem()"
-      (cancelled)="showConfirm = false"
-    ></app-confirm-dialog>
-
   `,
 })
 export class ProvidersDashboard implements OnInit {

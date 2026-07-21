@@ -1,5 +1,6 @@
 import { Component, OnInit, ChangeDetectionStrategy, ChangeDetectorRef, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Experience, ExperiencePayload, Tour, TravelApiService } from '../../../services/travel-api.service';
 import { Skeleton } from '../../../components/skeleton/skeleton';
@@ -9,7 +10,7 @@ import { NotificationService } from '../../../services/notification.service';
 @Component({
   selector: 'app-experiences-dashboard',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, Skeleton, ConfirmDialog],
+  imports: [CommonModule, FormsModule, ReactiveFormsModule, Skeleton, ConfirmDialog],
   templateUrl: './experiences-dashboard.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
@@ -19,9 +20,18 @@ export class ExperiencesDashboard implements OnInit {
   pageSize = 10;
   currentPage = 1;
 
+  get filteredItems(): Experience[] {
+    const q = this.searchQuery?.toLowerCase().trim() ?? '';
+    if (!q) return this.items;
+    return this.items.filter(e =>
+      e.title.toLowerCase().includes(q) ||
+      (e.location?.toLowerCase() ?? '').includes(q)
+    );
+  }
+
   get pagedItems() {
     const start = (this.currentPage - 1) * this.pageSize;
-    return this.items.slice(start, start + this.pageSize);
+    return this.filteredItems.slice(start, start + this.pageSize);
   }
 
   get totalPages() {
@@ -34,6 +44,7 @@ export class ExperiencesDashboard implements OnInit {
   isLoading = false;
   activeView: 'list' | 'form' = 'list';
   selectedId: string | null = null;
+  searchQuery = '';
   form: FormGroup;
   private readonly notification = inject(NotificationService);
 
@@ -73,6 +84,10 @@ export class ExperiencesDashboard implements OnInit {
       next: (items) => { this.items = items; this.isLoading = false; this.cdr.markForCheck(); },
       error: () => { this.notification.show('Error al cargar experiencias.', 'error'); this.isLoading = false; this.cdr.markForCheck(); },
     });
+  }
+
+  onSearch(): void {
+    this.currentPage = 1;
   }
 
   openForm(item?: Experience): void {

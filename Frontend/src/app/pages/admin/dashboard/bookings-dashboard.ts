@@ -30,6 +30,10 @@ export class BookingsDashboard implements OnInit {
   prevPage() { this.currentPage = Math.max(1, this.currentPage - 1); }
   nextPage() { this.currentPage = Math.min(this.totalPages, this.currentPage + 1); }
 
+  onSearch(): void {
+    this.currentPage = 1;
+  }
+
   isLoading = false;
   private readonly notification = inject(NotificationService);
   statusFilter = '';
@@ -46,15 +50,22 @@ export class BookingsDashboard implements OnInit {
   }
 
   get filteredBookings(): Booking[] {
+    const base = this.statusFilter
+      ? this.items.filter(b => b.status === this.statusFilter)
+      : this.items;
     const q = this.searchQuery.toLowerCase().trim();
-    if (!q) return this.items;
-    return this.items.filter(
+    if (!q) return base;
+    return base.filter(
       (b) =>
         b.customerName?.toLowerCase().includes(q) ||
         b.customerEmail?.toLowerCase().includes(q) ||
         b.customer?.name?.toLowerCase().includes(q) ||
         b.customer?.email?.toLowerCase().includes(q),
     );
+  }
+
+  getStatusCount(status: string): number {
+    return this.items.filter(b => b.status === status).length;
   }
 
   load(): void {
@@ -96,8 +107,9 @@ export class BookingsDashboard implements OnInit {
   }
 
   setFilter(status: string): void {
-    this.statusFilter = status;
-    this.load();
+    this.statusFilter = this.statusFilter === status ? '' : status;
+    this.currentPage = 1;
+    this.cdr.markForCheck();
   }
 
   openDetail(booking: Booking): void {

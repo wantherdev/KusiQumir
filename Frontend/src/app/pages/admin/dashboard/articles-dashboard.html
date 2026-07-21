@@ -1,84 +1,293 @@
-<div class="min-h-screen bg-slate-50 px-4 py-8 sm:px-6 lg:px-8">
+<div class="min-h-screen bg-linear-to-br from-slate-50 to-secondary-soft px-4 py-8 sm:px-6 lg:px-8">
   <div class="mx-auto max-w-7xl">
-    <div class="mb-8 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-      <div>
-        <h1 class="text-3xl font-bold text-tertiary">Blog</h1>
-        <p *ngIf="activeView === 'list'" class="mt-2 text-sm text-slate-600">Administra los artículos del blog.</p>
-        <p *ngIf="activeView === 'form'" class="mt-2 text-sm text-slate-600">{{ selectedId ? 'Modifica los datos del artículo existente.' : 'Completa los datos para crear un nuevo artículo.' }}</p>
+
+    <!-- ====== LIST VIEW ====== -->
+    <div *ngIf="activeView === 'list'">
+
+      <!-- Hero header -->
+      <header class="animate-slide-up relative mb-6 overflow-hidden rounded-2xl bg-linear-to-r from-primary to-primary-dark p-6 text-white shadow-lg shadow-primary/20 sm:p-8">
+        <div class="pointer-events-none absolute inset-0 opacity-20" style="background-image: radial-gradient(circle at 18% 22%, rgba(255,255,255,0.9) 1px, transparent 1px); background-size: 24px 24px;"></div>
+        <div class="relative flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+          <div>
+            <p class="text-xs font-semibold uppercase tracking-[0.2em] text-white/70">Panel de administración</p>
+            <h1 class="mt-1 flex items-center gap-2 text-2xl font-bold sm:text-3xl">
+              <i class="ri-article-line"></i> Blog
+            </h1>
+            <p class="mt-1 text-sm text-white/85">{{ articles.length }} artículo(s) registrados</p>
+          </div>
+          <div class="flex items-center gap-2">
+            <button (click)="openForm()" class="inline-flex items-center gap-2 rounded-xl bg-white px-5 py-2.5 text-sm font-bold text-primary shadow-lg transition-all hover:scale-[1.02] hover:shadow-xl active:scale-[0.98]">
+              <i class="ri-add-line text-lg"></i>
+              Nuevo artículo
+            </button>
+          </div>
+        </div>
+      </header>
+
+      <!-- Stats Bar -->
+      <div class="animate-slide-up mb-6 grid grid-cols-2 gap-4 sm:grid-cols-4">
+        <div class="group rounded-xl border border-slate-100 bg-white p-4 shadow-sm transition hover:-translate-y-0.5 hover:shadow-md">
+          <div class="flex items-center gap-3">
+            <div class="flex h-10 w-10 items-center justify-center rounded-xl bg-primary/10 text-primary"><i class="ri-article-line text-lg"></i></div>
+            <div>
+              <p class="text-xs font-medium uppercase tracking-wider text-slate-400">Total</p>
+              <p class="mt-0.5 text-2xl font-bold text-tertiary">{{ articles.length }}</p>
+            </div>
+          </div>
+        </div>
+        <div class="group rounded-xl border border-slate-100 bg-white p-4 shadow-sm transition hover:-translate-y-0.5 hover:shadow-md">
+          <div class="flex items-center gap-3">
+            <div class="flex h-10 w-10 items-center justify-center rounded-xl bg-green-50 text-green-600"><i class="ri-checkbox-circle-line text-lg"></i></div>
+            <div>
+              <p class="text-xs font-medium uppercase tracking-wider text-slate-400">Publicados</p>
+              <p class="mt-0.5 text-2xl font-bold text-tertiary">{{ articles.filter(a => a.status === 'PUBLISHED').length }}</p>
+            </div>
+          </div>
+        </div>
+        <div class="group rounded-xl border border-slate-100 bg-white p-4 shadow-sm transition hover:-translate-y-0.5 hover:shadow-md">
+          <div class="flex items-center gap-3">
+            <div class="flex h-10 w-10 items-center justify-center rounded-xl bg-amber-50 text-amber-600"><i class="ri-edit-line text-lg"></i></div>
+            <div>
+              <p class="text-xs font-medium uppercase tracking-wider text-slate-400">Borradores</p>
+              <p class="mt-0.5 text-2xl font-bold text-tertiary">{{ articles.filter(a => a.status === 'DRAFT').length }}</p>
+            </div>
+          </div>
+        </div>
+        <div class="group rounded-xl border border-slate-100 bg-white p-4 shadow-sm transition hover:-translate-y-0.5 hover:shadow-md">
+          <div class="flex items-center gap-3">
+            <div class="flex h-10 w-10 items-center justify-center rounded-xl bg-slate-100 text-slate-600"><i class="ri-archive-line text-lg"></i></div>
+            <div>
+              <p class="text-xs font-medium uppercase tracking-wider text-slate-400">Archivados</p>
+              <p class="mt-0.5 text-2xl font-bold text-tertiary">{{ articles.filter(a => a.status === 'ARCHIVED').length }}</p>
+            </div>
+          </div>
+        </div>
       </div>
-      <button *ngIf="activeView === 'list'" (click)="openForm()" class="inline-flex items-center gap-2 btn-primary px-4 py-2 text-sm font-medium text-white transition hover:bg-primary-dark">
-        <i aria-hidden="true" class="ri-add-line"></i>
-        Nuevo artículo
-      </button>
-      <button *ngIf="activeView === 'form'" (click)="closeForm()" class="inline-flex items-center gap-2 rounded-2xl border border-slate-300 bg-white px-4 py-2 text-sm font-medium text-slate-700 transition hover:bg-slate-50">
-        <i aria-hidden="true" class="ri-arrow-left-line"></i>
-        Volver
-      </button>
+
+      <!-- Toolbar -->
+      <div class="mb-5 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+        <div class="relative w-full max-w-md">
+          <i class="ri-search-line absolute left-4 top-1/2 -translate-y-1/2 text-slate-400"></i>
+          <input [(ngModel)]="searchQuery" (ngModelChange)="onSearch()" placeholder="Buscar por título o categoría…"
+            class="w-full rounded-xl border border-slate-200 bg-white py-3 pl-11 pr-10 text-sm outline-none transition-all focus:border-primary/40 focus:ring-2 focus:ring-primary/5 placeholder:text-slate-400" />
+          <button *ngIf="searchQuery" (click)="searchQuery=''; onSearch()" class="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 transition hover:text-slate-700">
+            <i class="ri-close-line text-lg"></i>
+          </button>
+        </div>
+        <p class="text-sm text-slate-500">Mostrando <span class="font-semibold text-slate-700">{{ pagedItems.length }}</span> de {{ filteredArticles.length }}</p>
+      </div>
+
+      <!-- Loading / Table -->
+      <ng-container *ngIf="isLoading; else loaded">
+        <div class="space-y-2">
+          <app-skeleton *ngFor="let _ of [].constructor(5)" variant="table-row" [rows]="1" [cols]="4" />
+        </div>
+      </ng-container>
+
+      <ng-template #loaded>
+        <div *ngIf="articles.length === 0" class="animate-slide-up flex flex-col items-center gap-4 rounded-2xl border border-dashed border-slate-300 bg-white py-16 shadow-sm">
+          <div class="flex h-20 w-20 items-center justify-center rounded-full bg-secondary-soft text-primary">
+            <i class="ri-article-line text-4xl"></i>
+          </div>
+          <p class="text-lg font-semibold text-slate-700">No hay artículos todavía</p>
+          <p class="text-sm text-slate-400">Crea tu primer artículo para empezar.</p>
+          <button (click)="openForm()" class="mt-1 inline-flex items-center gap-2 rounded-xl bg-white px-5 py-2.5 text-sm font-bold text-primary shadow-lg transition-all hover:scale-[1.02] hover:shadow-xl active:scale-[0.98]">
+            <i class="ri-add-line"></i> Crear artículo
+          </button>
+        </div>
+
+        <div *ngIf="articles.length > 0" class="animate-slide-up overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
+          <div class="overflow-x-auto">
+            <table class="w-full text-left text-sm">
+              <thead>
+                <tr class="border-b border-slate-100 bg-slate-50/80 text-xs font-semibold uppercase tracking-wider text-slate-500">
+                  <th class="px-5 py-4">Título</th>
+                  <th class="px-5 py-4">Categoría</th>
+                  <th class="px-5 py-4">Estado</th>
+                  <th class="px-5 py-4 text-right">Acciones</th>
+                </tr>
+              </thead>
+              <tbody class="divide-y divide-slate-50">
+                <tr *ngFor="let a of pagedItems; trackBy: trackByFn" class="transition hover:bg-secondary-soft">
+                  <td class="px-5 py-4 font-medium text-tertiary">{{ a.title }}</td>
+                  <td class="px-5 py-4">
+                    <span class="rounded-full bg-primary/10 px-2.5 py-0.5 text-xs font-medium text-primary">{{ a.category || '-' }}</span>
+                  </td>
+                  <td class="px-5 py-4">
+                    <span class="inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-medium"
+                      [class.bg-amber-50]="a.status === 'DRAFT'" [class.text-amber-700]="a.status === 'DRAFT'"
+                      [class.bg-green-50]="a.status === 'PUBLISHED'" [class.text-green-700]="a.status === 'PUBLISHED'"
+                      [class.bg-slate-50]="a.status === 'ARCHIVED'" [class.text-slate-600]="a.status === 'ARCHIVED'">
+                      <span class="inline-block h-1.5 w-1.5 rounded-full"
+                        [class.bg-amber-500]="a.status === 'DRAFT'"
+                        [class.bg-green-500]="a.status === 'PUBLISHED'"
+                        [class.bg-slate-400]="a.status === 'ARCHIVED'"></span>
+                      {{ a.status === 'DRAFT' ? 'Borrador' : a.status === 'PUBLISHED' ? 'Publicado' : 'Archivado' }}
+                    </span>
+                  </td>
+                  <td class="px-5 py-4 text-right">
+                    <div class="flex items-center justify-end gap-1.5">
+                      <button (click)="openForm(a)" class="inline-flex items-center gap-1.5 rounded-lg border border-slate-200 bg-white px-3 py-1.5 text-xs font-medium text-slate-700 shadow-sm transition-all hover:border-primary/30 hover:bg-primary/5 hover:text-primary">
+                        <i class="ri-edit-line"></i> Editar
+                      </button>
+                      <button (click)="confirmDelete(a.id)" class="inline-flex items-center gap-1.5 rounded-lg border border-slate-200 bg-white px-3 py-1.5 text-xs font-medium text-red-600 shadow-sm transition-all hover:border-red-200 hover:bg-red-50">
+                        <i class="ri-delete-bin-6-line"></i> Eliminar
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <!-- Pagination -->
+          <div *ngIf="totalPages > 1" class="flex items-center justify-between border-t border-slate-100 px-5 py-3">
+            <p class="text-xs text-slate-500">Página {{ currentPage }} de {{ totalPages }}</p>
+            <div class="flex gap-2">
+              <button (click)="prevPage()" [disabled]="currentPage === 1" class="inline-flex items-center gap-1 rounded-lg border border-slate-200 px-3.5 py-2 text-xs font-medium text-slate-600 transition hover:border-primary/30 hover:text-primary disabled:cursor-not-allowed disabled:opacity-40 disabled:hover:border-slate-200 disabled:hover:text-slate-600">
+                <i class="ri-arrow-left-s-line"></i> Anterior
+              </button>
+              <button (click)="nextPage()" [disabled]="currentPage === totalPages" class="inline-flex items-center gap-1 rounded-lg border border-slate-200 px-3.5 py-2 text-xs font-medium text-slate-600 transition hover:border-primary/30 hover:text-primary disabled:cursor-not-allowed disabled:opacity-40 disabled:hover:border-slate-200 disabled:hover:text-slate-600">
+                Siguiente <i class="ri-arrow-right-s-line"></i>
+              </button>
+            </div>
+          </div>
+        </div>
+      </ng-template>
     </div>
 
-    <div *ngIf="activeView === 'list' && isLoading" class="space-y-2">
-      <app-skeleton *ngFor="let _ of [].constructor(5)" variant="table-row" [rows]="1" [cols]="4" />
-    </div>
+    <!-- ====== FORM VIEW ====== -->
+    <div *ngIf="activeView === 'form'">
+      <div class="animate-slide-up overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
 
-    <div *ngIf="activeView === 'list' && !isLoading" class="overflow-x-auto overflow-hidden rounded-2xl bg-white shadow">
-      <p *ngIf="articles.length === 0" class="p-8 text-center text-slate-500">No hay artículos.</p>
-      <table *ngIf="articles.length" class="min-w-full divide-y divide-slate-200">
-        <thead class="bg-slate-50">
-          <tr>
-            <th class="px-6 py-3 text-left text-xs font-medium uppercase text-slate-500">Título</th>
-            <th class="px-6 py-3 text-left text-xs font-medium uppercase text-slate-500">Categoría</th>
-            <th class="px-6 py-3 text-left text-xs font-medium uppercase text-slate-500">Estado</th>
-            <th class="px-6 py-3 text-right text-xs font-medium uppercase text-slate-500">Acciones</th>
-          </tr>
-        </thead>
-        <tbody class="divide-y divide-slate-200">
-          <tr *ngFor="let a of pagedItems; trackBy: trackByFn">
-            <td class="px-6 py-4 text-sm font-medium text-tertiary">{{ a.title }}</td>
-            <td class="px-6 py-4 text-sm text-slate-500">{{ a.category || '-' }}</td>
-            <td class="px-6 py-4 text-sm">{{ a.status }}</td>
-            <td class="px-6 py-4 text-right text-sm">
-              <button (click)="openForm(a)" class="mr-4 text-primary hover:text-primary-dark">Editar</button>
-              <button (click)="confirmDelete(a.id)" class="text-red-600 hover:text-red-900">Eliminar</button>
-            </td>
-          </tr>
-        </tbody>
-      </table>
-      <div *ngIf="totalPages > 1" class="flex items-center justify-between border-t border-slate-200 px-6 py-3">
-        <p class="text-sm text-slate-600">Página {{ currentPage }} de {{ totalPages }}</p>
-        <div class="flex gap-2">
-          <button (click)="prevPage()" [disabled]="currentPage === 1" class="rounded-xl border border-slate-300 px-4 py-2 text-sm disabled:opacity-50">Anterior</button>
-          <button (click)="nextPage()" [disabled]="currentPage === totalPages" class="rounded-xl border border-slate-300 px-4 py-2 text-sm disabled:opacity-50">Siguiente</button>
+        <!-- Form Header -->
+        <div class="sticky top-0 z-30 flex items-center justify-between border-b border-slate-100 bg-white/90 px-6 py-4 backdrop-blur">
+          <div class="flex items-center gap-4">
+            <button (click)="closeForm()" class="inline-flex items-center gap-1.5 rounded-lg px-2 py-1 text-sm font-medium text-slate-500 transition hover:bg-slate-100 hover:text-slate-800">
+              <i class="ri-arrow-left-line"></i> Volver
+            </button>
+            <div class="h-6 w-px bg-slate-200"></div>
+            <h2 class="text-lg font-bold text-tertiary">
+              <i class="ri-article-line mr-2 text-primary"></i>
+              {{ selectedId ? 'Editar artículo' : 'Nuevo artículo' }}
+            </h2>
+          </div>
+          <span *ngIf="selectedId" class="hidden rounded-full bg-primary/10 px-3 py-1 text-xs font-medium text-primary sm:inline">{{ selectedId.slice(0,8) }}…</span>
         </div>
+
+        <form [formGroup]="form" (ngSubmit)="saveArticle()" class="p-6">
+
+          <div class="space-y-6">
+            <!-- Basic Info -->
+            <div class="rounded-xl border border-slate-100 bg-slate-50/50 p-5">
+              <h3 class="mb-4 flex items-center gap-2 text-sm font-bold uppercase tracking-wider text-slate-600">
+                <span class="flex h-6 w-6 items-center justify-center rounded-lg bg-primary/10 text-primary"><i class="ri-information-line text-sm"></i></span>
+                Información básica
+              </h3>
+              <div class="space-y-4">
+                <div class="grid gap-4 sm:grid-cols-2">
+                  <div>
+                    <label class="mb-1.5 block text-xs font-semibold text-slate-700">Título <span class="text-red-500">*</span></label>
+                    <input formControlName="title" placeholder="Título del artículo"
+                      class="w-full rounded-lg border border-slate-200 px-3.5 py-2.5 text-sm outline-none transition focus:border-primary/50 focus:ring-2 focus:ring-primary/5" />
+                  </div>
+                  <div>
+                    <label class="mb-1.5 block text-xs font-semibold text-slate-700">Slug <span class="text-red-500">*</span></label>
+                    <div class="flex gap-2">
+                      <input formControlName="slug" placeholder="url-friendly-slug"
+                        class="flex-1 rounded-lg border border-slate-200 px-3.5 py-2.5 text-sm outline-none transition focus:border-primary/50 focus:ring-2 focus:ring-primary/5" />
+                      <button type="button" (click)="generateSlug()" class="inline-flex items-center gap-1.5 rounded-lg border border-slate-200 bg-white px-3 py-2.5 text-sm font-medium text-slate-700 shadow-sm transition hover:border-primary/30 hover:bg-primary/5 hover:text-primary">
+                        Generar
+                      </button>
+                    </div>
+                  </div>
+                </div>
+                <div>
+                  <label class="mb-1.5 block text-xs font-semibold text-slate-700">Extracto <span class="text-red-500">*</span></label>
+                  <textarea formControlName="excerpt" rows="2" placeholder="Resumen breve del artículo"
+                    class="w-full rounded-lg border border-slate-200 px-3.5 py-2.5 text-sm outline-none transition focus:border-primary/50 focus:ring-2 focus:ring-primary/5"></textarea>
+                </div>
+                <div>
+                  <label class="mb-1.5 block text-xs font-semibold text-slate-700">Contenido (Markdown) <span class="text-red-500">*</span></label>
+                  <textarea formControlName="content" rows="8" placeholder="Escribe el contenido en Markdown…"
+                    class="w-full rounded-lg border border-slate-200 px-3.5 py-2.5 text-sm font-mono outline-none transition focus:border-primary/50 focus:ring-2 focus:ring-primary/5"></textarea>
+                </div>
+              </div>
+            </div>
+
+            <!-- Media -->
+            <div class="rounded-xl border border-slate-100 bg-slate-50/50 p-5">
+              <h3 class="mb-4 flex items-center gap-2 text-sm font-bold uppercase tracking-wider text-slate-600">
+                <span class="flex h-6 w-6 items-center justify-center rounded-lg bg-primary/10 text-primary"><i class="ri-image-line text-sm"></i></span>
+                Multimedia
+              </h3>
+              <div class="space-y-4">
+                <div class="grid gap-4 sm:grid-cols-2">
+                  <div>
+                    <label class="mb-1.5 block text-xs font-semibold text-slate-700">URL de imagen</label>
+                    <input formControlName="coverImage" placeholder="https://ejemplo.com/imagen.jpg"
+                      class="w-full rounded-lg border border-slate-200 px-3.5 py-2.5 text-sm outline-none transition focus:border-primary/50 focus:ring-2 focus:ring-primary/5" />
+                  </div>
+                  <div>
+                    <label class="mb-1.5 block text-xs font-semibold text-slate-700">Texto alternativo</label>
+                    <input formControlName="imageAlt" placeholder="Descripción de la imagen"
+                      class="w-full rounded-lg border border-slate-200 px-3.5 py-2.5 text-sm outline-none transition focus:border-primary/50 focus:ring-2 focus:ring-primary/5" />
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Classification -->
+            <div class="rounded-xl border border-slate-100 bg-slate-50/50 p-5">
+              <h3 class="mb-4 flex items-center gap-2 text-sm font-bold uppercase tracking-wider text-slate-600">
+                <span class="flex h-6 w-6 items-center justify-center rounded-lg bg-primary/10 text-primary"><i class="ri-price-tag-3-line text-sm"></i></span>
+                Clasificación y estado
+              </h3>
+              <div class="space-y-4">
+                <div class="grid gap-4 sm:grid-cols-3">
+                  <div>
+                    <label class="mb-1.5 block text-xs font-semibold text-slate-700">Categoría</label>
+                    <input formControlName="category" placeholder="Aventura, Cultura…"
+                      class="w-full rounded-lg border border-slate-200 px-3.5 py-2.5 text-sm outline-none transition focus:border-primary/50 focus:ring-2 focus:ring-primary/5" />
+                  </div>
+                  <div>
+                    <label class="mb-1.5 block text-xs font-semibold text-slate-700">Tags</label>
+                    <input formControlName="tags" placeholder="separados por coma"
+                      class="w-full rounded-lg border border-slate-200 px-3.5 py-2.5 text-sm outline-none transition focus:border-primary/50 focus:ring-2 focus:ring-primary/5" />
+                  </div>
+                  <div>
+                    <label class="mb-1.5 block text-xs font-semibold text-slate-700">Estado</label>
+                    <select formControlName="status"
+                      class="w-full rounded-lg border border-slate-200 px-3.5 py-2.5 text-sm outline-none transition focus:border-primary/50 focus:ring-2 focus:ring-primary/5">
+                      <option value="DRAFT">Borrador</option>
+                      <option value="PUBLISHED">Publicado</option>
+                      <option value="ARCHIVED">Archivado</option>
+                    </select>
+                  </div>
+                </div>
+                <div>
+                  <label class="mb-1.5 block text-xs font-semibold text-slate-700">Publicado en</label>
+                  <input type="datetime-local" formControlName="publishedAt"
+                    class="w-full rounded-lg border border-slate-200 px-3.5 py-2.5 text-sm outline-none transition focus:border-primary/50 focus:ring-2 focus:ring-primary/5" />
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Form Actions -->
+          <div class="mt-6 flex items-center justify-end gap-3 border-t border-slate-100 pt-4">
+            <button type="button" (click)="closeForm()" class="inline-flex items-center gap-1.5 rounded-lg border border-slate-200 bg-white px-4 py-2 text-sm font-medium text-slate-700 shadow-sm transition hover:border-primary/30 hover:bg-primary/5 hover:text-primary">
+              Cancelar
+            </button>
+            <button type="submit" [disabled]="isLoading" class="inline-flex items-center gap-2 rounded-xl bg-linear-to-r from-primary to-primary-dark px-5 py-2.5 text-sm font-semibold text-white shadow-lg shadow-primary/20 transition hover:shadow-xl disabled:cursor-not-allowed disabled:opacity-50">
+              <i *ngIf="isLoading" class="ri-loader-4-line animate-spin"></i>
+              {{ isLoading ? 'Guardando…' : 'Guardar' }}
+            </button>
+          </div>
+        </form>
       </div>
     </div>
 
-    <div *ngIf="activeView === 'form'" class="rounded-2xl bg-white p-6 shadow">
-      <div class="mb-5 flex items-center justify-between">
-        <h2 class="text-xl font-semibold">{{ selectedId ? 'Editar artículo' : 'Nuevo artículo' }}</h2>
-      </div>
-      <form [formGroup]="form" (ngSubmit)="saveArticle()" class="space-y-4">
-        <div class="grid gap-4 sm:grid-cols-2">
-          <div><label class="block text-sm font-medium">Título *</label><input formControlName="title" class="mt-1 w-full rounded-2xl border border-slate-200 px-4 py-3 text-sm outline-none transition focus:border-primary focus:ring-2 focus:ring-primary/10" /></div>
-          <div><label class="block text-sm font-medium">Slug *</label><div class="flex gap-2"><input formControlName="slug" class="mt-1 flex-1 rounded-2xl border border-slate-200 px-4 py-3 text-sm outline-none transition focus:border-primary focus:ring-2 focus:ring-primary/10" /><button type="button" (click)="generateSlug()" class="mt-1 whitespace-nowrap rounded-2xl border border-slate-300 px-3 py-3 text-sm text-slate-600 transition hover:bg-slate-50">Generar</button></div></div>
-        </div>
-        <div><label class="block text-sm font-medium">Extracto *</label><textarea formControlName="excerpt" rows="2" class="mt-1 w-full rounded-2xl border border-slate-200 px-4 py-3 text-sm outline-none transition focus:border-primary focus:ring-2 focus:ring-primary/10"></textarea></div>
-        <div><label class="block text-sm font-medium">Contenido (Markdown) *</label><textarea formControlName="content" rows="8" class="mt-1 w-full rounded-2xl border border-slate-200 px-4 py-3 text-sm outline-none transition focus:border-primary focus:ring-2 focus:ring-primary/10 font-mono text-sm"></textarea></div>
-        <div class="grid gap-4 sm:grid-cols-2">
-          <div><label class="block text-sm font-medium">URL de imagen</label><input formControlName="coverImage" class="mt-1 w-full rounded-2xl border border-slate-200 px-4 py-3 text-sm outline-none transition focus:border-primary focus:ring-2 focus:ring-primary/10" /></div>
-          <div><label class="block text-sm font-medium">Texto alternativo</label><input formControlName="imageAlt" class="mt-1 w-full rounded-2xl border border-slate-200 px-4 py-3 text-sm outline-none transition focus:border-primary focus:ring-2 focus:ring-primary/10" /></div>
-        </div>
-        <div class="grid gap-4 sm:grid-cols-3">
-          <div><label class="block text-sm font-medium">Categoría</label><input formControlName="category" class="mt-1 w-full rounded-2xl border border-slate-200 px-4 py-3 text-sm outline-none transition focus:border-primary focus:ring-2 focus:ring-primary/10" /></div>
-          <div><label class="block text-sm font-medium">Tags</label><input formControlName="tags" placeholder="separados por coma" class="mt-1 w-full rounded-2xl border border-slate-200 px-4 py-3 text-sm outline-none transition focus:border-primary focus:ring-2 focus:ring-primary/10" /></div>
-          <div><label class="block text-sm font-medium">Estado</label><select formControlName="status" class="mt-1 w-full rounded-2xl border border-slate-200 px-4 py-3 text-sm outline-none transition focus:border-primary focus:ring-2 focus:ring-primary/10"><option value="DRAFT">Borrador</option><option value="PUBLISHED">Publicado</option><option value="ARCHIVED">Archivado</option></select></div>
-        </div>
-        <div><label class="block text-sm font-medium">Publicado en</label><input type="datetime-local" formControlName="publishedAt" class="mt-1 w-full rounded-2xl border border-slate-200 px-4 py-3 text-sm outline-none transition focus:border-primary focus:ring-2 focus:ring-primary/10" /></div>
-        <div class="flex justify-end gap-3 pt-2">
-          <button type="button" (click)="closeForm()" class="rounded-2xl border border-slate-300 px-4 py-2 text-sm">Cancelar</button>
-          <button type="submit" [disabled]="isLoading" class="btn-primary px-4 py-2 text-white disabled:opacity-50">{{ isLoading ? 'Guardando...' : 'Guardar' }}</button>
-        </div>
-      </form>
-    </div>
   </div>
 </div>
 
@@ -90,4 +299,3 @@
   (confirmed)="deleteArticle()"
   (cancelled)="showConfirm = false"
 ></app-confirm-dialog>
-

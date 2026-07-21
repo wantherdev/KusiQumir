@@ -1,5 +1,6 @@
 import { Component, OnInit, ChangeDetectionStrategy, ChangeDetectorRef, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Article, ArticlePayload, TravelApiService } from '../../../services/travel-api.service';
 import { Skeleton } from '../../../components/skeleton/skeleton';
@@ -9,7 +10,7 @@ import { NotificationService } from '../../../services/notification.service';
 @Component({
   selector: 'app-articles-dashboard',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, Skeleton, ConfirmDialog],
+  imports: [CommonModule, FormsModule, ReactiveFormsModule, Skeleton, ConfirmDialog],
   templateUrl: './articles-dashboard.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
@@ -18,9 +19,18 @@ export class ArticlesDashboard implements OnInit {
   pageSize = 10;
   currentPage = 1;
 
+  get filteredArticles(): Article[] {
+    const q = this.searchQuery?.toLowerCase().trim() ?? '';
+    if (!q) return this.articles;
+    return this.articles.filter(a =>
+      a.title.toLowerCase().includes(q) ||
+      (a.category?.toLowerCase() ?? '').includes(q)
+    );
+  }
+
   get pagedItems() {
     const start = (this.currentPage - 1) * this.pageSize;
-    return this.articles.slice(start, start + this.pageSize);
+    return this.filteredArticles.slice(start, start + this.pageSize);
   }
 
   get totalPages() {
@@ -33,6 +43,7 @@ export class ArticlesDashboard implements OnInit {
   isLoading = false;
   activeView: 'list' | 'form' = 'list';
   selectedId: string | null = null;
+  searchQuery = '';
   form: FormGroup;
   private readonly notification = inject(NotificationService);
 
@@ -66,6 +77,10 @@ export class ArticlesDashboard implements OnInit {
       next: (items) => { this.articles = items; this.isLoading = false; this.cdr.markForCheck(); },
       error: () => { this.notification.show('Error al cargar artículos.', 'error'); this.isLoading = false; this.cdr.markForCheck(); },
     });
+  }
+
+  onSearch(): void {
+    this.currentPage = 1;
   }
 
   openForm(item?: Article): void {
