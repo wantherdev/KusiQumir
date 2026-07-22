@@ -3,16 +3,8 @@ import { ApiTags, ApiOperation } from "@nestjs/swagger";
 import { PrismaService } from "../../prisma/prisma.service";
 import { Public } from "../auth/public.decorator";
 import { JwtAuthGuard } from "../auth/jwt-auth.guard";
-import { IsString, IsOptional } from "class-validator";
-
-class CreateCategoryDto {
-  @IsString()
-  name!: string;
-
-  @IsOptional()
-  @IsString()
-  description?: string;
-}
+import { Roles } from "../auth/roles.decorator";
+import { CreateCategoryDto } from "./dto/create-category.dto";
 
 @ApiTags("categories")
 @Controller("categories")
@@ -27,6 +19,7 @@ export class CategoriesController {
   }
 
   @UseGuards(JwtAuthGuard)
+  @Roles("ADMIN")
   @Post()
   @ApiOperation({ summary: "Crear categoría" })
   async create(@Body() dto: CreateCategoryDto) {

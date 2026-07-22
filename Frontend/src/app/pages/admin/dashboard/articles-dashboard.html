@@ -6,7 +6,7 @@
 
       <!-- Hero header -->
       <header class="animate-slide-up relative mb-6 overflow-hidden rounded-2xl bg-linear-to-r from-primary to-primary-dark p-6 text-white shadow-lg shadow-primary/20 sm:p-8">
-        <div class="pointer-events-none absolute inset-0 opacity-20" style="background-image: radial-gradient(circle at 18% 22%, rgba(255,255,255,0.9) 1px, transparent 1px); background-size: 24px 24px;"></div>
+        <div class="pointer-events-none absolute inset-0 opacity-20" style="background-image: radial-gradient(circle at 18% 22%, rgba(255,255,255,0.9) 1px, transparent 1px); background-size: 26px 26px;"></div>
         <div class="relative flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
           <div>
             <p class="text-xs font-semibold uppercase tracking-[0.2em] text-white/70">Panel de administración</p>
@@ -16,7 +16,7 @@
             <p class="mt-1 text-sm text-white/85">{{ articles.length }} artículo(s) registrados</p>
           </div>
           <div class="flex items-center gap-2">
-            <button (click)="openForm()" class="inline-flex items-center gap-2 rounded-xl bg-white px-5 py-2.5 text-sm font-bold text-primary shadow-lg transition-all hover:scale-[1.02] hover:shadow-xl active:scale-[0.98]">
+            <button (click)="openForm()" class="admin-btn-hero">
               <i class="ri-add-line text-lg"></i>
               Nuevo artículo
             </button>
@@ -91,7 +91,7 @@
           </div>
           <p class="text-lg font-semibold text-slate-700">No hay artículos todavía</p>
           <p class="text-sm text-slate-400">Crea tu primer artículo para empezar.</p>
-          <button (click)="openForm()" class="mt-1 inline-flex items-center gap-2 rounded-xl bg-white px-5 py-2.5 text-sm font-bold text-primary shadow-lg transition-all hover:scale-[1.02] hover:shadow-xl active:scale-[0.98]">
+          <button (click)="openForm()" class="mt-1 admin-btn-hero">
             <i class="ri-add-line"></i> Crear artículo
           </button>
         </div>
@@ -127,10 +127,10 @@
                   </td>
                   <td class="px-5 py-4 text-right">
                     <div class="flex items-center justify-end gap-1.5">
-                      <button (click)="openForm(a)" class="inline-flex items-center gap-1.5 rounded-lg border border-slate-200 bg-white px-3 py-1.5 text-xs font-medium text-slate-700 shadow-sm transition-all hover:border-primary/30 hover:bg-primary/5 hover:text-primary">
+                      <button (click)="openForm(a)" class="admin-btn-action">
                         <i class="ri-edit-line"></i> Editar
                       </button>
-                      <button (click)="confirmDelete(a.id)" class="inline-flex items-center gap-1.5 rounded-lg border border-slate-200 bg-white px-3 py-1.5 text-xs font-medium text-red-600 shadow-sm transition-all hover:border-red-200 hover:bg-red-50">
+                      <button (click)="confirmDelete(a.id)" class="admin-btn-danger">
                         <i class="ri-delete-bin-6-line"></i> Eliminar
                       </button>
                     </div>
@@ -276,10 +276,10 @@
 
           <!-- Form Actions -->
           <div class="mt-6 flex items-center justify-end gap-3 border-t border-slate-100 pt-4">
-            <button type="button" (click)="closeForm()" class="inline-flex items-center gap-1.5 rounded-lg border border-slate-200 bg-white px-4 py-2 text-sm font-medium text-slate-700 shadow-sm transition hover:border-primary/30 hover:bg-primary/5 hover:text-primary">
+            <button type="button" (click)="closeForm()" class="admin-btn-ghost">
               Cancelar
             </button>
-            <button type="submit" [disabled]="isLoading" class="inline-flex items-center gap-2 rounded-xl bg-linear-to-r from-primary to-primary-dark px-5 py-2.5 text-sm font-semibold text-white shadow-lg shadow-primary/20 transition hover:shadow-xl disabled:cursor-not-allowed disabled:opacity-50">
+            <button type="submit" [disabled]="isLoading" class="admin-btn-submit">
               <i *ngIf="isLoading" class="ri-loader-4-line animate-spin"></i>
               {{ isLoading ? 'Guardando…' : 'Guardar' }}
             </button>

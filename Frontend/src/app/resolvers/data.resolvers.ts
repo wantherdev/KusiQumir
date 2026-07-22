@@ -2,12 +2,13 @@ import { inject } from '@angular/core';
 import { ActivatedRouteSnapshot, ResolveFn } from '@angular/router';
 import { forkJoin, of } from 'rxjs';
 import { map, tap, catchError } from 'rxjs/operators';
-import { TravelApiService, Tour, Article, Experience, TravelPackage } from '../services/travel-api.service';
+import { TravelApiService, Tour, Article, Experience, TravelPackage, Testimonial } from '../services/travel-api.service';
 import { TourStateService } from '../services/tour-state.service';
 
 export interface HomeData {
   tours: Tour[];
   packages: TravelPackage[];
+  testimonials: Testimonial[];
 }
 
 export const homeResolver: ResolveFn<HomeData> = () => {
@@ -16,10 +17,11 @@ export const homeResolver: ResolveFn<HomeData> = () => {
   return forkJoin({
     tours: api.getTours(),
     packages: api.getPackages(),
+    testimonials: api.getFeaturedTestimonials(),
   }).pipe(
-    map(({ tours, packages }) => ({ tours: tours.items, packages })),
+    map(({ tours, packages, testimonials }) => ({ tours: tours.items, packages, testimonials })),
     tap((data) => state.setTours(data.tours)),
-    catchError(() => of({ tours: [] as Tour[], packages: [] as TravelPackage[] })),
+    catchError(() => of({ tours: [] as Tour[], packages: [] as TravelPackage[], testimonials: [] as Testimonial[] })),
   );
 };
 

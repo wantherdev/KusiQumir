@@ -21,7 +21,7 @@
       <a
         *ngFor="let exp of experiencias; trackBy: trackByFn"
         [routerLink]="['/experiencias', exp.slug]"
-        class="page-card group block overflow-hidden bg-white transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl"
+        class="panel overflow-hidden group block transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl"
       >
         <img
           [src]="exp.coverImage || '/images/placeholder.svg'"
@@ -43,7 +43,7 @@
     </div>
 
     <div
-      class="grid gap-6 rounded-[2rem] border border-slate-200 bg-white p-8 shadow-sm lg:grid-cols-[0.9fr_1.1fr]"
+      class="grid gap-6 panel p-8 lg:grid-cols-[0.9fr_1.1fr]"
     >
       <div>
         <p class="text-sm font-semibold uppercase tracking-[0.35em] text-primary">

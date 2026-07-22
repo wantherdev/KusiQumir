@@ -279,32 +279,23 @@
       <p class="mx-auto max-w-3xl text-xl text-slate-600">Experiencias auténticas y valoraciones reales que respaldan nuestro servicio.</p>
     </div>
 
-    <div class="grid grid-cols-1 gap-8 md:grid-cols-3">
-      <div class="rounded-3xl bg-white p-8 shadow-sm ring-1 ring-slate-100">
-        <div class="mb-4 flex gap-1 text-amber-400"><i class="ri-star-fill" *ngFor="let s of [1,2,3,4,5]"></i></div>
-        <p class="italic text-slate-700">"Kusi Q'umir organizó nuestro viaje a Machu Picchu con impecable atención y guía experto. Todo fue fácil desde el inicio."</p>
-        <div class="mt-6 flex items-center gap-4">
-          <img src="/images/test1.webp?v=2" alt="Testimonio de viajera" class="h-12 w-12 rounded-full object-cover" width="48" height="48" loading="lazy" />
-          <div><p class="font-semibold text-tertiary">Ana Martínez</p><p class="text-sm text-slate-600">Madrid, España</p></div>
-        </div>
-      </div>
-      <div class="rounded-3xl bg-white p-8 shadow-sm ring-1 ring-slate-100">
-        <div class="mb-4 flex gap-1 text-amber-400"><i class="ri-star-fill" *ngFor="let s of [1,2,3,4,5]"></i></div>
-        <p class="italic text-slate-700">"El Camino Inca con Kusi Q'umir fue una aventura perfecta. La logística y el soporte fueron excepcionales."</p>
-        <div class="mt-6 flex items-center gap-4">
-          <img src="/images/test2.webp?v=2" alt="Testimonio de viajero" class="h-12 w-12 rounded-full object-cover" width="48" height="48" loading="lazy" />
-          <div><p class="font-semibold text-tertiary">Roberto Silva</p><p class="text-sm text-slate-600">São Paulo, Brasil</p></div>
-        </div>
-      </div>
-      <div class="rounded-3xl bg-white p-8 shadow-sm ring-1 ring-slate-100">
-        <div class="mb-4 flex gap-1 text-amber-400"><i class="ri-star-fill" *ngFor="let s of [1,2,3,4,5]"></i></div>
-        <p class="italic text-slate-700">"Como familia con niños, necesitábamos un plan especial. Kusi Q'umir nos apoyó en todo el viaje."</p>
-        <div class="mt-6 flex items-center gap-4">
-          <img src="/images/test3.webp?v=2" alt="Testimonio familiar" class="h-12 w-12 rounded-full object-cover" width="48" height="48" loading="lazy" />
-          <div><p class="font-semibold text-tertiary">Jennifer Thompson</p><p class="text-sm text-slate-600">Toronto, Canadá</p></div>
-        </div>
-      </div>
+    <div *ngIf="testimonials.length > 0; else skeletonTestimonials" class="grid grid-cols-1 gap-8 md:grid-cols-3">
+      <app-testimonial-card *ngFor="let t of testimonials; trackBy: trackByFn" [testimonial]="t" />
     </div>
+
+    <ng-template #skeletonTestimonials>
+      <div class="grid grid-cols-1 gap-8 md:grid-cols-3">
+        <div *ngFor="let i of [1,2,3]" class="rounded-3xl bg-white p-8 shadow-sm ring-1 ring-slate-100 animate-pulse">
+          <div class="flex items-center gap-4 mb-4">
+            <div class="h-14 w-14 rounded-full bg-slate-200"></div>
+            <div><div class="h-4 w-28 bg-slate-200 rounded"></div><div class="h-3 w-20 bg-slate-100 rounded mt-1"></div></div>
+          </div>
+          <div class="h-3 bg-slate-200 rounded w-full mb-2"></div>
+          <div class="h-3 bg-slate-200 rounded w-5/6 mb-2"></div>
+          <div class="h-3 bg-slate-200 rounded w-4/6"></div>
+        </div>
+      </div>
+    </ng-template>
 
     <div class="mt-12 text-center">
       <a href="#contacto" class="inline-flex items-center justify-center gap-2 rounded-full bg-primary px-8 py-4 font-semibold text-white transition hover:bg-primary-dark">

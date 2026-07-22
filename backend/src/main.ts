@@ -20,6 +20,16 @@ async function bootstrap() {
   const configService = app.get(ConfigService);
   const logger = new Logger("Bootstrap");
 
+  const jwtSecret = configService.get<string>("JWT_SECRET")!;
+  const defaultSecrets = ["cambia-esto-por-un-secreto-seguro"];
+  if (defaultSecrets.includes(jwtSecret)) {
+    const isProd = configService.get<string>("NODE_ENV") === "production";
+    logger.error(
+      `JWT_SECRET está usando el valor por defecto "cambia-esto-por-un-secreto-seguro".${isProd ? " ABORTANDO por seguridad." : " CAMBIA esto antes de producción."}`,
+    );
+    if (isProd) process.exit(1);
+  }
+
   Sentry.init({
     dsn: configService.get<string>("SENTRY_DSN"),
     environment: configService.get<string>("NODE_ENV", "development"),
@@ -84,9 +94,6 @@ async function bootstrap() {
   const server = await app.listen(port);
 
   logger.log(`Servidor corriendo en http://localhost:${port}`);
-  logger.log(
-    `Documentación disponible en http://localhost:${port}/api/v1/docs`,
-  );
 
   const signals = ["SIGTERM", "SIGINT"];
   for (const signal of signals) {

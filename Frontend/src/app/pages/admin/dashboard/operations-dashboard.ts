@@ -17,7 +17,7 @@ import { NotificationService } from '../../../services/notification.service';
 
           <!-- Hero header -->
           <header class="animate-slide-up relative mb-6 overflow-hidden rounded-2xl bg-linear-to-r from-primary to-primary-dark p-6 text-white shadow-lg shadow-primary/20 sm:p-8">
-            <div class="pointer-events-none absolute inset-0 opacity-20" style="background-image: radial-gradient(circle at 18% 22%, rgba(255,255,255,0.9) 1px, transparent 1px); background-size: 24px 24px;"></div>
+            <div class="pointer-events-none absolute inset-0 opacity-20" style="background-image: radial-gradient(circle at 18% 22%, rgba(255,255,255,0.9) 1px, transparent 1px); background-size: 26px 26px;"></div>
             <div class="relative flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
               <div>
                 <p class="text-xs font-semibold uppercase tracking-[0.2em] text-white/70">Panel de administración</p>
@@ -27,7 +27,7 @@ import { NotificationService } from '../../../services/notification.service';
                 <p class="mt-1 text-sm text-white/85">{{ operations.length }} operación(es) registradas</p>
               </div>
               <div class="flex items-center gap-2">
-                <button *ngIf="activeView === 'list'" (click)="openForm()" class="inline-flex items-center gap-2 rounded-xl bg-white px-5 py-2.5 text-sm font-bold text-primary shadow-lg transition-all hover:scale-[1.02] hover:shadow-xl active:scale-[0.98]">
+                <button *ngIf="activeView === 'list'" (click)="openForm()" class="admin-btn-hero">
                   <i class="ri-add-line text-lg"></i>
                   Nueva operación
                 </button>
@@ -49,7 +49,7 @@ import { NotificationService } from '../../../services/notification.service';
               </div>
               <p class="text-lg font-semibold text-slate-700">No hay operaciones registradas</p>
               <p class="text-sm text-slate-400">Crea una nueva operación para comenzar.</p>
-              <button (click)="openForm()" class="mt-1 inline-flex items-center gap-2 rounded-xl bg-white px-5 py-2.5 text-sm font-bold text-primary shadow-lg transition-all hover:scale-[1.02] hover:shadow-xl active:scale-[0.98]">
+              <button (click)="openForm()" class="mt-1 admin-btn-hero">
                 <i class="ri-add-line"></i> Crear operación
               </button>
             </div>
@@ -93,7 +93,7 @@ import { NotificationService } from '../../../services/notification.service';
                         </span>
                       </td>
                       <td class="px-5 py-4 text-right">
-                        <button (click)="openForm(op)" class="inline-flex items-center gap-1.5 rounded-lg border border-slate-200 bg-white px-3 py-1.5 text-xs font-medium text-slate-700 shadow-sm transition-all hover:border-primary/30 hover:bg-primary/5 hover:text-primary">
+                        <button (click)="openForm(op)" class="admin-btn-action">
                           <i class="ri-edit-line"></i> Editar
                         </button>
                       </td>
@@ -156,8 +156,8 @@ import { NotificationService } from '../../../services/notification.service';
               <div class="flex items-center justify-between border-t border-slate-100 pt-4">
                 <p class="text-xs text-slate-400">Campos con <span class="text-red-500">*</span> son obligatorios.</p>
                 <div class="flex gap-3">
-                  <button type="button" (click)="closeForm()" class="inline-flex items-center gap-1.5 rounded-lg border border-slate-200 bg-white px-4 py-2 text-sm font-medium text-slate-700 shadow-sm transition hover:border-primary/30 hover:bg-primary/5 hover:text-primary">Cancelar</button>
-                  <button (click)="save()" [disabled]="saving" class="inline-flex items-center gap-2 rounded-xl bg-linear-to-r from-primary to-primary-dark px-5 py-2.5 text-sm font-semibold text-white shadow-lg shadow-primary/20 transition hover:shadow-xl disabled:opacity-50 disabled:cursor-not-allowed">
+                  <button type="button" (click)="closeForm()" class="admin-btn-ghost">Cancelar</button>
+                  <button (click)="save()" [disabled]="saving" class="admin-btn-submit">
                     <i *ngIf="saving" class="ri-loader-4-line animate-spin"></i>
                     {{ saving ? 'Guardando...' : 'Guardar' }}
                   </button>

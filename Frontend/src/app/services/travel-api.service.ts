@@ -124,6 +124,40 @@ export interface Review {
   createdAt: string;
 }
 
+export interface Testimonial {
+  id: string;
+  name: string;
+  role?: string;
+  content: string;
+  email?: string;
+  avatar?: string;
+  rating: number;
+  tags: string[];
+  featured: boolean;
+  sortOrder: number;
+  active: boolean;
+  tourId?: string;
+  tour?: { id: string; title: string; slug?: string };
+  consent?: Record<string, unknown>;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface TestimonialPayload {
+  name: string;
+  role?: string;
+  content: string;
+  email?: string;
+  avatar?: string;
+  rating: number;
+  tags?: string[];
+  featured?: boolean;
+  sortOrder?: number;
+  active?: boolean;
+  tourId?: string;
+  consent?: Record<string, unknown>;
+}
+
 export interface Tour {
   id: string;
   slug: string;
@@ -470,19 +504,19 @@ export class TravelApiService {
   }
 
   getArticlesAdmin(): Observable<Article[]> {
-    return this.http.get<Article[]>(`${this.apiUrl}/admin/articles`);
+    return this.http.get<Article[]>(`${this.apiUrl}/articles/admin`);
   }
 
   createArticle(payload: ArticlePayload): Observable<Article> {
-    return this.http.post<Article>(`${this.apiUrl}/admin/articles`, payload);
+    return this.http.post<Article>(`${this.apiUrl}/articles/admin`, payload);
   }
 
   updateArticle(id: string, payload: Partial<ArticlePayload>): Observable<Article> {
-    return this.http.patch<Article>(`${this.apiUrl}/admin/articles/${id}`, payload);
+    return this.http.patch<Article>(`${this.apiUrl}/articles/admin/${id}`, payload);
   }
 
   deleteArticle(id: string): Observable<void> {
-    return this.http.delete<void>(`${this.apiUrl}/admin/articles/${id}`);
+    return this.http.delete<void>(`${this.apiUrl}/articles/admin/${id}`);
   }
 
   // --- Experiences ---
@@ -495,19 +529,19 @@ export class TravelApiService {
   }
 
   getExperiencesAdmin(): Observable<Experience[]> {
-    return this.http.get<Experience[]>(`${this.apiUrl}/admin/experiences`);
+    return this.http.get<Experience[]>(`${this.apiUrl}/experiences/admin`);
   }
 
   createExperience(payload: ExperiencePayload): Observable<Experience> {
-    return this.http.post<Experience>(`${this.apiUrl}/admin/experiences`, payload);
+    return this.http.post<Experience>(`${this.apiUrl}/experiences/admin`, payload);
   }
 
   updateExperience(id: string, payload: Partial<ExperiencePayload>): Observable<Experience> {
-    return this.http.patch<Experience>(`${this.apiUrl}/admin/experiences/${id}`, payload);
+    return this.http.patch<Experience>(`${this.apiUrl}/experiences/admin/${id}`, payload);
   }
 
   deleteExperience(id: string): Observable<void> {
-    return this.http.delete<void>(`${this.apiUrl}/admin/experiences/${id}`);
+    return this.http.delete<void>(`${this.apiUrl}/experiences/admin/${id}`);
   }
 
   // --- Contact ---
@@ -529,16 +563,53 @@ export class TravelApiService {
   }
 
   // Admin methods for packages management
+  getPackagesAdmin(): Observable<TravelPackage[]> {
+    return this.http.get<TravelPackage[]>(`${this.apiUrl}/packages/admin`);
+  }
+
   createPackage(payload: Record<string, unknown>): Observable<TravelPackage> {
-    return this.http.post<TravelPackage>(`${this.apiUrl}/packages`, payload);
+    return this.http.post<TravelPackage>(`${this.apiUrl}/packages/admin`, payload);
   }
 
   updatePackage(id: string, payload: Record<string, unknown>): Observable<TravelPackage> {
-    return this.http.patch<TravelPackage>(`${this.apiUrl}/packages/${id}`, payload);
+    return this.http.patch<TravelPackage>(`${this.apiUrl}/packages/admin/${id}`, payload);
   }
 
   deletePackage(id: string): Observable<unknown> {
-    return this.http.delete(`${this.apiUrl}/packages/${id}`);
+    return this.http.delete(`${this.apiUrl}/packages/admin/${id}`);
+  }
+
+  // --- Testimonials ---
+  getFeaturedTestimonials(): Observable<Testimonial[]> {
+    return this.http.get<Testimonial[]>(`${this.apiUrl}/testimonials/featured`);
+  }
+
+  getTestimonialTags(): Observable<string[]> {
+    return this.http.get<string[]>(`${this.apiUrl}/testimonials/tags`);
+  }
+
+  getTestimonialsAdmin(): Observable<Testimonial[]> {
+    return this.http.get<Testimonial[]>(`${this.apiUrl}/testimonials/admin`);
+  }
+
+  getTestimonialAdmin(id: string): Observable<Testimonial> {
+    return this.http.get<Testimonial>(`${this.apiUrl}/testimonials/admin/${id}`);
+  }
+
+  createTestimonial(payload: TestimonialPayload): Observable<Testimonial> {
+    return this.http.post<Testimonial>(`${this.apiUrl}/testimonials/admin`, payload);
+  }
+
+  createPublicTestimonial(payload: TestimonialPayload): Observable<Testimonial> {
+    return this.http.post<Testimonial>(`${this.apiUrl}/testimonials`, payload);
+  }
+
+  updateTestimonial(id: string, payload: Partial<TestimonialPayload>): Observable<Testimonial> {
+    return this.http.patch<Testimonial>(`${this.apiUrl}/testimonials/admin/${id}`, payload);
+  }
+
+  deleteTestimonial(id: string): Observable<void> {
+    return this.http.delete<void>(`${this.apiUrl}/testimonials/admin/${id}`);
   }
 
   uploadImage(file: File): Observable<{ url: string }> {

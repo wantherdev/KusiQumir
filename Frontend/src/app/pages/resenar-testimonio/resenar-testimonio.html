@@ -1,0 +1,157 @@
+<div class="testimonio-page px-4 py-16 sm:px-6 lg:px-8">
+  <div class="mx-auto flex max-w-7xl flex-col gap-10">
+
+    <header class="relative overflow-hidden rounded-[2rem] bg-linear-to-r from-primary to-primary-dark p-8 text-center text-white shadow-lg shadow-primary/20 sm:p-12">
+      <div class="pointer-events-none absolute inset-0 opacity-20" style="background-image: radial-gradient(circle at 18% 22%, rgba(255,255,255,0.9) 1px, transparent 1px); background-size: 26px 26px;"></div>
+      <div class="relative">
+        <p class="text-sm font-semibold uppercase tracking-[0.35em] text-white/80">Testimonios</p>
+        <h1 class="mt-3 text-4xl font-bold sm:text-5xl">Cuéntanos tu experiencia</h1>
+        <p class="mx-auto mt-4 max-w-2xl text-lg text-white/85">
+          Comparte tu testimonio y ayuda a otros viajeros a descubrir el Perú auténtico con Kusi Q'umir.
+        </p>
+      </div>
+    </header>
+
+    <!-- Form -->
+    <div class="mx-auto w-full max-w-3xl">
+      <div class="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm sm:p-8">
+    <div class="rounded-2xl border border-slate-200 bg-white p-6 shadow-lg sm:p-8">
+      <form *ngIf="step === 'form'" (ngSubmit)="submit()" class="space-y-6">
+
+        <!-- Name + Email row -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div>
+            <label for="name" class="mb-1.5 flex items-center gap-1.5 text-sm font-medium text-slate-700">
+              <i class="ri-user-line text-primary text-xs"></i>
+              Nombre completo <span class="text-red-500">*</span>
+            </label>
+            <div class="relative">
+              <input id="name" type="text" [(ngModel)]="form.name" name="name" required minlength="2" placeholder="Tu nombre"
+                class="w-full rounded-xl border border-slate-200 bg-slate-50/50 px-4 py-2.5 text-sm outline-none transition focus:border-primary/50 focus:bg-white" />
+            </div>
+            <p *ngIf="form.name.length > 0 && form.name.length < 2" class="mt-1 text-xs text-red-500 flex items-center gap-1">
+              <i class="ri-information-line"></i> Mínimo 2 caracteres.
+            </p>
+          </div>
+
+          <div>
+            <label for="email" class="mb-1.5 flex items-center gap-1.5 text-sm font-medium text-slate-700">
+              <i class="ri-mail-line text-primary text-xs"></i>
+              Correo electrónico <span class="text-slate-400 text-xs font-normal">(opcional)</span>
+            </label>
+            <input id="email" type="email" [(ngModel)]="form.email" name="email" email placeholder="tucorreo@ejemplo.com"
+              class="w-full rounded-xl border border-slate-200 bg-slate-50/50 px-4 py-2.5 text-sm outline-none transition focus:border-primary/50 focus:bg-white" />
+          </div>
+        </div>
+
+        <!-- Testimonio -->
+        <div>
+          <label for="content" class="mb-1.5 flex items-center gap-1.5 text-sm font-medium text-slate-700">
+            <i class="ri-quote-text text-primary text-xs"></i>
+            Tu testimonio <span class="text-red-500">*</span>
+          </label>
+          <textarea id="content" [(ngModel)]="form.content" name="content" rows="4" required minlength="10" placeholder="Comparte tu experiencia con nosotros..."
+            class="w-full rounded-xl border border-slate-200 bg-slate-50/50 px-4 py-2.5 text-sm outline-none transition focus:border-primary/50 focus:bg-white resize-none"></textarea>
+          <div class="mt-1.5 flex justify-between text-xs">
+            <span class="text-red-500 flex items-center gap-1" *ngIf="form.content.length > 0 && form.content.length < 10">
+              <i class="ri-information-line"></i> Mínimo 10 caracteres.
+            </span>
+            <span class="text-slate-400 ml-auto">{{ form.content.length }}/500</span>
+          </div>
+        </div>
+
+        <!-- Categories -->
+        <div>
+          <label class="mb-1.5 flex items-center gap-1.5 text-sm font-medium text-slate-700">
+            <i class="ri-price-tag-3-line text-primary text-xs"></i>
+            Categorías relacionadas <span class="text-slate-400 text-xs font-normal">(opcional)</span>
+          </label>
+          <app-testimonial-category-selector
+            [categories]="availableCategories"
+            [placeholder]="'Selecciona o arrastra las categorías que mejor describan tu experiencia.'"
+            [(ngModel)]="categories"
+            name="testimonialCategories"
+          ></app-testimonial-category-selector>
+        </div>
+
+        <!-- Rating -->
+        <div>
+          <label class="mb-1.5 flex items-center gap-1.5 text-sm font-medium text-slate-700">
+            <i class="ri-star-line text-primary text-xs"></i>
+            Calificación <span class="text-red-500">*</span>
+          </label>
+          <div class="flex items-center gap-1.5">
+            <button type="button" (click)="form.rating = 1" [class.text-primary]="form.rating >= 1"
+              [class.text-slate-200]="form.rating < 1" class="star-btn text-2xl transition">
+              <i class="ri-star-fill"></i>
+            </button>
+            <button type="button" (click)="form.rating = 2" [class.text-primary]="form.rating >= 2"
+              [class.text-slate-200]="form.rating < 2" class="star-btn text-2xl transition">
+              <i class="ri-star-fill"></i>
+            </button>
+            <button type="button" (click)="form.rating = 3" [class.text-primary]="form.rating >= 3"
+              [class.text-slate-200]="form.rating < 3" class="star-btn text-2xl transition">
+              <i class="ri-star-fill"></i>
+            </button>
+            <button type="button" (click)="form.rating = 4" [class.text-primary]="form.rating >= 4"
+              [class.text-slate-200]="form.rating < 4" class="star-btn text-2xl transition">
+              <i class="ri-star-fill"></i>
+            </button>
+            <button type="button" (click)="form.rating = 5" [class.text-primary]="form.rating >= 5"
+              [class.text-slate-200]="form.rating < 5" class="star-btn text-2xl transition">
+              <i class="ri-star-fill"></i>
+            </button>
+            <span class="ml-2 text-sm font-medium text-slate-600">{{ form.rating }}/5</span>
+          </div>
+        </div>
+
+        <!-- Consent -->
+        <div class="space-y-3 rounded-xl border border-slate-100 bg-slate-50/50 p-4">
+          <label class="flex items-start gap-3 cursor-pointer group">
+            <input type="checkbox" [(ngModel)]="form.displayConsent" name="displayConsent"
+              class="mt-0.5 h-4 w-4 rounded border-slate-300 text-primary focus:ring-primary/30" />
+            <div class="text-sm">
+              <p class="font-medium text-slate-800 group-hover:text-primary transition-colors">Autorizo la publicación de mi testimonio</p>
+              <p class="text-xs text-slate-500 mt-0.5">El texto será mostrado públicamente y puede incluir mi nombre y calificación.</p>
+            </div>
+          </label>
+
+          <label class="flex items-start gap-3 cursor-pointer group">
+            <input type="checkbox" [(ngModel)]="form.privacyAccepted" name="privacyAccepted"
+              class="mt-0.5 h-4 w-4 rounded border-slate-300 text-primary focus:ring-primary/30" />
+            <div class="text-sm">
+              <p class="font-medium text-slate-800 group-hover:text-primary transition-colors">Acepto la política de privacidad</p>
+              <p class="text-xs text-slate-500 mt-0.5">
+                Al enviar aceptas el tratamiento de tus datos. Consulta nuestra
+                <a href="/politica-de-privacidad" class="text-primary underline hover:text-primary-dark" target="_blank">Política de Privacidad</a>.
+              </p>
+            </div>
+          </label>
+        </div>
+
+        <button type="submit" [disabled]="!isValid || saving"
+          class="w-full rounded-xl bg-primary px-6 py-3.5 font-semibold text-white shadow-lg shadow-primary/20 transition-all hover:bg-primary-dark hover:shadow-xl hover:shadow-primary/25 disabled:cursor-not-allowed disabled:opacity-50 disabled:shadow-none">
+          <i *ngIf="!saving" class="ri-send-plane-fill mr-2"></i>
+          <i *ngIf="saving" class="ri-loader-4-line mr-2 animate-spin"></i>
+          {{ saving ? 'Enviando...' : 'Enviar testimonio' }}
+        </button>
+      </form>
+
+      <!-- Success -->
+      <div *ngIf="step === 'success'" class="py-16 text-center">
+        <div class="mx-auto mb-6 flex h-20 w-20 items-center justify-center rounded-full bg-green-50 shadow-lg shadow-green-100">
+          <i class="ri-chat-check-line text-4xl text-green-500"></i>
+        </div>
+        <h2 class="mb-2 text-2xl font-bold text-tertiary">¡Gracias por compartir tu experiencia!</h2>
+        <p class="mb-2 text-slate-600">Tu testimonio ha sido registrado exitosamente.</p>
+        <p class="text-sm text-slate-400">Un administrador lo revisará antes de publicarlo.</p>
+        <div class="mt-10 inline-flex items-center gap-2 rounded-xl border border-slate-200 bg-white px-6 py-3 shadow-sm transition hover:shadow-md">
+          <i class="ri-arrow-left-line text-primary"></i>
+          <a routerLink="/" class="font-medium text-primary">Volver al inicio</a>
+    </div>
+  </div>
+</div>
+    </div>
+  </div>
+
+</div>

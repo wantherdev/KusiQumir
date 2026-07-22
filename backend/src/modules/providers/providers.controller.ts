@@ -1,24 +1,10 @@
 import { Controller, Get, Post, Body, Param, UseGuards } from "@nestjs/common";
-import { ApiProperty, ApiTags, ApiOperation, ApiBearerAuth } from "@nestjs/swagger";
-import { IsNotEmpty } from "class-validator";
+import { ApiTags, ApiOperation, ApiBearerAuth } from "@nestjs/swagger";
 import { ProvidersService } from "./providers.service";
 import { JwtAuthGuard } from "../auth/jwt-auth.guard";
 import { RolesGuard } from "../auth/roles.guard";
 import { Roles } from "../auth/roles.decorator";
-
-class CreateProviderDto {
-  @ApiProperty({ description: "Nombre del proveedor", required: true })
-  @IsNotEmpty()
-  name!: string;
-
-  @ApiProperty({ description: "Tipo de proveedor", required: true })
-  @IsNotEmpty()
-  type!: string;
-
-  @ApiProperty({ description: "Contacto del proveedor", required: true })
-  @IsNotEmpty()
-  contact!: string;
-}
+import { CreateProviderDto } from "./dto/create-provider.dto";
 
 @ApiTags("providers")
 @ApiBearerAuth()

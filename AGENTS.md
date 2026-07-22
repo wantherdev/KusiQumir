@@ -28,9 +28,9 @@ Conocimiento del proyecto para asistentes IA.
 
 ## Frameworks y dependencias clave
 
-**Frontend**: `@angular/forms`, `@angular/router`, `@angular/ssr`, `@angular/service-worker`, `@sentry/angular`, `http-proxy-middleware`, `@tailwindcss/postcss`, `@tailwindcss/typography`, `rxjs`, `postcss`, `vitest`, `jsdom`, `playwright-core`.
+**Frontend**: `@angular/forms`, `@angular/router`, `@angular/ssr`, `@angular/service-worker`, `@angular/localize`, `@angular/platform-server`, `@sentry/angular`, `express`, `http-proxy-middleware`, `@tailwindcss/postcss`, `@tailwindcss/typography`, `rxjs`, `tslib`, `postcss`, `prettier`, `vitest`, `jsdom`, `playwright-core`.
 
-**Backend**: `@nestjs/config`, `@nestjs/jwt`, `@nestjs/passport`, `@nestjs/swagger`, `@nestjs/throttler`, `@nestjs/cache-manager`, `@prisma/client`, `bcryptjs`, `class-transformer`, `class-validator`, `compression`, `cookie-parser`, `csrf-csrf`, `helmet`, `passport-jwt`, `multer`, `nestjs-pino`, `pino`, `uuid`, `@sentry/node`, `joi`, `cache-manager`, `swagger`.
+**Backend**: `@nestjs/config`, `@nestjs/jwt`, `@nestjs/passport`, `@nestjs/swagger`, `@nestjs/throttler`, `@nestjs/cache-manager`, `@prisma/client`, `bcryptjs`, `class-transformer`, `class-validator`, `compression`, `cookie-parser`, `csrf-csrf`, `helmet`, `passport`, `passport-jwt`, `multer`, `nestjs-pino`, `pino`, `pino-http`, `reflect-metadata`, `uuid`, `@sentry/node`, `@sentry/profiling-node`, `joi`, `cache-manager`, `swagger`.
 
 ---
 
@@ -102,10 +102,22 @@ src/app/
 │   ├── nosotros/      → About us
 │   ├── auth/          → Login / Register
 │   ├── cliente/       → Mis reservas / Mi perfil
-│   ├── admin/         → Admin dashboard (13 sub-dashboards)
-│   │   └── dashboard/ → Tours, blog, experiencias, paquetes, reservas,
-│   │                    clientes, proveedores, guías, operaciones,
-│   │                    pagos, facturación, admin-dashboard-page
+│   ├── not-found/     → Página 404
+│   ├── admin/         → Admin dashboard (12 dashboards)
+│   │   ├── dashboard/ → 11 sub-dashboards individuales
+│   │   │   ├── tours-dashboard.ts/html
+│   │   │   ├── articles-dashboard.ts/html
+│   │   │   ├── experiences-dashboard.ts/html
+│   │   │   ├── bookings-dashboard.ts/html
+│   │   │   ├── customers-dashboard.ts
+│   │   │   ├── providers-dashboard.ts
+│   │   │   ├── guides-dashboard.ts
+│   │   │   ├── operations-dashboard.ts
+│   │   │   ├── payments-dashboard.ts
+│   │   │   ├── billing-dashboard.ts
+│   │   │   └── packages-dashboard/  (directorio con .ts/.html)
+│   │   ├── dashboard-page/ → admin-dashboard.ts
+│   │   └── layout/         → admin-layout.ts
 │   └── legal/         → Términos, privacidad, cancelaciones, etc.
 ├── services/          → Angular services (HttpClient)
 ├── shared/            → Modelos, pipes, utilidades
@@ -116,6 +128,7 @@ src/app/
 ├── data/              → Static/mock data
 ├── resolvers/         → Data resolvers
 styles.css             → Estilos globales + design tokens
+pages/page.css         → Estilos de páginas
 ```
 
 ### Backend (`backend/`)
@@ -183,6 +196,18 @@ src/
 - **Notification**: channel, recipient, message, status
 - **Document**: title, version, type
 - **DocumentAcceptance**: documentId, customerId, ip, version
+- **Role**: name (unique), users (User[])
+- **Log**: action, details?, createdAt
+- **ItineraryDay**: day, title, tourId, activities (ItineraryActivity[])
+- **ItineraryActivity**: sortOrder, time?, title, description, duration
+- **TourFaq**: question, answer, sortOrder
+- **TourInclude**: title, description?
+- **TourExclude**: title, description?
+- **TourRecommendation**: title, description
+- **TourRequirement**: requirement
+- **TourSeo**: title, description, keywords?, canonical?
+- **TourMetadata**: provider?, sourceUrl?, lastUpdated?
+- **TourDestination**: tourId, destinationId, sortOrder
 
 ---
 
@@ -207,6 +232,7 @@ src/
 - PrismaService como provider global
 - Rutas versionadas (`/api/v1/...`)
 - Admin endpoints separados bajo `/admin/` dentro de cada módulo
+  - **Nota:** El patrón no es uniforme — Tours usa `/tours/admin` (subpath), Articles y Experiences usan `/admin/articles` y `/admin/experiences` (prefijo separado), Packages no tiene ruta admin separada
 
 ---
 
@@ -229,8 +255,7 @@ Componentes imports requeridos en dashboards admin: `CommonModule`, `FormsModule
 ## Cómo comenzar a trabajar
 
 ```bash
-# Instalar dependencias
-pnpm install             # raíz (orquestación)
+# Instalar dependencias (cada proyecto por separado)
 cd Frontend && pnpm install && cd ..
 cd backend && pnpm install && cd ..
 
@@ -243,11 +268,11 @@ pnpm prisma migrate dev
 pnpm prisma db seed
 cd ..
 
-# Backend (terminal 1)
-pnpm backend:start
+# Backend (terminal 1) — desde Frontend/ o backend/
+pnpm --prefix Frontend backend:start
 
 # Frontend (terminal 2)
-pnpm frontend:start
+pnpm --prefix Frontend frontend:start
 ```
 
 ## URLs importantes
@@ -257,5 +282,5 @@ pnpm frontend:start
 | Frontend (dev) | http://localhost:4200 |
 | Backend API | http://localhost:3000/api/v1 |
 | Swagger Docs | http://localhost:3000/api/v1/docs |
-| Prisma Studio | `pnpm backend:prisma:studio` |
+| Prisma Studio | `cd backend && pnpm prisma studio` |
 | PostgreSQL | `localhost:5432`, DB: `kusiqumir` |

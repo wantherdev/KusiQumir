@@ -64,25 +64,25 @@ class FindAllArticlesQuery {
 
 @ApiTags("articles")
 @UseInterceptors(CacheInterceptor)
-@Controller()
+@Controller("articles")
 export class ArticlesController {
   constructor(private readonly articlesService: ArticlesService) {}
 
   @Public()
-  @Get("articles")
+  @Get()
   @ApiOperation({ summary: "Listar artículos publicados" })
   findAll(@Query() query: FindAllArticlesQuery) {
     return this.articlesService.findAllPublic(query);
   }
 
   @Public()
-  @Get("articles/:slug")
+  @Get(":slug")
   @ApiOperation({ summary: "Obtener artículo por slug" })
   findBySlug(@Param("slug") slug: string) {
     return this.articlesService.findBySlug(slug);
   }
 
-  @Post("admin/articles")
+  @Post("admin")
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles("ADMIN")
   @ApiBearerAuth()
@@ -91,7 +91,7 @@ export class ArticlesController {
     return this.articlesService.create(body);
   }
 
-  @Get("admin/articles")
+  @Get("admin")
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles("ADMIN")
   @ApiBearerAuth()
@@ -100,7 +100,7 @@ export class ArticlesController {
     return this.articlesService.findAllAdmin();
   }
 
-  @Get("admin/articles/:id")
+  @Get("admin/:id")
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles("ADMIN")
   @ApiBearerAuth()
@@ -109,7 +109,7 @@ export class ArticlesController {
     return this.articlesService.findOneAdmin(id);
   }
 
-  @Patch("admin/articles/:id")
+  @Patch("admin/:id")
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles("ADMIN")
   @ApiBearerAuth()
@@ -118,7 +118,7 @@ export class ArticlesController {
     return this.articlesService.update(id, body);
   }
 
-  @Delete("admin/articles/:id")
+  @Delete("admin/:id")
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles("ADMIN")
   @ApiBearerAuth()

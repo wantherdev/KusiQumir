@@ -12,7 +12,7 @@ import { TravelApiService } from '../../../services/travel-api.service';
 
         <!-- Hero header -->
         <header class="animate-slide-up relative mb-6 overflow-hidden rounded-2xl bg-linear-to-r from-primary to-primary-dark p-6 text-white shadow-lg shadow-primary/20 sm:p-8">
-          <div class="pointer-events-none absolute inset-0 opacity-20" style="background-image: radial-gradient(circle at 18% 22%, rgba(255,255,255,0.9) 1px, transparent 1px); background-size: 24px 24px;"></div>
+          <div class="pointer-events-none absolute inset-0 opacity-20" style="background-image: radial-gradient(circle at 18% 22%, rgba(255,255,255,0.9) 1px, transparent 1px); background-size: 26px 26px;"></div>
           <div class="relative">
             <p class="text-xs font-semibold uppercase tracking-[0.2em] text-white/70">Panel de administración</p>
             <h1 class="mt-1 flex items-center gap-2 text-2xl font-bold sm:text-3xl">

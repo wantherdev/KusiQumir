@@ -67,6 +67,25 @@
   background-size: 26px 26px;
 }
 
+/* Admin dashboard button utilities */
+.admin-btn-hero {
+  @apply inline-flex items-center gap-2 rounded-xl bg-white px-5 py-2.5 text-sm font-bold text-primary shadow-lg transition-all hover:scale-[1.02] hover:shadow-xl active:scale-[0.98];
+}
+.admin-btn-submit {
+  @apply inline-flex items-center gap-2 rounded-xl bg-linear-to-r from-primary to-primary-dark px-5 py-2.5 text-sm font-semibold text-white shadow-lg shadow-primary/20 transition hover:shadow-xl disabled:cursor-not-allowed disabled:opacity-50;
+}
+.admin-btn-ghost {
+  @apply inline-flex items-center gap-1.5 rounded-lg border border-slate-200 bg-white px-4 py-2 text-sm font-medium text-slate-700 shadow-sm transition hover:border-primary/30 hover:bg-primary/5 hover:text-primary;
+}
+.admin-btn-action {
+  @apply inline-flex items-center gap-1.5 rounded-lg border border-slate-200 bg-white px-3 py-1.5 text-xs font-medium text-slate-700 shadow-sm transition-all hover:border-primary/30 hover:bg-primary/5 hover:text-primary;
+}
+.admin-btn-hero-danger {
+  @apply inline-flex items-center gap-2 rounded-xl border border-red-200 bg-white px-5 py-2.5 text-sm font-bold text-red-600 shadow-lg transition-all hover:scale-[1.02] hover:shadow-xl active:scale-[0.98];
+}
+.admin-btn-danger {
+  @apply inline-flex items-center gap-1.5 rounded-lg border border-slate-200 bg-white px-3 py-1.5 text-xs font-medium text-red-600 shadow-sm transition-all hover:border-red-200 hover:bg-red-50;
+}
 /* --- Modern Markdown Styles --- */
 :root {
   --md-body: #0f172a;

@@ -16,6 +16,7 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
     catchError((error: HttpErrorResponse) => {
       if (error.status === 401) {
         auth.clearUser();
+        router.navigate(["/login"]);
       } else if (error.status >= 500) {
         if (isDevMode()) console.error('[Server Error]', error.status, error.message);
       }

@@ -24,7 +24,7 @@ export class CsrfService implements OnModuleInit {
         // could be replaced with a SameSite=Strict + CSRF token header pattern.
         httpOnly: false,
         sameSite: "lax",
-        secure: this.config.get("NODE_ENV") === "production",
+        secure: this.config.get<string>("CSRF_SECURE") === "true",
         path: "/",
       },
       size: 64,

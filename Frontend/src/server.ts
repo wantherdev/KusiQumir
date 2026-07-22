@@ -21,7 +21,7 @@ app.use(
     target: API_TARGET,
     changeOrigin: true,
     pathRewrite: {
-      '^/api': '/api/v1',
+      '^/': '/api/v1/',
     },
   }),
 );

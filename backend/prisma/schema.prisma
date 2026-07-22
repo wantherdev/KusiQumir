@@ -121,6 +121,7 @@ model Tour {
   seo              TourSeo?
   metadata         TourMetadata?
   reviews          Review[]
+  testimonials     Testimonial[]
 
   createdAt        DateTime       @default(now())
   updatedAt        DateTime       @updatedAt
@@ -264,6 +265,25 @@ model Review {
   createdAt DateTime @default(now())
   tourId    String
   tour      Tour     @relation(fields: [tourId], references: [id], onDelete: Cascade)
+}
+
+model Testimonial {
+  id        String   @id @default(cuid())
+  name      String
+  role      String?
+  content   String
+  email     String?
+  avatar    String?
+  rating    Int
+  tags      String[]
+  featured  Boolean  @default(false)
+  sortOrder Int      @default(0)
+  active    Boolean  @default(true)
+  tourId    String?
+  tour      Tour?    @relation(fields: [tourId], references: [id], onDelete: SetNull)
+  consent   Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
 model Article {

@@ -78,25 +78,25 @@ class FindAllExperiencesQuery {
 
 @ApiTags("experiences")
 @UseInterceptors(CacheInterceptor)
-@Controller()
+@Controller("experiences")
 export class ExperiencesController {
   constructor(private readonly experiencesService: ExperiencesService) {}
 
   @Public()
-  @Get("experiences")
+  @Get()
   @ApiOperation({ summary: "Listar experiencias publicadas" })
   findAll(@Query() query: FindAllExperiencesQuery) {
     return this.experiencesService.findAllPublic(query);
   }
 
   @Public()
-  @Get("experiences/:slug")
+  @Get(":slug")
   @ApiOperation({ summary: "Obtener experiencia por slug" })
   findBySlug(@Param("slug") slug: string) {
     return this.experiencesService.findBySlug(slug);
   }
 
-  @Post("admin/experiences")
+  @Post("admin")
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles("ADMIN")
   @ApiBearerAuth()
@@ -105,7 +105,7 @@ export class ExperiencesController {
     return this.experiencesService.create(body);
   }
 
-  @Get("admin/experiences")
+  @Get("admin")
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles("ADMIN")
   @ApiBearerAuth()
@@ -114,7 +114,7 @@ export class ExperiencesController {
     return this.experiencesService.findAllAdmin();
   }
 
-  @Get("admin/experiences/:id")
+  @Get("admin/:id")
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles("ADMIN")
   @ApiBearerAuth()
@@ -123,7 +123,7 @@ export class ExperiencesController {
     return this.experiencesService.findOneAdmin(id);
   }
 
-  @Patch("admin/experiences/:id")
+  @Patch("admin/:id")
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles("ADMIN")
   @ApiBearerAuth()
@@ -132,7 +132,7 @@ export class ExperiencesController {
     return this.experiencesService.update(id, body);
   }
 
-  @Delete("admin/experiences/:id")
+  @Delete("admin/:id")
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles("ADMIN")
   @ApiBearerAuth()

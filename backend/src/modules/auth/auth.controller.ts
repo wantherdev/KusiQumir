@@ -1,5 +1,5 @@
 import { Controller, Get, Post, Body, Req, Res, UseGuards } from "@nestjs/common";
-import { ApiProperty, ApiTags, ApiOperation, ApiBearerAuth } from "@nestjs/swagger";
+import { ApiTags, ApiOperation, ApiBearerAuth } from "@nestjs/swagger";
 import { Throttle } from "@nestjs/throttler";
 import { ConfigService } from "@nestjs/config";
 import { Request, Response } from "express";
@@ -8,29 +8,8 @@ import { JwtAuthGuard } from "./jwt-auth.guard";
 import { Public } from "./public.decorator";
 import { CsrfService } from "../csrf/csrf.service";
 import { AuthenticatedRequest } from "../../common/authenticated-request";
-import { IsEmail, IsNotEmpty, MinLength } from "class-validator";
-
-class LoginDto {
-  @ApiProperty({ description: "Correo electrónico del usuario", required: true })
-  @IsEmail()
-  email!: string;
-
-  @ApiProperty({ description: "Contraseña del usuario", required: true })
-  @IsNotEmpty()
-  @MinLength(6)
-  password!: string;
-}
-
-class RegisterDto {
-  @ApiProperty({ description: "Correo electrónico del usuario", required: true })
-  @IsEmail()
-  email!: string;
-
-  @ApiProperty({ description: "Contraseña del usuario", required: true })
-  @IsNotEmpty()
-  @MinLength(6)
-  password!: string;
-}
+import { LoginDto } from "./dto/login.dto";
+import { RegisterDto } from "./dto/register.dto";
 
 @ApiTags("auth")
 @Controller("auth")
@@ -74,7 +53,7 @@ export class AuthController {
     res.cookie("access_token", result.accessToken, {
       httpOnly: true,
       sameSite: "lax",
-      secure: this.configService.get("NODE_ENV") === "production",
+      secure: this.configService.get<string>("CSRF_SECURE") === "true",
       path: "/",
       maxAge: this.configService.get<number>('JWT_COOKIE_MAX_AGE', 7 * 24 * 60 * 60 * 1000),
     });

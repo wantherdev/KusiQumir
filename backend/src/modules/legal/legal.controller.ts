@@ -7,31 +7,14 @@ import {
   UseGuards,
   Request,
 } from "@nestjs/common";
-import { ApiProperty, ApiTags, ApiOperation, ApiBearerAuth } from "@nestjs/swagger";
-import { IsNotEmpty, IsIP } from "class-validator";
+import { ApiTags, ApiOperation, ApiBearerAuth } from "@nestjs/swagger";
 import { LegalService } from "./legal.service";
 import { JwtAuthGuard } from "../auth/jwt-auth.guard";
 import { RolesGuard } from "../auth/roles.guard";
 import { Roles } from "../auth/roles.decorator";
+import { Public } from "../auth/public.decorator";
 import { AuthenticatedRequest } from "../../common/authenticated-request";
-
-class AcceptDocumentDto {
-  @ApiProperty({ description: "ID del documento legal", required: true })
-  @IsNotEmpty()
-  documentId!: string;
-
-  @ApiProperty({ description: "ID del cliente", required: true })
-  @IsNotEmpty()
-  clientId!: string;
-
-  @ApiProperty({ description: "Dirección IP del cliente", required: true })
-  @IsIP()
-  ip!: string;
-
-  @ApiProperty({ description: "Versión del documento", required: true })
-  @IsNotEmpty()
-  version!: string;
-}
+import { AcceptDocumentDto } from "./dto/accept-document.dto";
 
 @ApiTags("legal")
 @ApiBearerAuth()
@@ -40,6 +23,7 @@ class AcceptDocumentDto {
 export class LegalController {
   constructor(private readonly legalService: LegalService) {}
 
+  @Public()
   @Get("documents")
   @ApiOperation({ summary: "Listar documentos legales" })
   getDocuments() {

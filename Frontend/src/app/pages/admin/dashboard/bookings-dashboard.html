@@ -3,7 +3,7 @@
 
       <!-- Hero header -->
       <header class="animate-slide-up relative mb-6 overflow-hidden rounded-2xl bg-linear-to-r from-primary to-primary-dark p-6 text-white shadow-lg shadow-primary/20 sm:p-8">
-        <div class="pointer-events-none absolute inset-0 opacity-20" style="background-image: radial-gradient(circle at 18% 22%, rgba(255,255,255,0.9) 1px, transparent 1px); background-size: 24px 24px;"></div>
+        <div class="pointer-events-none absolute inset-0 opacity-20" style="background-image: radial-gradient(circle at 18% 22%, rgba(255,255,255,0.9) 1px, transparent 1px); background-size: 26px 26px;"></div>
         <div class="relative flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
           <div>
             <p class="text-xs font-semibold uppercase tracking-[0.2em] text-white/70">Panel de administración</p>
@@ -134,7 +134,7 @@
                           <i class="ri-check-double-line"></i> Completar
                         </button>
                       </ng-container>
-                      <button *ngIf="b.status === 'PENDIENTE' || b.status === 'CONFIRMADA'" (click)="confirmCancel(b.id)" class="inline-flex items-center gap-1.5 rounded-lg border border-slate-200 bg-white px-3 py-1.5 text-xs font-medium text-red-600 shadow-sm transition-all hover:border-red-200 hover:bg-red-50">
+                      <button *ngIf="b.status === 'PENDIENTE' || b.status === 'CONFIRMADA'" (click)="confirmCancel(b.id)" class="admin-btn-danger">
                         <i class="ri-close-line"></i> Cancelar
                       </button>
                     </div>
@@ -261,14 +261,14 @@
 
       <div class="flex flex-wrap items-center justify-end gap-2 border-t border-slate-100 pt-4" (click)="$event.stopPropagation()">
         <ng-container [ngSwitch]="selectedBooking.status">
-          <button *ngSwitchCase="'PENDIENTE'" (click)="updateStatus(selectedBooking.id, 'CONFIRMADA')" class="inline-flex items-center gap-2 rounded-xl bg-white px-5 py-2.5 text-sm font-bold text-primary shadow-lg transition-all hover:scale-[1.02] hover:shadow-xl active:scale-[0.98]">
+          <button *ngSwitchCase="'PENDIENTE'" (click)="updateStatus(selectedBooking.id, 'CONFIRMADA')" class="admin-btn-hero">
             <i class="ri-check-line"></i> Confirmar
           </button>
-          <button *ngSwitchCase="'CONFIRMADA'" (click)="updateStatus(selectedBooking.id, 'COMPLETADA')" class="inline-flex items-center gap-2 rounded-xl bg-white px-5 py-2.5 text-sm font-bold text-primary shadow-lg transition-all hover:scale-[1.02] hover:shadow-xl active:scale-[0.98]">
+          <button *ngSwitchCase="'CONFIRMADA'" (click)="updateStatus(selectedBooking.id, 'COMPLETADA')" class="admin-btn-hero">
             <i class="ri-check-double-line"></i> Completar
           </button>
         </ng-container>
-        <button *ngIf="selectedBooking.status === 'PENDIENTE' || selectedBooking.status === 'CONFIRMADA'" (click)="confirmCancel(selectedBooking.id)" class="inline-flex items-center gap-2 rounded-xl border border-red-200 bg-white px-5 py-2.5 text-sm font-bold text-red-600 shadow-lg transition-all hover:scale-[1.02] hover:shadow-xl active:scale-[0.98]">
+        <button *ngIf="selectedBooking.status === 'PENDIENTE' || selectedBooking.status === 'CONFIRMADA'" (click)="confirmCancel(selectedBooking.id)" class="admin-btn-hero-danger">
           <i class="ri-close-line"></i> Cancelar
         </button>
       </div>

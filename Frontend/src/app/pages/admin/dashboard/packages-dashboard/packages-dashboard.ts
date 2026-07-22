@@ -73,7 +73,7 @@ export class PackagesDashboard implements OnInit {
   load(): void {
     this.currentPage = 1;
     this.isLoading = true;
-    this.api.getPackages().subscribe({
+    this.api.getPackagesAdmin().subscribe({
       next: (res) => { this.packages = res; this.isLoading = false; this.cdr.markForCheck(); },
       error: () => { this.notification.show('Error al cargar paquetes.', 'error'); this.isLoading = false; this.cdr.markForCheck(); },
     });

@@ -110,6 +110,7 @@ export class AdminLayout {
         { path: '/admin/tours', label: 'Tours', icon: 'ri-map-pin-line' },
         { path: '/admin/blog', label: 'Blog', icon: 'ri-article-line' },
         { path: '/admin/experiencias', label: 'Experiencias', icon: 'ri-star-line' },
+        { path: '/admin/testimonios', label: 'Testimonios', icon: 'ri-chat-quote-line' },
       ],
     },
     {

@@ -30,7 +30,7 @@ interface ContactForm {
         />
 
         <div class="mt-10 grid gap-10 lg:grid-cols-[1fr_0.7fr]">
-          <form #contactForm="ngForm" (ngSubmit)="onSubmit(contactForm)" class="rounded-[2rem] border border-slate-200 bg-white p-8 shadow-sm">
+          <form #contactForm="ngForm" (ngSubmit)="onSubmit(contactForm)" class="panel p-8">
             <div class="mb-5">
               <label for="name" class="mb-1 block text-sm font-semibold text-slate-700">Nombre completo <span class="text-red-500">*</span></label>
               <input

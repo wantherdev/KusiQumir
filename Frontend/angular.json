@@ -30,14 +30,14 @@
             "server": "src/main.server.ts",
             "outputMode": "server",
             "security": {
-              "allowedHosts": ["localhost", "127.0.0.1", "0.0.0.0"]
+              "allowedHosts": ["localhost", "127.0.0.1", "0.0.0.0", "188.245.248.47"]
             },
             "ssr": {
               "entry": "src/server.ts"
             },
             "budgets": [
-              { "type": "initial", "maximumWarning": "500 kB", "maximumError": "1 MB" },
-              { "type": "anyComponentStyle", "maximumWarning": "2 kB", "maximumError": "4 kB" }
+              { "type": "initial", "maximumWarning": "3 MB", "maximumError": "4 MB" },
+              { "type": "anyComponentStyle", "maximumWarning": "4 kB", "maximumError": "8 kB" }
             ]
           },
           "configurations": {

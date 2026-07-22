@@ -1,0 +1,108 @@
+<div class="testimonial-category-selector" [class.disabled]="isDisabled()">
+  <div class="mb-4 p-3 bg-secondary-soft/30 rounded-xl border border-slate-200 border-l-4 border-l-primary">
+    <p class="text-sm text-slate-700 font-medium">
+      {{ placeholder() }}
+    </p>
+  </div>
+
+  <div cdkDropListGroup class="space-y-4">
+    <!-- Selected Categories — horizontal top -->
+    <div class="panel-selected">
+      <h3 class="text-xs font-bold text-tertiary mb-2 flex items-center gap-2">
+        <i class="ri-checkbox-multiple-line text-primary"></i>
+        Seleccionadas
+        @if (selected().length > 0) {
+          <span class="ml-auto text-xs font-normal text-slate-400">
+            {{ selected().length }}
+          </span>
+        }
+      </h3>
+
+      <div
+        cdkDropList
+        id="selected"
+        #selectedList="cdkDropList"
+        [cdkDropListData]="selected()"
+        [cdkDropListConnectedTo]="[availableList]"
+        (cdkDropListDropped)="onDrop($event)"
+        class="selected-row"
+        [class.has-items]="selected().length > 0"
+        role="listbox"
+        aria-label="Categorías seleccionadas"
+      >
+        @for (category of selected(); track category.id) {
+          <div
+            cdkDrag
+            [cdkDragData]="category"
+            class="selected-chip"
+            role="option"
+            [attr.aria-label]="category.name + ', seleccionada'"
+            [attr.aria-selected]="true"
+          >
+            <span>{{ category.name }}</span>
+            <button
+              type="button"
+              class="remove-btn"
+              [attr.aria-label]="'Eliminar ' + category.name"
+              (click)="deselect(category.id)"
+              (keydown)="onKeydownRemove($event, category.id)"
+              tabindex="0"
+            >
+              <i class="ri-close-line"></i>
+            </button>
+          </div>
+        } @empty {
+          <p class="text-sm text-slate-400 py-3 text-center w-full">
+            <i class="ri-drag-drop-line inline-block mr-1"></i>
+            Arrastra o haz clic en categorías para agregarlas
+          </p>
+        }
+      </div>
+    </div>
+
+    <!-- Available Categories — horizontal bottom -->
+    <div class="panel-available">
+      <h3 class="text-xs font-bold text-tertiary mb-2 flex items-center gap-2">
+        <i class="ri-list-check text-primary"></i>
+        Disponibles
+      </h3>
+
+      <div
+        cdkDropList
+        id="available"
+        #availableList="cdkDropList"
+        [cdkDropListData]="available()"
+        [cdkDropListConnectedTo]="[selectedList]"
+        (cdkDropListDropped)="onDrop($event)"
+        class="available-row"
+        role="listbox"
+        aria-label="Categorías disponibles"
+      >
+        @for (category of available(); track category.id) {
+          <div
+            cdkDrag
+            [cdkDragData]="category"
+            class="category-card"
+            [class.opacity-50]="isDisabled()"
+            role="option"
+            [attr.aria-label]="toAriaLabel(category)"
+            [attr.aria-selected]="false"
+            tabindex="0"
+            (click)="select(category)"
+            (keydown)="onKeydown($event, category)"
+          >
+            @if (category.icon) {
+              <i [class]="category.icon + ' text-slate-400'"></i>
+            }
+            <span>{{ category.name }}</span>
+            <i class="ri-add-line text-primary ml-1 text-xs"></i>
+          </div>
+        } @empty {
+          <p class="text-sm text-slate-400 py-3 text-center w-full">
+            Todas las categorías han sido seleccionadas
+          </p>
+        }
+      </div>
+    </div>
+  </div>
+</div>

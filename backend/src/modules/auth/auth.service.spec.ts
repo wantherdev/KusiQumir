@@ -1,6 +1,5 @@
 import { Test, TestingModule } from "@nestjs/testing";
-import { BadRequestException, ConflictException, UnauthorizedException } from "@nestjs/common";
-import { Prisma } from "@prisma/client";
+import { ConflictException, UnauthorizedException } from "@nestjs/common";
 import { JwtService } from "@nestjs/jwt";
 import { AuthService } from "./auth.service";
 import { PrismaService } from "../../prisma/prisma.service";

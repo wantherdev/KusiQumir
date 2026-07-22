@@ -23,6 +23,7 @@ import { ArticlesModule } from "./modules/articles/articles.module";
 import { ExperiencesModule } from "./modules/experiences/experiences.module";
 import { CategoriesModule } from "./modules/categories/categories.module";
 import { DestinationsModule } from "./modules/destinations/destinations.module";
+import { TestimonialsModule } from "./modules/testimonials/testimonials.module";
 import { CsrfModule } from "./modules/csrf/csrf.module";
 import { UploadsModule } from "./modules/uploads/uploads.module";
 import { JwtAuthGuard } from "./modules/auth/jwt-auth.guard";
@@ -74,6 +75,7 @@ import { PrismaModule } from "./prisma/prisma.module";
     ExperiencesModule,
     CsrfModule,
     UploadsModule,
+    TestimonialsModule,
     CategoriesModule,
     DestinationsModule,
   ],

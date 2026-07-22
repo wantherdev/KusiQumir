@@ -26,21 +26,83 @@ async function main() {
     },
   });
 
+  await prisma.testimonial.deleteMany();
   await prisma.booking.deleteMany();
   await prisma.package.deleteMany();
-  await prisma.fAQItem.deleteMany();
-  await prisma.whatToBring.deleteMany();
-  await prisma.requirement.deleteMany();
-  await prisma.recommendation.deleteMany();
-  await prisma.notInclude.deleteMany();
-  await prisma.include.deleteMany();
-  await prisma.destinationImage.deleteMany();
-  await prisma.destination.deleteMany();
-  await prisma.itinerary.deleteMany();
-  await prisma.highlight.deleteMany();
-  await prisma.tourLanguage.deleteMany();
-  await prisma.image.deleteMany();
+  await prisma.review.deleteMany();
+  await prisma.tourDestination.deleteMany();
+  await prisma.tourExclude.deleteMany();
+  await prisma.tourInclude.deleteMany();
+  await prisma.tourFaq.deleteMany();
+  await prisma.tourRecommendation.deleteMany();
+  await prisma.tourRequirement.deleteMany();
+  await prisma.itineraryActivity.deleteMany();
+  await prisma.itineraryDay.deleteMany();
+  await prisma.tourPrice.deleteMany();
+  await prisma.tourSchedule.deleteMany();
+  await prisma.tourImage.deleteMany();
+  await prisma.tourSeo.deleteMany();
+  await prisma.tourMetadata.deleteMany();
   await prisma.tour.deleteMany();
+  await prisma.destination.deleteMany();
+  await prisma.category.deleteMany();
+
+  try {
+    await prisma.$executeRawUnsafe(`TRUNCATE TABLE "Tour" CASCADE`);
+  } catch {
+    // old seed data skipped — schema updated
+  }
+
+  // ===== TESTIMONIALS =====
+  const testimonialData = [
+    {
+      name: "Ana Martínez",
+      role: "Viajera frecuente",
+      content: "Una experiencia inolvidable. El equipo de Kusi Q'umir hizo que nuestro viaje a Machu Picchu fuera perfecto. La atención personalizada y el conocimiento de los guías marcaron la diferencia.",
+      rating: 5,
+      tags: ["Agencia KusiQumir", "Guía", "Camino Inca"],
+      featured: true,
+      sortOrder: 1,
+      tourId: null,
+    },
+    {
+      name: "Roberto Silva",
+      role: "Aventurero",
+      content: "Hice el City Tour por Cusco y quedé maravillado. La guía conocía cada rincón y la historia detrás de cada piedra. Recomiendo esta agencia a todos mis amigos.",
+      rating: 5,
+      tags: ["City Tour", "Guía", "Agencia KusiQumir"],
+      featured: true,
+      sortOrder: 2,
+      tourId: null,
+    },
+    {
+      name: "Jennifer Thompson",
+      role: "Viajera en familia",
+      content: "Viajamos en familia con niños y todo estuvo perfectamente organizado. El transporte, el alojamiento y las actividades. Kusi Q'umir superó todas nuestras expectativas.",
+      rating: 5,
+      tags: ["Agencia KusiQumir", "Transporte", "Alojamiento", "Experiencia General"],
+      featured: true,
+      sortOrder: 3,
+      tourId: null,
+    },
+    {
+      name: "Carlos Mendoza",
+      role: "Fotógrafo",
+      content: "La Montaña de 7 Colores fue una experiencia que cambió mi vida. El guía fue muy paciente y conocía los mejores puntos para fotografiar. Totalmente recomendado.",
+      rating: 5,
+      tags: ["Guía", "Transporte"],
+      featured: true,
+      sortOrder: 4,
+      tourId: null,
+    },
+  ];
+
+  for (const t of testimonialData) {
+    await prisma.testimonial.create({ data: t });
+  }
+
+  console.log(`Seed: ${testimonialData.length} testimonios creados`);
+  return;
 
   // ===== TOUR 1: City Tour Cusco =====
   const tour1 = await prisma.tour.create({

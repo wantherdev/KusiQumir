@@ -84,8 +84,9 @@ describe("App (e2e)", () => {
         .send({ email, password: "testpass123" })
         .expect(201)
         .expect((res: request.Response) => {
-          expect(res.body.accessToken).toBeDefined();
+          expect(res.body.user).toBeDefined();
           expect(res.body.user.email).toBe(email);
+          expect(res.body.message).toBe("Login exitoso");
         });
     });
 

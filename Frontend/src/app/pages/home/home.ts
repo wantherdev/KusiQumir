@@ -4,14 +4,15 @@ import { ActivatedRoute, RouterLink } from '@angular/router';
 import { Meta, Title } from '@angular/platform-browser';
 import { Skeleton } from '../../components/skeleton/skeleton';
 import { TourCard } from '../../components/tour-card/tour-card';
+import { TestimonialCard } from '../../components/testimonial-card/testimonial-card';
 import { PageHero } from '../../components/page-hero/page-hero';
-import { Tour, TravelPackage } from '../../services/travel-api.service';
+import { Tour, TravelPackage, Testimonial } from '../../services/travel-api.service';
 import type { HomeData } from '../../resolvers/data.resolvers';
 import { environment } from '../../../environments/environment';
 
 @Component({
   selector: 'app-home',
-  imports: [CommonModule, RouterLink, Skeleton, TourCard, PageHero],
+  imports: [CommonModule, RouterLink, Skeleton, TourCard, TestimonialCard, PageHero],
   templateUrl: './home.html',
   styleUrl: './home.css',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -19,6 +20,7 @@ import { environment } from '../../../environments/environment';
 export class Home implements OnInit {
   tours: Tour[] = [];
   featuredPackages: TravelPackage[] = [];
+  testimonials: Testimonial[] = [];
   isLoading = true;
   whatsappNumber = environment.whatsappNumber;
 
@@ -47,11 +49,12 @@ export class Home implements OnInit {
     if (data) {
       this.tours = data.tours?.slice(0, 4) ?? [];
       this.featuredPackages = data.packages?.filter((p) => p.featured).slice(0, 3) ?? [];
+      this.testimonials = data.testimonials ?? [];
     }
     this.isLoading = false;
   }
 
-  trackByFn(index: number, item: Tour | TravelPackage): string | number {
-    return item.id ?? index;
+  trackByFn(index: number, item: { id: string }): string {
+    return item.id;
   }
 }

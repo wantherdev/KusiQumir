@@ -18,7 +18,7 @@ export const envValidationSchema = Joi.object({
   JWT_EXPIRES_IN: Joi.string().default("1h").messages({
     "string.base": "JWT_EXPIRES_IN debe ser un string (ej: 1h, 7d)",
   }),
-  JWT_COOKIE_MAX_AGE: Joi.number().integer().positive().default(86400000).messages({
+  JWT_COOKIE_MAX_AGE: Joi.number().integer().positive().default(604800000).messages({
     "number.base": "JWT_COOKIE_MAX_AGE debe ser un número en milisegundos",
   }),
   CORS_ORIGIN: Joi.string().required().custom((value, helpers) => {

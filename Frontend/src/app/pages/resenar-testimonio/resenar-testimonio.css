@@ -1,0 +1,23 @@
+.testimonio-page {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #fffdf8 0%, #f8fafc 100%);
+}
+
+.testimonio-page .star-btn {
+  transition: all 0.15s ease;
+}
+
+.testimonio-page .star-btn:hover {
+  transform: scale(1.2);
+  filter: brightness(1.1);
+}
+
+.testimonio-page .star-btn:active {
+  transform: scale(0.95);
+}
+
+.testimonio-page .star-btn:focus-visible {
+  outline: 2px solid #00abaa;
+  outline-offset: 2px;
+  border-radius: 4px;
+}
