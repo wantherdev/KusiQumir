@@ -280,7 +280,7 @@
     </div>
 
     <div *ngIf="testimonials.length > 0; else skeletonTestimonials" class="grid grid-cols-1 gap-8 md:grid-cols-3">
-      <app-testimonial-card *ngFor="let t of testimonials; trackBy: trackByFn" [testimonial]="t" />
+      <app-testimonial-card *ngFor="let t of testimonials; trackBy: trackByFn; let i = index" [testimonial]="t" [variantIndex]="i" />
     </div>
 
     <ng-template #skeletonTestimonials>
