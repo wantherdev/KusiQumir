@@ -1,294 +1,384 @@
-<section class="page-shell px-4 py-16 sm:px-6 lg:px-8">
-  <div class="mx-auto flex max-w-7xl flex-col gap-10">
-
-    <!-- Loading -->
-    <ng-container *ngIf="isLoading">
-      <div class="rounded-[2rem] bg-white p-8 shadow-sm sm:p-12">
-        <div class="h-6 w-48 animate-pulse rounded-full bg-slate-200"></div>
-        <div class="mt-6 h-10 w-96 animate-pulse rounded bg-slate-200"></div>
-        <div class="mt-4 h-6 w-64 animate-pulse rounded bg-slate-200"></div>
-      </div>
-    </ng-container>
-
-    <!-- Error -->
-    <ng-container *ngIf="!isLoading && error">
-      <div class="rounded-[2rem] bg-white p-12 text-center shadow-sm">
-        <i aria-hidden="true" class="ri-error-warning-line text-6xl text-primary"></i>
-        <h1 class="mt-6 text-3xl font-bold text-tertiary">{{ error }}</h1>
-        <a routerLink="/destinos" class="mt-6 inline-block rounded-full bg-primary px-6 py-3 font-semibold text-white">
-          Volver a destinos
-        </a>
-      </div>
-    </ng-container>
-
-    <ng-container *ngIf="!isLoading && tour">
-      <!-- Breadcrumb -->
-      <nav aria-label="Breadcrumb" class="text-sm text-slate-500">
-        <ol class="flex flex-wrap items-center gap-2">
-          <li><a routerLink="/" class="transition hover:text-primary">Inicio</a></li>
-          <li>/</li>
-          <li><a routerLink="/destinos" class="transition hover:text-primary">Destinos</a></li>
-          <li>/</li>
-          <li class="max-w-[220px] truncate font-semibold text-slate-800">{{ tour.title }}</li>
-        </ol>
-      </nav>
-
-      <div class="grid gap-10 lg:grid-cols-[1.6fr_1fr]">
-        <!-- ============ MAIN ============ -->
-        <main class="flex flex-col gap-10">
-
-          <!-- Gallery -->
-          <div>
-            <div class="relative overflow-hidden rounded-[2rem] shadow-sm">
-              <div class="absolute inset-0 bg-linear-to-br from-primary/25 to-tertiary/25"></div>
-              <img
-                [src]="(tour.images && tour.images[selectedImage()]?.url) || '/images/dest1.webp?v=2'"
-                [alt]="tour.images && tour.images[selectedImage()]?.alt || tour.title"
-                (error)="onImgError($event)"
-                class="relative h-80 w-full object-cover lg:h-[28rem]"
-                loading="eager"
-              />
-              <div class="absolute left-5 top-5 flex flex-wrap gap-2">
-                <span *ngIf="tour.category?.name" class="rounded-full bg-white/90 px-3 py-1 text-xs font-semibold text-primary shadow-sm backdrop-blur">
-                  {{ tour.category.name }}
-                </span>
-                <span *ngIf="tour.featured" class="inline-flex items-center gap-1 rounded-full bg-amber-400 px-3 py-1 text-xs font-bold text-white shadow">
-                  <i class="ri-star-fill"></i> Destacado
-                </span>
-              </div>
-            </div>
-
-            <div *ngIf="tour.images && tour.images.length > 1" class="mt-3 flex gap-3 overflow-x-auto pb-2">
-              <button
-                *ngFor="let img of tour.images; let i = index; trackBy: (i, img) => img.id || i"
-                type="button"
-                (click)="selectImage(i)"
-                class="relative h-20 w-28 shrink-0 overflow-hidden rounded-xl border-2 transition"
-                [class.border-primary]="selectedImage() === i"
-                [class.border-transparent]="selectedImage() !== i"
-              >
-                <div class="absolute inset-0 bg-linear-to-br from-primary/20 to-tertiary/20"></div>
-                <img [src]="img.url" [alt]="img.alt || tour.title" (error)="onImgError($event)" class="absolute inset-0 h-full w-full object-cover" loading="lazy" />
-              </button>
-            </div>
-          </div>
-
-          <!-- Header -->
-          <div>
-            <div class="flex flex-wrap items-center gap-2">
-              <span *ngFor="let d of tour.destinations || []" class="rounded-full bg-secondary-soft px-3 py-1 text-xs font-semibold text-primary">
-                <i class="ri-map-pin-line mr-1"></i>{{ d.destination?.name }}
-              </span>
-              <span [class]="'rounded-full px-2.5 py-0.5 text-xs font-medium ' + difficultyColor(tour.difficulty)">{{ tour.difficulty }}</span>
-              <span class="rounded-full bg-slate-100 px-2.5 py-0.5 text-xs font-medium text-slate-700">{{ tour.groupType === 'Shared' ? 'Grupo compartido' : 'Privado' }}</span>
-            </div>
-            <h1 class="mt-3 text-3xl font-bold text-tertiary sm:text-4xl">{{ tour.title }}</h1>
-            <p *ngIf="tour.subtitle" class="mt-1 text-lg font-medium text-slate-500">{{ tour.subtitle }}</p>
-            <p *ngIf="tour.shortDescription" class="mt-3 text-slate-600">{{ tour.shortDescription }}</p>
-          </div>
-
-          <!-- Quick facts -->
-          <div class="grid grid-cols-2 gap-4 sm:grid-cols-4">
-            <div class="rounded-2xl bg-slate-50 p-4 text-center">
-              <i class="ri-time-line text-2xl text-primary"></i>
-              <p class="mt-1 text-xs text-slate-500">Duración</p>
-              <p class="text-base font-bold text-tertiary">{{ tour.durationDays }}{{ tour.durationDays ? 'd' : '' }} {{ tour.durationHours }}h</p>
-            </div>
-            <div class="rounded-2xl bg-slate-50 p-4 text-center">
-              <i class="ri-signal-tower-line text-2xl text-primary"></i>
-              <p class="mt-1 text-xs text-slate-500">Dificultad</p>
-              <p class="text-base font-bold text-tertiary">{{ tour.difficulty || '—' }}</p>
-            </div>
-            <div class="rounded-2xl bg-slate-50 p-4 text-center">
-              <i class="ri-group-line text-2xl text-primary"></i>
-              <p class="mt-1 text-xs text-slate-500">Servicio</p>
-              <p class="text-base font-bold text-tertiary">{{ tour.serviceType === 'HalfDay' ? 'Medio día' : tour.serviceType === 'FullDay' ? 'Día completo' : 'Multi días' }}</p>
-            </div>
-            <div class="rounded-2xl bg-slate-50 p-4 text-center">
-              <i class="ri-checkbox-circle-line text-2xl text-primary"></i>
-              <p class="mt-1 text-xs text-slate-500">Disponibilidad</p>
-              <p class="text-base font-bold" [ngClass]="tour.active ? 'text-green-600' : 'text-red-500'">{{ tour.active ? 'Disponible' : 'No disponible' }}</p>
-            </div>
-          </div>
-
-          <!-- Description -->
-          <div class="rounded-[2rem] border border-slate-100 bg-white p-8 shadow-sm">
-            <p class="text-sm font-semibold uppercase tracking-[0.3em] text-primary">Descripción</p>
-            <p class="mt-4 whitespace-pre-line leading-relaxed text-slate-600">{{ tour.description }}</p>
-          </div>
-
-          <!-- Itinerary -->
-          <div *ngIf="tour.itineraryDays?.length" class="rounded-[2rem] border border-slate-100 bg-white p-8 shadow-sm">
-            <p class="text-sm font-semibold uppercase tracking-[0.3em] text-primary">Itinerario</p>
-            <div class="mt-6 space-y-6">
-              <div *ngFor="let day of tour.itineraryDays; trackBy: (i, day) => day.id || i" class="relative border-l-2 border-primary/30 pb-6 pl-6 last:pb-0">
-                <span class="absolute -left-[15px] top-0 flex h-7 w-7 items-center justify-center rounded-full bg-primary text-xs font-bold text-white shadow">{{ day.day }}</span>
-                <p class="text-lg font-semibold text-tertiary">{{ day.title }}</p>
-                <ul *ngIf="day.activities?.length" class="mt-3 space-y-2">
-                  <li *ngFor="let a of day.activities; trackBy: (j, a) => a.id || j" class="flex items-start gap-3 rounded-xl bg-slate-50 p-3">
-                    <span *ngIf="a.time" class="shrink-0 rounded-lg bg-primary/10 px-2 py-1 text-xs font-semibold text-primary">{{ a.time }}</span>
-                    <div>
-                      <p class="text-sm font-semibold text-slate-800">{{ a.title }}</p>
-                      <p *ngIf="a.description" class="text-sm text-slate-600">{{ a.description }}</p>
-                      <p *ngIf="a.duration" class="mt-0.5 text-xs text-slate-400">Duración: {{ a.duration }} min</p>
-                    </div>
-                  </li>
-                </ul>
-              </div>
-            </div>
-          </div>
-
-          <!-- Includes / Excludes -->
-          <div *ngIf="tour.includes?.length || tour.excludes?.length" class="grid gap-6 lg:grid-cols-2">
-            <div *ngIf="tour.includes?.length" class="rounded-[2rem] border border-slate-100 bg-white p-8 shadow-sm">
-              <p class="text-sm font-semibold uppercase tracking-[0.3em] text-primary">Incluye</p>
-              <ul class="mt-4 space-y-3 text-slate-600">
-                <li *ngFor="let item of tour.includes; trackBy: (i, item) => item.id || i" class="flex items-start gap-2">
-                  <i class="ri-check-line mt-0.5 text-lg text-primary"></i>
-                  <span><span class="font-medium text-slate-800">{{ item.title }}</span><span *ngIf="item.description" class="text-slate-500"> — {{ item.description }}</span></span>
-                </li>
-              </ul>
-            </div>
-            <div *ngIf="tour.excludes?.length" class="rounded-[2rem] border border-slate-100 bg-white p-8 shadow-sm">
-              <p class="text-sm font-semibold uppercase tracking-[0.3em] text-red-500">No incluye</p>
-              <ul class="mt-4 space-y-3 text-slate-600">
-                <li *ngFor="let item of tour.excludes; trackBy: (i, item) => item.id || i" class="flex items-start gap-2">
-                  <i class="ri-close-line mt-0.5 text-lg text-red-400"></i>
-                  <span><span class="font-medium text-slate-800">{{ item.title }}</span><span *ngIf="item.description" class="text-slate-500"> — {{ item.description }}</span></span>
-                </li>
-              </ul>
-            </div>
-          </div>
-
-          <!-- Schedules -->
-          <div *ngIf="tour.schedules?.length" class="rounded-[2rem] border border-slate-100 bg-white p-8 shadow-sm">
-            <p class="text-sm font-semibold uppercase tracking-[0.3em] text-primary">Horarios</p>
-            <div class="mt-4 grid gap-4 sm:grid-cols-2">
-              <div *ngFor="let s of tour.schedules; trackBy: (i, s) => s.id || i" class="rounded-xl border border-slate-100 bg-slate-50 p-4">
-                <div class="flex items-center justify-between">
-                  <p class="text-sm font-semibold text-slate-800">Salida {{ s.departure }}</p>
-                  <span *ngIf="s.available" class="rounded-full bg-green-100 px-2 py-0.5 text-[10px] font-semibold text-green-700">Disponible</span>
-                  <span *ngIf="!s.available" class="rounded-full bg-red-100 px-2 py-0.5 text-[10px] font-semibold text-red-600">Agotado</span>
-                </div>
-                <p class="mt-1 text-xs text-slate-500">Recogida {{ s.pickupStart }} · Regreso {{ s.arrival }}</p>
-                <p *ngIf="s.language" class="mt-1 text-xs text-slate-400">Idioma: {{ s.language }}</p>
-              </div>
-            </div>
-          </div>
-
-          <!-- Recommendations -->
-          <div *ngIf="tour.recommendations?.length" class="rounded-[2rem] border border-slate-100 bg-white p-8 shadow-sm">
-            <p class="text-sm font-semibold uppercase tracking-[0.3em] text-primary">Recomendaciones</p>
-            <div class="mt-4 grid gap-4 sm:grid-cols-2">
-              <div *ngFor="let r of tour.recommendations; trackBy: (i, r) => r.id || i" class="rounded-xl bg-secondary-soft p-4">
-                <p class="flex items-center gap-2 font-semibold text-slate-800"><i class="ri-thumb-up-line text-primary"></i> {{ r.title }}</p>
-                <p *ngIf="r.description" class="mt-1 text-sm text-slate-600">{{ r.description }}</p>
-              </div>
-            </div>
-          </div>
-
-          <!-- Requirements -->
-          <div *ngIf="tour.requirements?.length" class="rounded-[2rem] border border-slate-100 bg-white p-8 shadow-sm">
-            <p class="text-sm font-semibold uppercase tracking-[0.3em] text-primary">Requisitos</p>
-            <ul class="mt-4 space-y-2">
-              <li *ngFor="let r of tour.requirements; trackBy: (i, r) => r.id || i" class="flex items-start gap-2 text-slate-600">
-                <i class="ri-information-line mt-0.5 text-primary"></i>
-                <span>{{ r.requirement }}</span>
-              </li>
-            </ul>
-          </div>
-
-          <!-- FAQs -->
-          <div *ngIf="tour.faqs?.length" class="rounded-[2rem] border border-slate-100 bg-white p-8 shadow-sm">
-            <p class="text-sm font-semibold uppercase tracking-[0.3em] text-primary">Preguntas frecuentes</p>
-            <div class="mt-4 divide-y divide-slate-100">
-              <div *ngFor="let f of tour.faqs; let i = index; trackBy: (i, f) => f.id || i" class="py-3">
-                <button type="button" (click)="toggleFaq(i)" class="flex w-full items-center justify-between gap-3 text-left">
-                  <span class="font-medium text-slate-800">{{ f.question }}</span>
-                  <i class="ri-arrow-down-s-line text-primary transition" [class.rotate-180]="openFaqIndex() === i"></i>
-                </button>
-                <div *ngIf="openFaqIndex() === i" class="mt-2 text-sm text-slate-600">{{ f.answer }}</div>
-              </div>
-            </div>
-          </div>
-
-          <!-- Reviews -->
-          <div *ngIf="reviewCount() > 0" class="rounded-[2rem] border border-slate-100 bg-white p-8 shadow-sm">
-            <div class="flex items-center justify-between">
-              <p class="text-sm font-semibold uppercase tracking-[0.3em] text-primary">Opiniones</p>
-              <p class="flex items-center gap-1 text-sm font-semibold text-slate-700">
-                <i class="ri-star-fill text-amber-400"></i> {{ avgRating() }}
-                <span class="font-normal text-slate-400">({{ reviewCount() }})</span>
-              </p>
-            </div>
-            <div class="mt-4 space-y-4">
-              <div *ngFor="let rev of tour.reviews; trackBy: (i, rev) => rev.id || i" class="rounded-xl bg-slate-50 p-4">
-                <div class="flex items-center justify-between">
-                  <p class="font-semibold text-slate-800">{{ rev.name || 'Viajero' }} <span *ngIf="rev.country" class="text-xs font-normal text-slate-400">· {{ rev.country }}</span></p>
-                  <span class="flex">
-                    <i *ngFor="let s of [1,2,3,4,5]" class="ri-star-fill text-sm" [class.text-amber-400]="s <= rev.rating" [class.text-slate-300]="s > rev.rating"></i>
-                  </span>
-                </div>
-                <p *ngIf="rev.comment" class="mt-1 text-sm text-slate-600">{{ rev.comment }}</p>
-              </div>
-            </div>
-          </div>
-        </main>
-
-        <!-- ============ BOOKING ASIDE ============ -->
-        <aside class="lg:sticky lg:top-6 h-fit">
-          <div class="rounded-[2rem] border border-slate-100 bg-white p-6 shadow-lg">
-            <div class="relative h-40 overflow-hidden rounded-2xl">
-              <div class="absolute inset-0 bg-linear-to-br from-primary/25 to-tertiary/25"></div>
-              <img [src]="tour.images?.[0]?.url || '/images/dest1.webp?v=2'" [alt]="tour.title" (error)="onImgError($event)" class="absolute inset-0 h-full w-full object-cover" loading="lazy" />
-            </div>
-
-            <p class="mt-4 text-xs uppercase tracking-wider text-slate-400">Desde</p>
-            <p *ngIf="mainPrice() as mp" class="text-3xl font-bold text-primary">
-              {{ currencySymbol(mp.currency) }}{{ mp.adult != null ? mp.adult : (mp.private != null ? mp.private : mp.child) }}
-            </p>
-            <p *ngIf="!mainPrice()" class="text-3xl font-bold text-primary">Consultar</p>
-
-            <div class="mt-4 space-y-2 border-t border-slate-100 pt-4 text-sm">
-              <div class="flex items-center justify-between"><span class="text-slate-500">Duración</span><span class="font-semibold text-slate-800">{{ tour.durationDays }}{{ tour.durationDays ? 'd' : '' }} {{ tour.durationHours }}h</span></div>
-              <div class="flex items-center justify-between"><span class="text-slate-500">Dificultad</span><span class="font-semibold text-slate-800">{{ tour.difficulty }}</span></div>
-              <div class="flex items-center justify-between"><span class="text-slate-500">Grupo</span><span class="font-semibold text-slate-800">{{ tour.groupType === 'Shared' ? 'Compartido' : 'Privado' }}</span></div>
-            </div>
-
-            <div class="mt-5 flex flex-col gap-3">
-              <a [routerLink]="['/reservar']" [queryParams]="{ tipo: 'tour', id: tour?.id }"
-                class="rounded-full bg-primary px-6 py-3 text-center font-semibold text-white transition hover:bg-primary-dark">
-                Reservar ahora
-              </a>
-              <a href="https://wa.me/{{ whatsappNumber }}" class="rounded-full border border-primary px-6 py-3 text-center font-semibold text-primary transition hover:bg-primary hover:text-white">
-                Consultar por WhatsApp
-              </a>
-            </div>
-
-            <p *ngIf="tour.prices?.length && tour.prices.length > 1" class="mt-4 text-xs text-slate-400">
-              {{ tour.prices.length }} modalidades de precio disponibles.
-            </p>
-          </div>
-        </aside>
-      </div>
-
-      <!-- CTA banner -->
-      <div class="rounded-[2rem] bg-linear-to-r from-primary to-primary-dark p-8 text-center text-white shadow-lg shadow-primary/20 sm:p-12">
-        <h2 class="text-3xl font-bold">¿Listo para vivir esta experiencia?</h2>
-        <p class="mt-4 text-lg text-white/85">
-          Contáctanos para recibir asesoría personalizada y confirmar disponibilidad.
-        </p>
-        <div class="mt-8 flex flex-col justify-center gap-4 sm:flex-row">
-          <a [routerLink]="['/reservar']" [queryParams]="{ tipo: 'tour', id: tour?.id }"
-            class="inline-flex items-center justify-center gap-2 rounded-full bg-white px-8 py-4 font-semibold text-primary transition hover:bg-slate-100">
-            <i class="ri-calendar-check-line"></i> Reservar ahora
-          </a>
-          <a href="https://wa.me/{{ whatsappNumber }}"
-            class="inline-flex items-center justify-center rounded-full border border-white px-8 py-4 font-semibold text-white transition hover:bg-white hover:text-primary">
-            Consultar por WhatsApp
-          </a>
+<section class="page-shell">
+  <!-- LOADING -->
+  <ng-container *ngIf="isLoading">
+    <div class="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
+      <div class="panel p-8 sm:p-12">
+        <div class="skeleton-pulse h-6 w-48 rounded-full bg-slate-200"></div>
+        <div class="skeleton-pulse mt-6 h-96 rounded-2xl bg-slate-200"></div>
+        <div class="skeleton-pulse mt-6 h-10 w-96 rounded bg-slate-200"></div>
+        <div class="skeleton-pulse mt-4 h-6 w-64 rounded bg-slate-200"></div>
+        <div class="mt-8 grid gap-8 lg:grid-cols-2">
+          <div class="skeleton-pulse h-40 rounded-2xl bg-slate-200"></div>
+          <div class="skeleton-pulse h-40 rounded-2xl bg-slate-200"></div>
         </div>
       </div>
-    </ng-container>
+    </div>
+  </ng-container>
+
+  <!-- ERROR -->
+  <ng-container *ngIf="!isLoading && error">
+    <div class="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
+      <div class="panel p-12 text-center">
+        <i class="ri-error-warning-line text-6xl text-primary"></i>
+        <h1 class="mt-6 text-3xl font-bold text-tertiary">{{ error }}</h1>
+        <a routerLink="/destinos" class="btn btn-primary mt-6 inline-block">Volver a destinos</a>
+      </div>
+    </div>
+  </ng-container>
+
+  <!-- CONTENT -->
+  <ng-container *ngIf="!isLoading && tour">
+    <div [class.content-fade]="!transitioning()">
+
+      <!-- ============ HERO ============ -->
+      <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <div class="relative h-[32vh] min-h-[260px] max-h-[400px] overflow-hidden rounded-[2rem]">
+          <img
+            [src]="(tour.images && tour.images[selectedImage()]?.url) || '/images/dest1.webp?v=2'"
+            [alt]="tour.images && tour.images[selectedImage()]?.alt || tour.title"
+            (error)="onImgError($event)"
+            class="h-full w-full cursor-pointer object-cover transition-all duration-500"
+            (click)="openLightbox(selectedImage())"
+            loading="eager"
+          />
+          <div class="absolute inset-0 bg-linear-to-t from-primary/5 via-transparent to-transparent"></div>
+
+          <div class="absolute left-4 top-4 z-10 flex flex-wrap gap-2">
+            <span *ngIf="tour.category?.name" class="rounded-full bg-white/90 px-3 py-1 text-xs font-semibold text-primary shadow-sm backdrop-blur-sm">
+              {{ tour.category.name }}
+            </span>
+            <span *ngIf="tour.featured" class="inline-flex items-center gap-1 rounded-full bg-amber-400 px-3 py-1 text-xs font-bold text-white shadow-sm">
+              <i class="ri-star-fill"></i> Destacado
+            </span>
+          </div>
+        </div>
+
+        <div *ngIf="tour.images && tour.images.length > 1" class="thumbnail-strip relative -mt-10 mx-auto flex max-w-7xl gap-2 overflow-x-auto px-2 pb-2 sm:px-4 lg:px-6">
+          <button
+            *ngFor="let img of tour.images; let i = index; trackBy: trackByIndex"
+            type="button"
+            (click)="selectImage(i)"
+            class="relative h-20 w-28 shrink-0 overflow-hidden rounded-xl border-2 transition-all duration-200"
+            [class.border-primary]="selectedImage() === i"
+            [class.border-white/60]="selectedImage() !== i"
+            [class.-translate-y-1.5]="selectedImage() === i"
+          >
+            <div class="absolute inset-0 bg-linear-to-br from-primary/20 to-tertiary/20"></div>
+            <img [src]="img.url" [alt]="img.alt || tour.title" (error)="onImgError($event)" class="absolute inset-0 h-full w-full object-cover" loading="lazy" />
+          </button>
+        </div>
+      </div>
+
+      <!-- ============ HEADER PANEL ============ -->
+      <div class="mx-auto mt-8 flex max-w-7xl flex-col px-4 sm:px-6 lg:px-8">
+        <div class="panel p-6 sm:p-8">
+          <div class="flex flex-wrap items-center gap-2">
+            <span *ngFor="let d of tour.destinations || []" class="inline-flex items-center gap-1 rounded-full bg-secondary-soft px-3 py-1 text-xs font-semibold text-primary">
+              <i class="ri-map-pin-line"></i>{{ d.destination?.name }}
+            </span>
+            <span [class]="'rounded-full px-2.5 py-0.5 text-xs font-medium ' + difficultyColor(tour.difficulty)">{{ tour.difficulty }}</span>
+            <span class="rounded-full bg-slate-100 px-2.5 py-0.5 text-xs font-medium text-slate-600">{{ tour.groupType === 'Shared' ? 'Grupo compartido' : 'Privado' }}</span>
+          </div>
+
+          <h1 class="mt-3 text-3xl font-bold text-tertiary sm:text-4xl">{{ tour.title }}</h1>
+          <p *ngIf="tour.subtitle" class="mt-1 text-lg font-medium text-slate-500">{{ tour.subtitle }}</p>
+
+          <div class="mt-5 flex flex-wrap items-center gap-5 text-sm text-slate-500">
+            <span class="flex items-center gap-1.5"><i class="ri-time-line text-primary"></i> {{ tour.durationDays }}{{ tour.durationDays ? 'd' : '' }} {{ tour.durationHours }}h</span>
+            <span class="flex items-center gap-1.5"><i class="ri-signal-tower-line text-primary"></i> {{ tour.difficulty }}</span>
+            <span class="flex items-center gap-1.5"><i class="ri-group-line text-primary"></i> {{ tour.groupType === 'Shared' ? 'Compartido' : 'Privado' }}</span>
+            <span *ngIf="reviewCount() > 0" class="flex items-center gap-1.5">
+              <i class="ri-star-fill text-amber-400"></i> {{ avgRating() }}
+              <span class="text-slate-400">({{ reviewCount() }})</span>
+            </span>
+          </div>
+
+          <p *ngIf="tour.shortDescription" class="mt-4 border-t border-slate-100 pt-4 text-slate-600">{{ tour.shortDescription }}</p>
+        </div>
+      </div>
+
+      <!-- ============ MAIN GRID ============ -->
+      <div class="mx-auto mt-10 flex max-w-7xl flex-col gap-10 px-4 pb-16 sm:px-6 lg:px-8">
+        <div class="grid gap-10 lg:grid-cols-[1.6fr_1fr]">
+
+          <!-- LEFT COLUMN -->
+          <main class="flex flex-col gap-10">
+
+            <!-- Description -->
+            <div class="panel p-8">
+              <p class="eyebrow flex items-center gap-2"><i class="ri-file-text-line"></i> Descripción</p>
+              <p class="mt-4 whitespace-pre-line leading-relaxed text-slate-600">{{ tour.description }}</p>
+            </div>
+
+            <!-- Itinerary -->
+            <div *ngIf="tour.itineraryDays?.length" class="panel p-8">
+              <p class="eyebrow flex items-center gap-2"><i class="ri-road-map-line"></i> Itinerario</p>
+              <div class="mt-6 space-y-8">
+                <div *ngFor="let day of tour.itineraryDays; let i = index; trackBy: trackByIndex" class="relative pl-14">
+                  <div class="absolute left-[19px] top-10 bottom-0 w-0.5 bg-primary/15" [class.hidden]="i === tour.itineraryDays.length - 1"></div>
+                  <div class="absolute left-0 top-0 flex h-[38px] w-[38px] items-center justify-center rounded-full bg-primary text-sm font-bold text-white shadow-md">
+                    {{ day.day }}
+                  </div>
+                  <div class="rounded-xl border border-slate-100 bg-slate-50/50 p-4 transition hover:shadow-sm">
+                    <p class="text-lg font-semibold text-tertiary">{{ day.title }}</p>
+                    <div *ngIf="day.activities?.length" class="mt-4 space-y-3">
+                      <div *ngFor="let a of day.activities; trackBy: trackById" class="flex items-start gap-3 rounded-lg bg-white p-3 shadow-xs">
+                        <span *ngIf="a.time" class="shrink-0 rounded-md bg-primary/10 px-2.5 py-1 text-xs font-semibold text-primary">{{ a.time }}</span>
+                        <div>
+                          <p class="text-sm font-semibold text-slate-800">{{ a.title }}</p>
+                          <p *ngIf="a.description" class="mt-0.5 text-sm text-slate-500">{{ a.description }}</p>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Includes / Excludes -->
+            <div *ngIf="tour.includes?.length || tour.excludes?.length" class="grid gap-6 lg:grid-cols-2">
+              <div *ngIf="tour.includes?.length" class="panel p-8">
+                <p class="eyebrow flex items-center gap-2 text-green-600">
+                  <i class="ri-checkbox-circle-line text-lg"></i> Incluye
+                </p>
+                <div class="mt-4 space-y-3">
+                  <div *ngFor="let item of tour.includes; trackBy: trackById" class="flex items-start gap-3 rounded-xl bg-green-50/60 p-3">
+                    <span class="flex mt-0.5 h-6 w-6 shrink-0 items-center justify-center rounded-full bg-green-100 text-green-600">
+                      <i class="ri-check-line text-sm"></i>
+                    </span>
+                    <div>
+                      <p class="text-sm font-semibold text-slate-800">{{ item.title }}</p>
+                      <p *ngIf="item.description" class="mt-0.5 text-sm text-slate-500">{{ item.description }}</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div *ngIf="tour.excludes?.length" class="panel p-8">
+                <p class="eyebrow flex items-center gap-2 text-red-500">
+                  <i class="ri-close-circle-line text-lg"></i> No incluye
+                </p>
+                <div class="mt-4 space-y-3">
+                  <div *ngFor="let item of tour.excludes; trackBy: trackById" class="flex items-start gap-3 rounded-xl bg-red-50/60 p-3">
+                    <span class="flex mt-0.5 h-6 w-6 shrink-0 items-center justify-center rounded-full bg-red-100 text-red-500">
+                      <i class="ri-close-line text-sm"></i>
+                    </span>
+                    <div>
+                      <p class="text-sm font-semibold text-slate-800">{{ item.title }}</p>
+                      <p *ngIf="item.description" class="mt-0.5 text-sm text-slate-500">{{ item.description }}</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Schedules -->
+            <div *ngIf="tour.schedules?.length" class="panel p-8">
+              <p class="eyebrow flex items-center gap-2"><i class="ri-calendar-todo-line"></i> Horarios</p>
+              <div class="mt-4 grid gap-4 sm:grid-cols-2">
+                <div *ngFor="let s of tour.schedules; trackBy: trackById" class="rounded-xl border border-slate-100 bg-slate-50 p-4">
+                  <div class="flex items-center justify-between gap-2">
+                    <p class="flex items-center gap-2 text-sm font-semibold text-slate-800">
+                      <i class="ri-time-line text-primary"></i> {{ s.departure }}
+                    </p>
+                    <span *ngIf="s.available" class="shrink-0 rounded-full bg-green-100 px-2 py-0.5 text-[11px] font-semibold text-green-700">Disponible</span>
+                    <span *ngIf="!s.available" class="shrink-0 rounded-full bg-red-100 px-2 py-0.5 text-[11px] font-semibold text-red-600">Agotado</span>
+                  </div>
+                  <p class="mt-2 text-xs text-slate-500">Recogida {{ s.pickupStart }} · Regreso {{ s.arrival }}</p>
+                  <p *ngIf="s.language" class="mt-0.5 text-xs text-slate-400">Idioma: {{ s.language }}</p>
+                </div>
+              </div>
+            </div>
+
+            <!-- Recommendations -->
+            <div *ngIf="tour.recommendations?.length" class="panel p-8">
+              <p class="eyebrow flex items-center gap-2"><i class="ri-thumb-up-line"></i> Recomendaciones</p>
+              <div class="mt-4 grid gap-4 sm:grid-cols-2">
+                <div *ngFor="let r of tour.recommendations; trackBy: trackById" class="rounded-xl bg-secondary-soft p-4">
+                  <p class="flex items-center gap-2 font-semibold text-slate-800">{{ r.title }}</p>
+                  <p *ngIf="r.description" class="mt-1 text-sm text-slate-600">{{ r.description }}</p>
+                </div>
+              </div>
+            </div>
+
+            <!-- Requirements -->
+            <div *ngIf="tour.requirements?.length" class="panel p-8">
+              <p class="eyebrow flex items-center gap-2"><i class="ri-shield-check-line"></i> Requisitos</p>
+              <div class="mt-4 space-y-3">
+                <div *ngFor="let r of tour.requirements; trackBy: trackById" class="flex items-start gap-3 rounded-xl bg-slate-50 p-3">
+                  <i class="ri-information-line mt-0.5 text-primary"></i>
+                  <span class="text-sm text-slate-600">{{ r.requirement }}</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- FAQs -->
+            <div *ngIf="tour.faqs?.length" class="panel p-8">
+              <p class="eyebrow flex items-center gap-2"><i class="ri-question-answer-line"></i> Preguntas frecuentes</p>
+              <div class="mt-4 divide-y divide-slate-100">
+                <div *ngFor="let f of tour.faqs; let i = index; trackBy: trackById" class="py-3 first:pt-0 last:pb-0">
+                  <button type="button" (click)="toggleFaq(i)" class="flex w-full items-center justify-between gap-3 text-left">
+                    <span class="font-medium text-slate-800">{{ f.question }}</span>
+                    <i class="ri-arrow-down-s-line text-lg text-primary transition-transform duration-200" [class.rotate-180]="openFaqIndex() === i"></i>
+                  </button>
+                  <div *ngIf="openFaqIndex() === i" class="mt-2">
+                    <p class="text-sm leading-relaxed text-slate-600">{{ f.answer }}</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Reviews -->
+            <div *ngIf="reviewCount() > 0" class="panel p-8">
+              <div class="flex flex-wrap items-center justify-between gap-3">
+                <p class="eyebrow flex items-center gap-2"><i class="ri-star-line"></i> Opiniones</p>
+                <div class="flex items-center gap-2">
+                  <span class="text-2xl font-bold text-tertiary">{{ avgRating() }}</span>
+                  <div class="flex">
+                    <i *ngFor="let s of [1,2,3,4,5]" class="ri-star-fill text-sm" [class.text-amber-400]="s <= avgRating()" [class.text-slate-200]="s > avgRating()"></i>
+                  </div>
+                  <span class="text-sm text-slate-400">({{ reviewCount() }})</span>
+                </div>
+              </div>
+              <div class="mt-6 space-y-4">
+                <div *ngFor="let rev of tour.reviews; trackBy: trackById" class="flex items-start gap-3 rounded-xl bg-slate-50 p-4">
+                  <div class="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-primary text-sm font-bold text-white shadow-sm">
+                    {{ initials(rev.name) }}
+                  </div>
+                  <div class="min-w-0 flex-1">
+                    <div class="flex flex-wrap items-center justify-between gap-2">
+                      <p class="font-semibold text-slate-800">{{ rev.name || 'Viajero' }} <span *ngIf="rev.country" class="text-xs font-normal text-slate-400">· {{ rev.country }}</span></p>
+                      <div class="flex">
+                        <i *ngFor="let s of [1,2,3,4,5]" class="ri-star-fill text-xs" [class.text-amber-400]="s <= rev.rating" [class.text-slate-300]="s > rev.rating"></i>
+                      </div>
+                    </div>
+                    <p *ngIf="rev.comment" class="mt-1 text-sm text-slate-600">{{ rev.comment }}</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </main>
+
+          <!-- RIGHT COLUMN — SIDEBAR -->
+          <aside class="lg:sticky lg:top-6 h-fit">
+            <div class="panel p-6 shadow-lg">
+              <div class="flex items-center justify-between">
+                <p class="text-xs uppercase tracking-wider text-slate-400">Desde</p>
+                <span *ngIf="tour.active" class="flex items-center gap-1.5 rounded-full bg-green-50 px-2.5 py-1 text-xs font-semibold text-green-600">
+                  <span class="h-1.5 w-1.5 rounded-full bg-green-500"></span> Disponible
+                </span>
+                <span *ngIf="!tour.active" class="rounded-full bg-red-50 px-2.5 py-1 text-xs font-semibold text-red-600">No disponible</span>
+              </div>
+
+              <p *ngIf="mainPrice() as mp" class="mt-2 text-4xl font-bold text-primary">
+                {{ currencySymbol(mp.currency) }}{{ mp.adult != null ? mp.adult : (mp.private != null ? mp.private : mp.child) }}
+                <span class="text-base font-normal text-slate-400">/ persona</span>
+              </p>
+              <p *ngIf="!mainPrice()" class="mt-2 text-4xl font-bold text-primary">Consultar</p>
+
+              <div class="mt-6 space-y-3 border-t border-slate-100 pt-6">
+                <div class="flex items-center gap-3 text-sm">
+                  <span class="flex h-8 w-8 items-center justify-center rounded-lg bg-primary/10 text-primary"><i class="ri-time-line"></i></span>
+                  <div><span class="text-slate-500">Duración</span><span class="ml-2 font-semibold text-slate-800">{{ tour.durationDays }}d {{ tour.durationHours }}h</span></div>
+                </div>
+                <div class="flex items-center gap-3 text-sm">
+                  <span class="flex h-8 w-8 items-center justify-center rounded-lg bg-primary/10 text-primary"><i class="ri-signal-tower-line"></i></span>
+                  <div><span class="text-slate-500">Dificultad</span><span class="ml-2 font-semibold text-slate-800">{{ tour.difficulty }}</span></div>
+                </div>
+                <div class="flex items-center gap-3 text-sm">
+                  <span class="flex h-8 w-8 items-center justify-center rounded-lg bg-primary/10 text-primary"><i class="ri-group-line"></i></span>
+                  <div><span class="text-slate-500">Grupo</span><span class="ml-2 font-semibold text-slate-800">{{ tour.groupType === 'Shared' ? 'Compartido' : 'Privado' }}</span></div>
+                </div>
+              </div>
+
+              <div class="mt-6 flex flex-col gap-3">
+                <a [routerLink]="['/reservar']" [queryParams]="{ tipo: 'tour', id: tour?.id }"
+                  class="btn btn-primary flex w-full items-center justify-center gap-2 py-3.5 text-base">
+                  <i class="ri-calendar-check-line"></i> Reservar ahora
+                </a>
+                <a href="https://wa.me/{{ whatsappNumber }}"
+                  class="btn btn-ghost flex w-full items-center justify-center gap-2">
+                  <i class="ri-whatsapp-line text-lg"></i> Consultar por WhatsApp
+                </a>
+              </div>
+
+              <div class="mt-6 flex flex-wrap justify-center gap-4 border-t border-slate-100 pt-4 text-xs text-slate-400">
+                <span class="flex items-center gap-1"><i class="ri-lock-line"></i> Pago 100% seguro</span>
+                <span class="flex items-center gap-1"><i class="ri-refund-line"></i> Cancelación flexible</span>
+                <span class="flex items-center gap-1"><i class="ri-customer-service-line"></i> Soporte 24/7</span>
+              </div>
+            </div>
+          </aside>
+        </div>
+
+        <!-- Other tours -->
+        <div *ngIf="tours.length" class="panel p-8">
+          <div class="flex items-center justify-between">
+            <p class="eyebrow flex items-center gap-2"><i class="ri-compass-3-line"></i> Otros destinos</p>
+            <a routerLink="/destinos" class="text-sm font-semibold text-primary transition hover:underline">Ver todos</a>
+          </div>
+          <div class="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+            <a
+              *ngFor="let t of tours; trackBy: trackById"
+              [routerLink]="['/destinos/tour', t.slug]"
+              class="group relative overflow-hidden rounded-xl border border-slate-100 bg-white shadow-xs transition-all duration-200 hover:-translate-y-1 hover:shadow-md"
+            >
+              <div class="relative h-32 overflow-hidden">
+                <div class="absolute inset-0 z-10 bg-linear-to-t from-black/30 to-transparent"></div>
+                <img [src]="t.images?.[0]?.url || '/images/dest1.webp?v=2'" class="h-full w-full object-cover transition duration-300 group-hover:scale-105" loading="lazy" />
+                <span class="absolute bottom-2 left-2 z-20 rounded-full bg-white/90 px-2.5 py-0.5 text-xs font-semibold text-primary shadow-sm backdrop-blur-sm">
+                  {{ t.durationDays }}d {{ t.durationHours }}h
+                </span>
+              </div>
+              <div class="p-3">
+                <p class="truncate text-sm font-semibold text-slate-800 group-hover:text-primary">{{ t.title }}</p>
+                <div class="mt-1 flex items-center gap-2 text-xs text-slate-400">
+                  <span class="flex items-center gap-1"><i class="ri-signal-tower-line"></i> {{ t.difficulty }}</span>
+                  <span *ngIf="t.reviews?.length" class="flex items-center gap-1">
+                    <span class="text-slate-300">·</span>
+                    <i class="ri-star-fill text-amber-400"></i> {{ avgRatingFor(t) }}
+                  </span>
+                </div>
+              </div>
+            </a>
+          </div>
+        </div>
+
+        <!-- CTA banner -->
+        <div class="relative overflow-hidden rounded-[2rem] bg-linear-to-r from-primary to-primary-dark p-8 text-center text-white sm:p-12">
+          <div class="dot-pattern absolute inset-0"></div>
+          <div class="relative z-10">
+            <h2 class="text-3xl font-bold">¿Listo para vivir esta experiencia?</h2>
+            <p class="mt-4 text-lg text-white/85">Contáctanos para recibir asesoría personalizada y confirmar disponibilidad.</p>
+            <div class="mt-8 flex flex-col justify-center gap-4 sm:flex-row">
+              <a [routerLink]="['/reservar']" [queryParams]="{ tipo: 'tour', id: tour?.id }"
+                class="inline-flex items-center justify-center gap-2 rounded-full bg-white px-8 py-4 font-semibold text-primary transition hover:scale-[1.02] hover:bg-slate-100">
+                <i class="ri-calendar-check-line"></i> Reservar ahora
+              </a>
+              <a href="https://wa.me/{{ whatsappNumber }}"
+                class="inline-flex items-center justify-center gap-2 rounded-full border-2 border-white px-8 py-4 font-semibold text-white transition hover:bg-white hover:text-primary">
+                <i class="ri-whatsapp-line"></i> Consultar por WhatsApp
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </ng-container>
+
+  <!-- LIGHTBOX -->
+  <div *ngIf="lightboxOpen() && tour?.images?.length" class="lightbox-backdrop fixed inset-0 z-50 flex items-center justify-center bg-black/90 backdrop-blur-sm" (click)="closeLightbox()">
+    <button type="button" (click)="closeLightbox()" class="absolute right-4 top-4 z-10 flex h-10 w-10 items-center justify-center rounded-full bg-white/10 text-white transition hover:bg-white/20">
+      <i class="ri-close-line text-xl"></i>
+    </button>
+    <button *ngIf="tour.images.length > 1" type="button" (click)="prevImage(); $event.stopPropagation()" class="absolute left-4 top-1/2 z-10 flex h-12 w-12 -translate-y-1/2 items-center justify-center rounded-full bg-white/10 text-white transition hover:bg-white/20">
+      <i class="ri-arrow-left-s-line text-2xl"></i>
+    </button>
+    <img (click)="$event.stopPropagation()" [src]="tour.images[lightboxIndex()]?.url" [alt]="tour.images[lightboxIndex()]?.alt || tour.title" class="lightbox-image max-h-[85vh] max-w-[90vw] rounded-2xl object-contain shadow-2xl" />
+    <button *ngIf="tour.images.length > 1" type="button" (click)="nextImage(); $event.stopPropagation()" class="absolute right-4 top-1/2 z-10 flex h-12 w-12 -translate-y-1/2 items-center justify-center rounded-full bg-white/10 text-white transition hover:bg-white/20">
+      <i class="ri-arrow-right-s-line text-2xl"></i>
+    </button>
+    <div class="absolute bottom-6 left-1/2 -translate-x-1/2 rounded-full bg-black/50 px-4 py-2 text-sm text-white backdrop-blur-sm">
+      {{ lightboxIndex() + 1 }} / {{ tour.images.length }}
+    </div>
   </div>
 </section>

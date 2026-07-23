@@ -1,0 +1,380 @@
+<section class="playground-shell">
+
+  <!-- ============ HEADER ============ -->
+  <div class="fixed left-0 right-0 top-0 z-50 flex items-center justify-between bg-tertiary/90 px-4 py-2 text-sm text-white backdrop-blur-md sm:px-8">
+    <span class="flex items-center gap-2 font-semibold">
+      <i class="ri-flask-line text-primary"></i> Playground — Mejoras Home
+    </span>
+    <nav class="hidden gap-4 text-xs text-white/70 sm:flex">
+      <button (click)="scrollTo('hero')" class="transition hover:text-white">Hero</button>
+      <button (click)="scrollTo('stats')" class="transition hover:text-white">Stats</button>
+      <button (click)="scrollTo('cards')" class="transition hover:text-white">Cards</button>
+      <button (click)="scrollTo('filter')" class="transition hover:text-white">Filtro</button>
+      <button (click)="scrollTo('packages')" class="transition hover:text-white">Paquetes</button>
+      <button (click)="scrollTo('masonry')" class="transition hover:text-white">Masonry</button>
+      <button (click)="scrollTo('testimonials')" class="transition hover:text-white">Testimonios</button>
+      <button (click)="scrollTo('cta')" class="transition hover:text-white">CTA</button>
+    </nav>
+    <a routerLink="/" class="rounded-full border border-white/20 px-3 py-1 text-xs text-white/60 transition hover:border-white/40 hover:text-white">Home actual</a>
+  </div>
+
+  <!-- ============ 1. HERO ============ -->
+  <section id="hero" data-section="hero" class="hero-section relative flex min-h-screen items-center overflow-hidden">
+    <div class="floating-circle circle-1"></div>
+    <div class="floating-circle circle-2"></div>
+    <div class="floating-circle circle-3"></div>
+
+    <div class="container-page relative z-10 w-full">
+      <div class="max-w-3xl" [class.fade-in-up]="isVisible('hero')">
+        <span class="hero-badge mb-6 inline-block rounded-full border border-white/20 bg-white/8 px-4 py-2 text-sm font-semibold uppercase tracking-[0.25em] text-white backdrop-blur-md">
+          <i class="ri-flask-line mr-2 text-primary"></i> Hero animado + trust bar
+        </span>
+
+        <h1 class="text-5xl font-bold leading-tight text-white sm:text-6xl lg:text-7xl">
+          Viajes seguros, auténticos<br />
+          <span class="text-transparent bg-clip-text bg-gradient-to-r from-primary to-cyan-300">y hechos a medida</span>
+        </h1>
+        <p class="mt-6 max-w-2xl text-xl leading-relaxed text-white/80">
+          Creamos viajes auténticos con guías locales, logística confiable y acompañamiento
+          personalizado desde el primer contacto hasta tu regreso.
+        </p>
+
+        <div class="mt-9 flex flex-col gap-4 sm:flex-row">
+          <a class="btn-hero-primary group inline-flex items-center justify-center gap-2 rounded-full bg-primary px-8 py-4 text-lg font-semibold text-white shadow-lg shadow-primary/30 transition-all hover:shadow-xl hover:shadow-primary/40">
+            <span>Ver Paquetes</span>
+            <i class="ri-arrow-right-line transition-transform duration-200 group-hover:translate-x-1"></i>
+          </a>
+          <a class="btn-hero-ghost inline-flex items-center justify-center gap-2 rounded-full border border-white/50 px-8 py-4 text-lg font-semibold text-white transition-all hover:bg-white hover:text-primary">
+            <i class="ri-whatsapp-line"></i> Solicitar Cotización
+          </a>
+        </div>
+
+        <div class="hero-trust-bar mt-12 inline-flex flex-wrap items-center gap-6 rounded-2xl border border-white/10 bg-white/5 px-6 py-4 backdrop-blur-xl">
+          <div *ngFor="let stat of stats" class="flex items-center gap-3 text-white">
+            <span class="flex h-10 w-10 items-center justify-center rounded-xl bg-primary/20 text-primary">
+              <i [class]="stat.icon" class="text-lg"></i>
+            </span>
+            <div>
+              <p class="text-lg font-bold leading-none">{{ stat.value }}</p>
+              <p class="text-xs text-white/60">{{ stat.label }}</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="absolute bottom-8 left-1/2 -translate-x-1/2 hidden md:block">
+      <button (click)="scrollTo('stats')" class="flex flex-col items-center gap-1 text-white/50 transition hover:text-white" aria-label="Scroll">
+        <span class="text-xs uppercase tracking-widest">Explorar</span>
+        <i class="ri-arrow-down-line animate-bounce text-xl"></i>
+      </button>
+    </div>
+  </section>
+
+  <!-- ============ 2. WHY US / STATS ============ -->
+  <section id="stats" data-section="stats" class="section-padding bg-white">
+    <div class="container-page">
+      <div class="mb-4">
+        <span class="inline-flex items-center gap-2 rounded-full bg-secondary-soft px-3 py-1 text-xs font-semibold text-primary">
+          <i class="ri-flask-line"></i> Stat counters animados + hover lift
+        </span>
+      </div>
+
+      <div class="mb-14 grid grid-cols-2 gap-6 md:grid-cols-4" [class.fade-in-up]="isVisible('stats')">
+        <div *ngFor="let stat of stats; let i = index" class="stat-card group rounded-2xl border border-slate-100 bg-slate-50 p-6 text-center transition-all duration-300 hover:-translate-y-1 hover:border-primary/20 hover:shadow-lg hover:shadow-primary/5">
+          <span class="mx-auto flex h-14 w-14 items-center justify-center rounded-xl bg-primary/10 text-2xl text-primary transition-all duration-300 group-hover:scale-110 group-hover:bg-primary group-hover:text-white">
+            <i [class]="stat.icon"></i>
+          </span>
+          <p class="mt-4 text-3xl font-bold text-tertiary">{{ stat.value }}</p>
+          <p class="mt-1 text-sm text-slate-500">{{ stat.label }}</p>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 gap-8 lg:grid-cols-[1.1fr_0.9fr]">
+        <div>
+          <p class="eyebrow mb-4">Confianza profesional</p>
+          <h2 class="section-title mb-6">Tu viaje planificado con rigor y pasión local</h2>
+          <p class="text-lg text-slate-600">Kusi Q'umir une respaldo local, operación segura y atención cercana para que cada viaje sea auténtico.</p>
+
+          <div class="mt-8 grid gap-5 sm:grid-cols-2">
+            <div *ngFor="let item of [
+              { icon: 'ri-user-star-line', title: 'Guías certificados', desc: 'Equipo local con certificaciones oficiales y profundo conocimiento cultural.' },
+              { icon: 'ri-map-2-line', title: 'Itinerarios claros', desc: 'Programa de viaje con transporte, alojamiento y actividades explicadas paso a paso.' },
+              { icon: 'ri-customer-service-2-line', title: 'Apoyo permanente', desc: 'Acompañamiento antes, durante y después del viaje.' },
+              { icon: 'ri-leaf-line', title: 'Viajes responsables', desc: 'Operamos con respeto ambiental y apoyamos proyectos comunitarios.' }
+            ]" class="feature-card rounded-2xl border border-slate-100 bg-slate-50 p-6 transition-all duration-300 hover:-translate-y-1 hover:border-primary/20 hover:shadow-lg hover:shadow-primary/5">
+              <div class="mb-3 flex h-11 w-11 items-center justify-center rounded-xl bg-primary/10 text-xl text-primary transition-all duration-300 group-hover:bg-primary group-hover:text-white">
+                <i [class]="item.icon"></i>
+              </div>
+              <h3 class="text-lg font-semibold text-tertiary">{{ item.title }}</h3>
+              <p class="mt-2 text-slate-600">{{ item.desc }}</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="overflow-hidden rounded-3xl shadow-xl transition-all duration-500 hover:shadow-2xl">
+          <img src="/images/whyus.webp?v=2" alt="Viajeros en Perú" width="800" height="600" class="h-full min-h-[420px] w-full object-cover transition duration-500 hover:scale-105" loading="lazy" />
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ 3. CARD HOVER LIFT ============ -->
+  <section id="cards" data-section="cards" class="section-padding bg-slate-50">
+    <div class="container-page">
+      <div class="mb-4">
+        <span class="inline-flex items-center gap-2 rounded-full bg-secondary-soft px-3 py-1 text-xs font-semibold text-primary">
+          <i class="ri-flask-line"></i> Cards con hover lift + shadow teal
+        </span>
+      </div>
+      <div class="mb-14 text-center">
+        <h2 class="section-title">Destinos con hover mejorado</h2>
+        <p class="mx-auto mt-4 max-w-2xl text-lg text-slate-600">Las cards tienen translateY(-4px) + sombra teal al hacer hover.</p>
+      </div>
+
+      <div class="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-4">
+        <div *ngFor="let tour of featuredTours" class="group relative overflow-hidden rounded-2xl border border-slate-100 bg-white shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-lg hover:shadow-primary/10">
+          <div class="relative h-48 overflow-hidden">
+            <div class="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent z-10"></div>
+            <img [src]="tour.image" class="h-full w-full object-cover transition duration-500 group-hover:scale-110" loading="lazy" />
+            <span class="absolute left-3 top-3 z-20 rounded-full bg-white/90 px-2.5 py-0.5 text-xs font-semibold text-primary backdrop-blur-sm">{{ tour.category }}</span>
+            <span class="absolute right-3 top-3 z-20 rounded-full bg-primary/90 px-2 py-0.5 text-xs font-semibold text-white">${{ tour.price }}</span>
+          </div>
+          <div class="p-4">
+            <h3 class="font-semibold text-tertiary transition-colors group-hover:text-primary">{{ tour.title }}</h3>
+            <div class="mt-2 flex items-center gap-3 text-xs text-slate-400">
+              <span class="flex items-center gap-1"><i class="ri-time-line"></i> {{ tour.duration }}</span>
+              <span class="flex items-center gap-1"><i class="ri-signal-tower-line"></i> {{ tour.difficulty }}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ 4. FILTRO DE CATEGORÍAS ============ -->
+  <section id="filter" data-section="filter" class="section-padding bg-white">
+    <div class="container-page">
+      <div class="mb-4">
+        <span class="inline-flex items-center gap-2 rounded-full bg-secondary-soft px-3 py-1 text-xs font-semibold text-primary">
+          <i class="ri-flask-line"></i> Filtro de categorías con pills
+        </span>
+      </div>
+      <div class="mb-10 text-center">
+        <h2 class="section-title">Explora por categoría</h2>
+        <p class="mx-auto mt-4 max-w-2xl text-lg text-slate-600">Pills interactivas que filtran los tours en tiempo real.</p>
+      </div>
+
+      <div class="mb-8 flex flex-wrap justify-center gap-2">
+        <button *ngFor="let cat of categories" type="button" (click)="filterByCategory(cat)"
+          class="rounded-full px-5 py-2 text-sm font-semibold transition-all duration-200"
+          [class.bg-primary]="activeCategory() === cat"
+          [class.text-white]="activeCategory() === cat"
+          [class.shadow-md]="activeCategory() === cat"
+          [class.bg-slate-100]="activeCategory() !== cat"
+          [class.text-slate-600]="activeCategory() !== cat"
+          [class.hover:bg-slate-200]="activeCategory() !== cat"
+        >
+          {{ cat }}
+        </button>
+      </div>
+
+      <div class="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-4">
+        <div *ngFor="let tour of filteredTours" class="group overflow-hidden rounded-2xl border border-slate-100 bg-white shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-lg hover:shadow-primary/10">
+          <div class="relative h-48 overflow-hidden">
+            <div class="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent z-10"></div>
+            <img [src]="tour.image" class="h-full w-full object-cover transition duration-500 group-hover:scale-110" loading="lazy" />
+          </div>
+          <div class="p-4">
+            <h3 class="font-semibold text-tertiary group-hover:text-primary">{{ tour.title }}</h3>
+            <div class="mt-2 flex items-center gap-3 text-xs text-slate-400">
+              <span class="flex items-center gap-1"><i class="ri-time-line"></i> {{ tour.duration }}</span>
+              <span class="flex items-center gap-1"><i class="ri-signal-tower-line"></i> {{ tour.difficulty }}</span>
+              <span class="ml-auto font-semibold text-primary">${{ tour.price }}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ 5. PAQUETES ============ -->
+  <section id="packages" data-section="packages" class="section-padding bg-slate-50">
+    <div class="container-page">
+      <div class="mb-4">
+        <span class="inline-flex items-center gap-2 rounded-full bg-secondary-soft px-3 py-1 text-xs font-semibold text-primary">
+          <i class="ri-flask-line"></i> Paquetes con badge descuento + precio destacado
+        </span>
+      </div>
+      <div class="mb-14 text-center">
+        <h2 class="section-title">Paquetes con descuento</h2>
+        <p class="mx-auto mt-4 max-w-2xl text-lg text-slate-600">Badge de descuento circular + precio grande con "por persona".</p>
+      </div>
+
+      <div class="grid grid-cols-1 gap-8 md:grid-cols-3">
+        <div *ngFor="let pkg of packages" class="group overflow-hidden rounded-2xl bg-white shadow-sm ring-1 ring-slate-100 transition-all duration-300 hover:-translate-y-1 hover:shadow-xl">
+          <div class="relative h-52 overflow-hidden">
+            <div class="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent z-10"></div>
+            <img [src]="pkg.image" class="h-full w-full object-cover transition duration-500 group-hover:scale-105" loading="lazy" />
+            <div class="absolute left-3 top-3 z-20 rounded-full bg-white/90 px-3 py-1 text-xs font-semibold text-tertiary shadow-sm backdrop-blur-sm">
+              {{ pkg.days }} días
+            </div>
+            <div class="absolute right-3 top-3 z-20 flex h-12 w-12 items-center justify-center rounded-full bg-red-500 text-sm font-bold text-white shadow-lg">
+              -{{ pkg.discount }}%
+            </div>
+          </div>
+          <div class="p-6">
+            <h3 class="text-xl font-bold text-tertiary">{{ pkg.name }}</h3>
+            <p class="mt-2 line-clamp-2 text-sm text-slate-600">{{ pkg.description }}</p>
+            <div class="mt-3 flex items-center gap-2 text-sm">
+              <span class="inline-flex items-center gap-1 rounded-full bg-secondary-soft px-2.5 py-0.5 font-medium text-primary">
+                <i class="ri-check-line"></i> {{ pkg.tours }} tour(es)
+              </span>
+            </div>
+            <div class="mt-4 border-t border-slate-100 pt-4">
+              <p class="text-xs text-slate-400">Desde</p>
+              <p class="text-3xl font-bold text-primary">${{ pkg.price }} <span class="text-base font-normal text-slate-400">/ persona</span></p>
+            </div>
+            <div class="mt-4 flex gap-3">
+              <a class="flex-1 rounded-full border border-slate-200 py-3 text-center text-sm font-semibold text-slate-700 transition hover:bg-slate-100">Ver detalles</a>
+              <a class="flex-1 rounded-full bg-primary py-3 text-center text-sm font-semibold text-white transition hover:bg-primary-dark">Reservar</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ 6. MASONRY EXPERIENCIAS ============ -->
+  <section id="masonry" data-section="masonry" class="section-padding bg-white">
+    <div class="container-page">
+      <div class="mb-4">
+        <span class="inline-flex items-center gap-2 rounded-full bg-secondary-soft px-3 py-1 text-xs font-semibold text-primary">
+          <i class="ri-flask-line"></i> Layout asimétrico estilo masonry
+        </span>
+      </div>
+      <div class="mb-14 text-center">
+        <h2 class="section-title">Experiencias en masonry</h2>
+        <p class="mx-auto mt-4 max-w-2xl text-lg text-slate-600">Una imagen grande a la izquierda + dos apiladas a la derecha.</p>
+      </div>
+
+      <div class="grid grid-cols-1 gap-6 lg:grid-cols-12">
+        <div class="group relative col-span-7 overflow-hidden rounded-2xl shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-xl">
+          <div class="h-[420px] overflow-hidden lg:h-full">
+            <img src="/images/exp1.webp?v=2" alt="Cusco" class="h-full w-full object-cover transition duration-500 group-hover:scale-105" loading="lazy" />
+          </div>
+          <div class="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent"></div>
+          <div class="absolute bottom-0 left-0 right-0 p-6 text-white">
+            <span class="rounded-full bg-primary/80 px-3 py-1 text-xs font-semibold uppercase tracking-wider">Guía de viaje</span>
+            <h3 class="mt-3 text-2xl font-bold">Mejor época para viajar a Cusco</h3>
+            <p class="mt-1 text-white/80">Conoce cuándo visitar Cusco para disfrutar de festivales, clima agradable y menos multitudes.</p>
+          </div>
+        </div>
+
+        <div class="col-span-5 flex flex-col gap-6">
+          <div class="group relative flex-1 overflow-hidden rounded-2xl shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-xl">
+            <div class="h-full overflow-hidden">
+              <img src="/images/exp2.webp?v=2" alt="Machu Picchu" class="h-full w-full object-cover transition duration-500 group-hover:scale-105" loading="lazy" />
+            </div>
+            <div class="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent"></div>
+            <div class="absolute bottom-0 left-0 right-0 p-5 text-white">
+              <span class="rounded-full bg-primary/80 px-2.5 py-0.5 text-xs font-semibold uppercase tracking-wider">Consejos</span>
+              <h3 class="mt-2 text-lg font-bold">Qué llevar a Machu Picchu</h3>
+            </div>
+          </div>
+          <div class="group relative flex-1 overflow-hidden rounded-2xl shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-xl">
+            <div class="h-full overflow-hidden">
+              <img src="/images/exp3.webp?v=2" alt="Perú" class="h-full w-full object-cover transition duration-500 group-hover:scale-105" loading="lazy" />
+            </div>
+            <div class="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent"></div>
+            <div class="absolute bottom-0 left-0 right-0 p-5 text-white">
+              <span class="rounded-full bg-primary/80 px-2.5 py-0.5 text-xs font-semibold uppercase tracking-wider">Presupuesto</span>
+              <h3 class="mt-2 text-lg font-bold">Costo real de viajar a Perú</h3>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ 7. TESTIMONIOS ============ -->
+  <section id="testimonials" data-section="testimonials" class="section-padding bg-slate-50">
+    <div class="container-page">
+      <div class="mb-4">
+        <span class="inline-flex items-center gap-2 rounded-full bg-secondary-soft px-3 py-1 text-xs font-semibold text-primary">
+          <i class="ri-flask-line"></i> Rating promedio + cards testimonial
+        </span>
+      </div>
+      <div class="mb-14 text-center">
+        <h2 class="section-title">Testimonios con rating</h2>
+        <p class="mx-auto mt-4 max-w-2xl text-lg text-slate-600">Rating promedio arriba + cards con avatar circular de iniciales.</p>
+      </div>
+
+      <div class="mb-10 flex flex-wrap items-center justify-center gap-6">
+        <span class="text-5xl font-bold text-tertiary">4.8</span>
+        <div class="flex gap-1">
+          <i *ngFor="let s of [1,2,3,4,5]" class="ri-star-fill text-2xl text-amber-400"></i>
+        </div>
+        <span class="text-slate-400">(128 opiniones)</span>
+      </div>
+
+      <div class="grid grid-cols-1 gap-8 md:grid-cols-3">
+        <div *ngFor="let t of testimonials" class="rounded-2xl border border-slate-100 bg-white p-6 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-md">
+          <div class="flex items-center gap-4">
+            <div class="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-primary text-base font-bold text-white shadow-sm">
+              {{ t.name.split(' ').map(w => w[0]).join('').toUpperCase().slice(0, 2) }}
+            </div>
+            <div>
+              <p class="font-semibold text-slate-800">{{ t.name }} <span class="text-xs font-normal text-slate-400">· {{ t.country }}</span></p>
+              <p class="text-xs text-slate-500">{{ t.role }}</p>
+            </div>
+            <div class="ml-auto flex">
+              <i *ngFor="let s of [1,2,3,4,5]" class="ri-star-fill text-sm" [class.text-amber-400]="s <= t.rating" [class.text-slate-200]="s > t.rating"></i>
+            </div>
+          </div>
+          <p class="mt-4 text-sm leading-relaxed text-slate-600">"{{ t.content }}"</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ WAVE DIVIDER ============ -->
+  <div class="wave-divider">
+    <svg viewBox="0 0 1440 100" preserveAspectRatio="none" class="h-16 w-full">
+      <path d="M0,50 C360,100 720,0 1080,50 C1260,75 1350,50 1440,50 L1440,100 L0,100 Z" fill="#00abaa"></path>
+    </svg>
+  </div>
+
+  <!-- ============ 8. CTA FINAL ============ -->
+  <section id="cta" data-section="cta" class="relative overflow-hidden bg-linear-to-r from-primary to-primary-dark py-24">
+    <div class="dot-pattern absolute inset-0"></div>
+    <div class="container-page relative z-10 text-center">
+      <div class="mx-auto max-w-4xl">
+        <h2 class="text-4xl font-bold text-white">¿Listo para vivir esta experiencia?</h2>
+        <p class="mx-auto mt-4 max-w-2xl text-xl text-white/85">Te ayudamos a diseñar un viaje tranquilo, profesional y con experiencias locales únicas.</p>
+
+        <div class="mt-8 flex flex-col justify-center gap-4 sm:flex-row">
+          <a class="btn-cta-pulse group inline-flex items-center justify-center gap-2 rounded-full bg-white px-8 py-4 font-semibold text-primary transition-all hover:bg-slate-100">
+            <span>Cotizar mi viaje gratis</span>
+            <i class="ri-arrow-right-line transition-transform duration-200 group-hover:translate-x-1"></i>
+          </a>
+          <a class="inline-flex items-center justify-center gap-2 rounded-full border-2 border-white px-8 py-4 font-semibold text-white transition-all hover:bg-white hover:text-primary">
+            <i class="ri-whatsapp-line"></i> Consultar por WhatsApp
+          </a>
+        </div>
+
+        <div class="mt-10 flex flex-col items-center justify-center gap-6 text-sm text-white/75 sm:flex-row">
+          <div class="flex items-center gap-2"><i class="ri-check-line"></i> Respuesta en 2 horas</div>
+          <div class="flex items-center gap-2"><i class="ri-check-line"></i> Sin compromiso</div>
+          <div class="flex items-center gap-2"><i class="ri-check-line"></i> Asesoría gratuita</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ FOOTER ============ -->
+  <footer class="bg-tertiary py-8 text-center text-sm text-white/30">
+    <p>🧪 Playground — Página de pruebas. Ningún contenido es real, solo demos visuales.</p>
+  </footer>
+
+</section>

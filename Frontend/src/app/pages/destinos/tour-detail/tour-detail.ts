@@ -1,8 +1,10 @@
-import { Component, OnInit, inject, ChangeDetectionStrategy, signal } from '@angular/core';
+import { Component, OnInit, OnDestroy, inject, ChangeDetectionStrategy, ChangeDetectorRef, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ActivatedRoute, RouterLink } from '@angular/router';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { Meta, Title } from '@angular/platform-browser';
+import { Subscription } from 'rxjs';
 import { Tour } from '../../../services/travel-api.service';
+import { TourStateService } from '../../../services/tour-state.service';
 import { environment } from '../../../../environments/environment';
 
 interface PriceLike {
@@ -16,29 +18,90 @@ interface PriceLike {
   selector: 'app-tour-detail',
   imports: [CommonModule, RouterLink],
   templateUrl: './tour-detail.html',
-  styleUrl: '../../page.css',
+  styleUrls: ['../../page.css', './tour-detail.css'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class TourDetail implements OnInit {
+export class TourDetail implements OnInit, OnDestroy {
+  private readonly router = inject(Router);
   private readonly route = inject(ActivatedRoute);
   private readonly meta = inject(Meta);
   private readonly title = inject(Title);
+  private readonly tourState = inject(TourStateService);
+  private readonly cdr = inject(ChangeDetectorRef);
 
   tour: Tour | null = null;
+  tours: Tour[] = [];
   isLoading = false;
   error = '';
   whatsappNumber = environment.whatsappNumber;
 
   readonly selectedImage = signal(0);
   readonly openFaqIndex = signal<number | null>(null);
+  readonly lightboxOpen = signal(false);
+  readonly lightboxIndex = signal(0);
+  readonly transitioning = signal(false);
+
+  private dataSub?: Subscription;
 
   ngOnInit(): void {
-    this.tour = this.route.snapshot.data['tour'] as Tour | null;
-    if (this.tour) {
-      this.setSeo(this.tour);
-    } else {
-      this.error = 'No se pudo cargar la información del tour.';
+    this.dataSub = this.route.data.subscribe(data => {
+      const tour = data['tour'] as Tour | null;
+      if (tour) {
+        this.transitioning.set(true);
+        this.tour = tour;
+        this.setSeo(tour);
+        this.selectedImage.set(0);
+        this.openFaqIndex.set(null);
+        this.lightboxOpen.set(false);
+        this.error = '';
+        this.tours = this.tourState.getTours().filter(t => t.slug !== tour.slug).slice(0, 6);
+        setTimeout(() => this.transitioning.set(false), 300);
+      } else {
+        this.error = 'No se pudo cargar la información del tour.';
+      }
+      this.cdr.markForCheck();
+    });
+  }
+
+  ngOnDestroy(): void {
+    this.dataSub?.unsubscribe();
+  }
+
+  trackByIndex(index: number): number {
+    return index;
+  }
+
+  trackById(index: number, item: { id?: string | number }): string | number | undefined {
+    return item?.id ?? index;
+  }
+
+  onTourSelect(event: Event): void {
+    const slug = (event.target as HTMLSelectElement).value;
+    if (slug) {
+      this.router.navigate(['/destinos/tour', slug]);
     }
+  }
+
+  openLightbox(i: number): void {
+    this.lightboxIndex.set(i);
+    this.lightboxOpen.set(true);
+    document.body.style.overflow = 'hidden';
+  }
+
+  closeLightbox(): void {
+    this.lightboxOpen.set(false);
+    document.body.style.overflow = '';
+  }
+
+  prevImage(): void {
+    if (!this.tour?.images?.length) return;
+    const len = this.tour.images.length;
+    this.lightboxIndex.set((this.lightboxIndex() - 1 + len) % len);
+  }
+
+  nextImage(): void {
+    if (!this.tour?.images?.length) return;
+    this.lightboxIndex.set((this.lightboxIndex() + 1) % this.tour.images.length);
   }
 
   selectImage(i: number): void {
@@ -90,6 +153,18 @@ export class TourDetail implements OnInit {
 
   reviewCount(): number {
     return this.tour?.reviews?.length ?? 0;
+  }
+
+  initials(name?: string | null): string {
+    if (!name) return '?';
+    return name.split(/\s+/).slice(0, 2).map(w => w[0]).join('').toUpperCase();
+  }
+
+  avgRatingFor(t: Tour): string {
+    const reviews = t.reviews;
+    if (!reviews?.length) return '—';
+    const avg = reviews.reduce((s, r) => s + (r.rating ?? 0), 0) / reviews.length;
+    return avg.toFixed(1);
   }
 
   onImgError(event: Event): void {

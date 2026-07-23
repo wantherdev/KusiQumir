@@ -5,6 +5,7 @@ import { homeResolver, toursResolver, articlesResolver, experiencesResolver, tou
 
 export const routes: Routes = [
   { path: '', loadComponent: () => import('./pages/home/home').then((m) => m.Home), resolve: { home: homeResolver } },
+  { path: 'playground', loadComponent: () => import('./pages/playground/playground').then((m) => m.Playground) },
   { path: 'destinos', loadComponent: () => import('./pages/destinos/destinos').then((m) => m.Destinos), resolve: { tours: toursResolver } },
   { path: 'destinos/:slug', loadComponent: () => import('./pages/destinos/destino-redirect/destino-redirect').then((m) => m.DestinoRedirect) },
   { path: 'destinos/tour/:slug', loadComponent: () => import('./pages/destinos/tour-detail/tour-detail').then((m) => m.TourDetail), resolve: { tour: tourDetailResolver } },

@@ -1,64 +1,66 @@
 <!-- Hero -->
-<section class="hero-bg -mt-24 flex min-h-screen items-center">
-  <div class="container-page w-full">
-    <div class="max-w-3xl animate-slide-up">
+<section id="hero" data-section="hero" class="hero-bg relative -mt-24 flex min-h-screen items-center overflow-hidden">
+  <div class="floating-circle circle-1"></div>
+  <div class="floating-circle circle-2"></div>
+
+  <div class="container-page relative z-10 w-full">
+    <div class="max-w-5xl" [class.fade-in-up]="isVisible('hero')">
       <p class="mb-5 inline-block rounded-full border border-white/40 bg-white/10 px-4 py-2 text-sm font-semibold uppercase tracking-[0.25em] text-white backdrop-blur">
         Agencia de viajes profesional en Cusco
       </p>
-      <h1 class="text-5xl font-bold leading-tight text-white text-shadow lg:text-6xl">
-        Viajes seguros, auténticos y hechos a medida en Perú
+        <h1 class="text-5xl font-bold leading-tight text-white lg:text-6xl">
+          Viajes seguros, auténticos<br />
+          <span class="bg-gradient-to-r from-primary to-cyan-300 bg-clip-text text-transparent">y hechos a medida en Perú</span>
       </h1>
-      <p class="mt-6 text-xl leading-relaxed text-white text-shadow">
+      <p class="mt-6 max-w-2xl text-2xl leading-snug text-white">
         Creamos viajes auténticos con guías locales, logística confiable y acompañamiento
         personalizado desde el primer contacto hasta tu regreso.
       </p>
 
       <div class="mt-9 flex flex-col gap-4 sm:flex-row">
         <a routerLink="/paquetes"
-          class="inline-flex items-center justify-center gap-2 rounded-full bg-primary px-8 py-4 text-lg font-semibold text-white shadow-lg shadow-primary/20 transition hover:bg-primary-dark hover:shadow-xl">
+          class="btn-hero-primary inline-flex items-center justify-center gap-2 rounded-full bg-primary px-8 py-4 text-lg font-semibold text-white shadow-lg shadow-primary/20 transition hover:bg-primary-dark hover:shadow-xl">
           Ver Paquetes
         </a>
-        <a href="#contacto"
-          class="inline-flex items-center justify-center gap-2 rounded-full border border-white px-8 py-4 text-lg font-semibold text-white transition hover:bg-white hover:text-primary">
-          Solicitar Cotización
+        <a href="https://wa.me/{{ whatsappNumber }}"
+          class="btn-hero-ghost inline-flex items-center justify-center gap-2 rounded-full border border-white px-8 py-4 text-lg font-semibold text-white transition hover:bg-white hover:text-primary">
+          <i class="ri-whatsapp-line"></i> Solicitar Cotización
         </a>
       </div>
 
-      <div class="glass-effect mt-12 inline-block rounded-3xl p-6">
-        <div class="grid grid-cols-1 gap-5 text-white sm:grid-cols-3">
-          <div class="flex items-center gap-3">
-            <i class="ri-award-line text-2xl text-primary" aria-hidden="true"></i>
-            <div>
-              <p class="text-xs uppercase tracking-[0.2em] text-slate-200">Respaldo</p>
-              <p class="font-semibold">Licencia MINCETUR</p>
-            </div>
-          </div>
-          <div class="flex items-center gap-3">
-            <i class="ri-time-line text-2xl text-primary" aria-hidden="true"></i>
-            <div>
-              <p class="text-xs uppercase tracking-[0.2em] text-slate-200">Experiencia</p>
-              <p class="font-semibold">Más de 10 años operando</p>
-            </div>
-          </div>
-          <div class="flex items-center gap-3">
-            <i class="ri-user-heart-line text-2xl text-primary" aria-hidden="true"></i>
-            <div>
-              <p class="text-xs uppercase tracking-[0.2em] text-slate-200">Clientes</p>
-              <p class="font-semibold">+5,000 viajeros satisfechos</p>
-            </div>
+      <div class="hero-trust-bar mt-12 inline-flex flex-wrap items-center gap-6 rounded-2xl border border-white/10 bg-white/5 px-6 py-4 backdrop-blur-xl">
+        <div *ngFor="let stat of stats" class="flex items-center gap-3 text-white">
+          <span class="flex h-10 w-10 items-center justify-center rounded-xl bg-primary/20 text-primary">
+            <i [class]="stat.icon" class="text-lg"></i>
+          </span>
+          <div>
+            <p class="text-lg font-bold leading-none">{{ stat.value }}</p>
+            <p class="text-xs text-white/60">{{ stat.label }}</p>
           </div>
         </div>
       </div>
     </div>
   </div>
-  <a href="#porque" class="absolute bottom-8 left-1/2 hidden -translate-x-1/2 text-white/80 transition hover:text-white md:block" aria-label="Desplazar">
-    <i class="ri-arrow-down-line animate-bounce text-2xl"></i>
-  </a>
+
+  <button (click)="scrollTo('stats')" class="absolute bottom-8 left-1/2 hidden -translate-x-1/2 text-white/60 transition hover:text-white md:flex flex-col items-center gap-1" aria-label="Explorar">
+    <span class="text-xs uppercase tracking-widest">Explorar</span>
+    <i class="ri-arrow-down-line animate-bounce text-xl"></i>
+  </button>
 </section>
 
-<!-- Why Choose Us -->
-<section id="porque" class="py-20 bg-white">
-  <div class="container-page">
+<!-- Why Choose Us + Stat Counters -->
+<section id="stats" data-section="stats" class="border-b border-slate-200 py-20 bg-white">
+  <div class="container-page" [class.fade-in-up]="isVisible('stats')">
+    <div class="mb-14 grid grid-cols-2 gap-6 md:grid-cols-4">
+      <div *ngFor="let stat of stats" class="stat-card group rounded-2xl border border-slate-100 bg-slate-50 p-6 text-center transition-all duration-300 hover:-translate-y-1 hover:border-primary/20 hover:shadow-lg hover:shadow-primary/5">
+        <span class="mx-auto flex h-14 w-14 items-center justify-center rounded-xl bg-primary/10 text-2xl text-primary transition-all duration-300 group-hover:scale-110 group-hover:bg-primary group-hover:text-white">
+          <i [class]="stat.icon"></i>
+        </span>
+        <p class="mt-4 text-3xl font-bold text-tertiary">{{ stat.value }}</p>
+        <p class="mt-1 text-sm text-slate-500">{{ stat.label }}</p>
+      </div>
+    </div>
+
     <div class="grid grid-cols-1 gap-10 lg:grid-cols-[1.1fr_0.9fr]">
       <div>
         <p class="eyebrow mb-4">Confianza profesional</p>
@@ -69,69 +71,25 @@
         </p>
 
         <div class="mt-8 grid gap-5 sm:grid-cols-2">
-          <div class="rounded-3xl border border-slate-100 bg-slate-50 p-6">
-            <div class="mb-3 flex h-11 w-11 items-center justify-center rounded-xl bg-primary/10 text-primary">
-              <i class="ri-user-star-line text-xl"></i>
+          <div *ngFor="let item of [
+            { icon: 'ri-user-star-line', title: 'Guías certificados', desc: 'Equipo local con certificaciones oficiales y profundo conocimiento cultural en cada ruta.' },
+            { icon: 'ri-map-2-line', title: 'Itinerarios claros', desc: 'Programa de viaje con transporte, alojamiento y actividades explicadas paso a paso.' },
+            { icon: 'ri-customer-service-2-line', title: 'Apoyo permanente', desc: 'Acompañamiento antes, durante y después del viaje para que todo transcurra sin contratiempos.' },
+            { icon: 'ri-leaf-line', title: 'Viajes responsables', desc: 'Operamos con respeto ambiental y apoyamos proyectos comunitarios en cada destino.' }
+          ]" class="feature-card rounded-2xl border border-slate-100 bg-slate-50 p-6 transition-all duration-300 hover:-translate-y-1 hover:border-primary/20 hover:shadow-lg hover:shadow-primary/5">
+            <div class="mb-3 flex h-11 w-11 items-center justify-center rounded-xl bg-primary/10 text-xl text-primary">
+              <i [class]="item.icon"></i>
             </div>
-            <h3 class="text-lg font-semibold text-tertiary">Guías certificados</h3>
-            <p class="mt-2 text-slate-600">Equipo local con certificaciones oficiales y profundo conocimiento cultural en cada ruta.</p>
-          </div>
-          <div class="rounded-3xl border border-slate-100 bg-slate-50 p-6">
-            <div class="mb-3 flex h-11 w-11 items-center justify-center rounded-xl bg-primary/10 text-primary">
-              <i class="ri-map-2-line text-xl"></i>
-            </div>
-            <h3 class="text-lg font-semibold text-tertiary">Itinerarios claros</h3>
-            <p class="mt-2 text-slate-600">Programa de viaje con transporte, alojamiento y actividades explicadas paso a paso.</p>
-          </div>
-          <div class="rounded-3xl border border-slate-100 bg-slate-50 p-6">
-            <div class="mb-3 flex h-11 w-11 items-center justify-center rounded-xl bg-primary/10 text-primary">
-              <i class="ri-customer-service-2-line text-xl"></i>
-            </div>
-            <h3 class="text-lg font-semibold text-tertiary">Apoyo permanente</h3>
-            <p class="mt-2 text-slate-600">Acompañamiento antes, durante y después del viaje para que todo transcurra sin contratiempos.</p>
-          </div>
-          <div class="rounded-3xl border border-slate-100 bg-slate-50 p-6">
-            <div class="mb-3 flex h-11 w-11 items-center justify-center rounded-xl bg-primary/10 text-primary">
-              <i class="ri-leaf-line text-xl"></i>
-            </div>
-            <h3 class="text-lg font-semibold text-tertiary">Viajes responsables</h3>
-            <p class="mt-2 text-slate-600">Operamos con respeto ambiental y apoyamos proyectos comunitarios en cada destino.</p>
+            <h3 class="text-lg font-semibold text-tertiary">{{ item.title }}</h3>
+            <p class="mt-2 text-slate-600">{{ item.desc }}</p>
           </div>
         </div>
       </div>
 
-      <div class="overflow-hidden rounded-3xl shadow-xl">
-        <img src="/images/whyus.webp?v=2" alt="Grupo de viajeros con guía en Perú" width="800" height="600" class="h-full min-h-[420px] w-full object-cover" loading="lazy" />
+      <div class="overflow-hidden rounded-3xl shadow-xl transition-all duration-500 hover:shadow-2xl">
+        <img src="/images/whyus.webp?v=2" alt="Grupo de viajeros con guía en Perú" width="800" height="600" class="h-full min-h-[420px] w-full object-cover transition duration-500 hover:scale-105" loading="lazy" />
       </div>
     </div>
-  </div>
-</section>
-
-<!-- Contacto -->
-<section id="contacto" class="py-20 bg-slate-50 scroll-mt-24">
-  <div class="container-page">
-    <app-page-hero
-      variant="gradient"
-      eyebrow="Asesoría directa"
-      title="Habla con un experto"
-      description="Cuéntanos tus fechas, intereses y presupuesto. Recibirás una propuesta personalizada, clara y sin compromiso."
-    >
-      <div class="grid items-center gap-8 lg:grid-cols-[1.4fr_1fr]">
-        <div>
-          <div class="space-y-3 text-white/90">
-            <div class="flex items-center gap-3"><i class="ri-whatsapp-line text-xl"></i><span>Atención rápida por WhatsApp</span></div>
-            <div class="flex items-center gap-3"><i class="ri-mail-line text-xl"></i><span>info@kusiqumir.com</span></div>
-            <div class="flex items-center gap-3"><i class="ri-book-open-line text-xl"></i><span>Condiciones claras y transparentes</span></div>
-          </div>
-        </div>
-        <div class="flex justify-center">
-          <a href="https://wa.me/{{ whatsappNumber }}"
-            class="inline-flex items-center justify-center gap-2 rounded-full bg-white px-8 py-4 font-semibold text-primary transition hover:bg-slate-100">
-            <i class="ri-whatsapp-line text-xl"></i> Escribir por WhatsApp
-          </a>
-        </div>
-      </div>
-    </app-page-hero>
   </div>
 </section>
 
@@ -165,7 +123,7 @@
 </section>
 
 <!-- Paquetes Destacados -->
-<section class="py-20 bg-slate-50">
+<section class="py-20 bg-slate-200">
   <div class="container-page">
     <div class="mb-14 text-center">
       <p class="eyebrow mb-4">Paquetes seleccionados</p>
@@ -182,29 +140,32 @@
 
     <div *ngIf="!isLoading" class="grid grid-cols-1 gap-8 md:grid-cols-3">
       <article *ngFor="let pkg of featuredPackages; trackBy: trackByFn"
-        class="group overflow-hidden rounded-3xl bg-white shadow-sm ring-1 ring-slate-100 transition-all duration-300 hover:-translate-y-1 hover:shadow-xl">
+        class="group overflow-hidden rounded-2xl bg-white shadow-sm ring-1 ring-slate-100 transition-all duration-300 hover:-translate-y-1 hover:shadow-xl">
         <div class="relative h-56 overflow-hidden">
           <img [src]="pkg.imageUrl || '/images/pack1.webp?v=2'" [alt]="pkg.name" width="400" height="300"
             class="h-full w-full object-cover transition duration-500 group-hover:scale-105" loading="lazy" />
-          <div class="absolute left-4 top-4 rounded-full bg-primary px-3 py-1 text-sm font-semibold text-white shadow">
-            {{ pkg.featured ? 'Destacado' : 'Disponible' }}
-          </div>
-          <div class="absolute right-4 top-4 rounded-full bg-white/90 px-3 py-1 text-sm font-semibold text-tertiary shadow">
+          <div class="absolute left-4 top-4 rounded-full bg-white/90 px-3 py-1 text-xs font-semibold text-tertiary shadow-sm backdrop-blur-sm">
             {{ pkg.durationDays }} días
+          </div>
+          <div *ngIf="pkg.discount" class="absolute right-4 top-4 flex h-12 w-12 items-center justify-center rounded-full bg-red-500 text-sm font-bold text-white shadow-lg">
+            -{{ pkg.discount }}%
           </div>
         </div>
         <div class="p-6">
           <h3 class="text-xl font-bold text-tertiary">{{ pkg.name }}</h3>
           <p class="mt-2 line-clamp-3 text-slate-600">{{ pkg.description }}</p>
-          <div class="mt-4 flex flex-wrap items-center gap-2 text-sm">
+          <div class="mt-3 flex flex-wrap items-center gap-2 text-sm">
             <span class="inline-flex items-center gap-1 rounded-full bg-secondary-soft px-2.5 py-0.5 font-medium text-primary">
               <i class="ri-check-line"></i> {{ pkg.tours?.length || 0 }} tour(es)
             </span>
-            <span class="rounded-full bg-slate-100 px-2.5 py-0.5 font-medium text-slate-700">Desde $ {{ pkg.price | number: '1.0-0' }}</span>
           </div>
-          <div class="mt-6 flex gap-3">
+          <div class="mt-4 border-t border-slate-100 pt-4">
+            <p class="text-xs text-slate-400">Desde</p>
+            <p class="text-3xl font-bold text-primary">$ {{ pkg.price | number: '1.0-0' }} <span class="text-base font-normal text-slate-400">/ persona</span></p>
+          </div>
+          <div class="mt-4 flex gap-3">
             <a routerLink="/paquetes" class="flex-1 rounded-full border border-slate-200 py-3 text-center text-sm font-semibold text-slate-700 transition hover:bg-slate-100">Ver detalles</a>
-            <a href="#contacto" class="flex-1 rounded-full bg-primary py-3 text-center text-sm font-semibold text-white transition hover:bg-primary-dark">Reservar</a>
+            <a routerLink="/paquetes" class="flex-1 rounded-full bg-primary py-3 text-center text-sm font-semibold text-white transition hover:bg-primary-dark">Reservar</a>
           </div>
         </div>
       </article>
@@ -216,7 +177,7 @@
   </div>
 </section>
 
-<!-- Experiencias -->
+<!-- Experiencias (Masonry) -->
 <section class="py-20 bg-white">
   <div class="container-page">
     <div class="mb-14 text-center">
@@ -230,53 +191,63 @@
       </a>
     </div>
 
-    <div class="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3">
-      <article class="group overflow-hidden rounded-3xl border border-slate-100 bg-white shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-xl">
-        <div class="h-52 overflow-hidden">
-          <img src="/images/exp1.webp?v=2" alt="Viajeros felices en Cusco" width="400" height="250" class="h-full w-full object-cover transition duration-500 group-hover:scale-105" loading="lazy" />
+    <div class="grid grid-cols-1 gap-6 lg:grid-cols-12">
+      <div class="group relative col-span-7 overflow-hidden rounded-2xl shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-xl">
+        <div class="h-[420px] overflow-hidden lg:h-full">
+          <img src="/images/exp1.webp?v=2" alt="Viajeros felices en Cusco" class="h-full w-full object-cover transition duration-500 group-hover:scale-105" loading="lazy" />
         </div>
-        <div class="p-6">
-          <span class="text-xs font-semibold uppercase tracking-wider text-primary">Guía de viaje</span>
-          <h3 class="mt-2 text-xl font-bold text-tertiary">Mejor época para viajar a Cusco</h3>
-          <p class="mt-2 text-slate-600">Conoce cuándo visitar Cusco para disfrutar de festivales, clima agradable y menos multitudes.</p>
-          <a routerLink="/experiencias" class="mt-4 inline-flex items-center gap-1 font-semibold text-primary transition hover:gap-2">Ver experiencia <i class="ri-arrow-right-line"></i></a>
+        <div class="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent"></div>
+        <div class="absolute bottom-0 left-0 right-0 p-6 text-white">
+          <span class="rounded-full bg-primary/80 px-3 py-1 text-xs font-semibold uppercase tracking-wider">Guía de viaje</span>
+          <h3 class="mt-3 text-2xl font-bold">Mejor época para viajar a Cusco</h3>
+          <p class="mt-1 text-white/80">Conoce cuándo visitar Cusco para disfrutar de festivales, clima agradable y menos multitudes.</p>
+          <a routerLink="/experiencias" class="mt-3 inline-flex items-center gap-1 font-semibold text-white transition hover:gap-2">Ver experiencia <i class="ri-arrow-right-line"></i></a>
         </div>
-      </article>
+      </div>
 
-      <article class="group overflow-hidden rounded-3xl border border-slate-100 bg-white shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-xl">
-        <div class="h-52 overflow-hidden">
-          <img src="/images/exp2.webp?v=2" alt="Preparativos para Machu Picchu" width="400" height="250" class="h-full w-full object-cover transition duration-500 group-hover:scale-105" loading="lazy" />
+      <div class="col-span-5 flex flex-col gap-6">
+        <div class="group relative flex-1 overflow-hidden rounded-2xl shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-xl">
+          <div class="h-full overflow-hidden">
+            <img src="/images/exp2.webp?v=2" alt="Preparativos para Machu Picchu" class="h-full w-full object-cover transition duration-500 group-hover:scale-105" loading="lazy" />
+          </div>
+          <div class="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent"></div>
+          <div class="absolute bottom-0 left-0 right-0 p-5 text-white">
+            <span class="rounded-full bg-primary/80 px-2.5 py-0.5 text-xs font-semibold uppercase tracking-wider">Consejos prácticos</span>
+            <h3 class="mt-2 text-lg font-bold">Qué llevar a Machu Picchu</h3>
+            <a routerLink="/experiencias" class="mt-2 inline-flex items-center gap-1 text-sm font-semibold text-white/80 transition hover:text-white">Ver experiencia <i class="ri-arrow-right-line"></i></a>
+          </div>
         </div>
-        <div class="p-6">
-          <span class="text-xs font-semibold uppercase tracking-wider text-primary">Consejos prácticos</span>
-          <h3 class="mt-2 text-xl font-bold text-tertiary">Qué llevar a Machu Picchu</h3>
-          <p class="mt-2 text-slate-600">Una lista de equipaje esencial para que viajes cómodo y preparado a la ruta inca.</p>
-          <a routerLink="/experiencias" class="mt-4 inline-flex items-center gap-1 font-semibold text-primary transition hover:gap-2">Ver experiencia <i class="ri-arrow-right-line"></i></a>
+        <div class="group relative flex-1 overflow-hidden rounded-2xl shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-xl">
+          <div class="h-full overflow-hidden">
+            <img src="/images/exp3.webp?v=2" alt="Noche estrellada en los Andes" class="h-full w-full object-cover transition duration-500 group-hover:scale-105" loading="lazy" />
+          </div>
+          <div class="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent"></div>
+          <div class="absolute bottom-0 left-0 right-0 p-5 text-white">
+            <span class="rounded-full bg-primary/80 px-2.5 py-0.5 text-xs font-semibold uppercase tracking-wider">Presupuesto</span>
+            <h3 class="mt-2 text-lg font-bold">Costo real de viajar a Perú</h3>
+            <a routerLink="/experiencias" class="mt-2 inline-flex items-center gap-1 text-sm font-semibold text-white/80 transition hover:text-white">Ver experiencia <i class="ri-arrow-right-line"></i></a>
+          </div>
         </div>
-      </article>
-
-      <article class="group overflow-hidden rounded-3xl border border-slate-100 bg-white shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-xl">
-        <div class="h-52 overflow-hidden">
-          <img src="/images/exp3.webp?v=2" alt="Noche estrellada en los Andes" width="400" height="250" class="h-full w-full object-cover transition duration-500 group-hover:scale-105" loading="lazy" />
-        </div>
-        <div class="p-6">
-          <span class="text-xs font-semibold uppercase tracking-wider text-primary">Presupuesto</span>
-          <h3 class="mt-2 text-xl font-bold text-tertiary">Costo real de viajar a Perú</h3>
-          <p class="mt-2 text-slate-600">Calcula tus gastos y evita sorpresas con una guía práctica para planificar tu presupuesto.</p>
-          <a routerLink="/experiencias" class="mt-4 inline-flex items-center gap-1 font-semibold text-primary transition hover:gap-2">Ver experiencia <i class="ri-arrow-right-line"></i></a>
-        </div>
-      </article>
+      </div>
     </div>
   </div>
 </section>
 
 <!-- Testimonios -->
-<section class="py-20 bg-slate-50">
+<section class="py-20 bg-slate-200">
   <div class="container-page">
     <div class="mb-14 text-center">
       <p class="eyebrow mb-4">Testimonios reales</p>
       <h2 class="section-title mb-4">Viajeros que confiaron en nosotros</h2>
       <p class="mx-auto max-w-3xl text-xl text-slate-600">Experiencias auténticas y valoraciones reales que respaldan nuestro servicio.</p>
+    </div>
+
+    <div class="mb-10 flex flex-wrap items-center justify-center gap-6">
+      <span class="text-5xl font-bold text-tertiary">4.8</span>
+      <div class="flex gap-1">
+        <i *ngFor="let s of [1,2,3,4,5]" class="ri-star-fill text-2xl text-amber-400"></i>
+      </div>
+      <span class="text-slate-400">(128 opiniones)</span>
     </div>
 
     <div *ngIf="testimonials.length > 0; else skeletonTestimonials" class="grid grid-cols-1 gap-8 md:grid-cols-3">
@@ -298,36 +269,37 @@
     </ng-template>
 
     <div class="mt-12 text-center">
-      <a href="#contacto" class="inline-flex items-center justify-center gap-2 rounded-full bg-primary px-8 py-4 font-semibold text-white transition hover:bg-primary-dark">
-        Solicitar asesoría personalizada
+      <a href="https://wa.me/{{ whatsappNumber }}" class="inline-flex items-center justify-center gap-2 rounded-full bg-primary px-8 py-4 font-semibold text-white transition hover:bg-primary-dark">
+        <i class="ri-whatsapp-line"></i> Solicitar asesoría personalizada
       </a>
     </div>
   </div>
 </section>
 
+
+
 <!-- CTA Final -->
-<section class="py-20 bg-linear-to-r from-primary to-primary-dark">
-  <div class="container-page text-center">
+<section class="relative overflow-hidden bg-linear-to-r from-primary to-primary-dark py-24">
+  <div class="dot-pattern absolute inset-0"></div>
+  <div class="container-page relative z-10 text-center">
     <div class="mx-auto max-w-4xl">
-      <div class="mb-10 overflow-hidden rounded-3xl shadow-2xl">
-        <img src="/images/cta.webp?v=2" alt="Grupo de viajeros en paisaje peruano" width="800" height="288" class="h-72 w-full object-cover" loading="lazy" />
-      </div>
       <h2 class="text-4xl font-bold text-white">¿Listo para descubrir el Perú auténtico?</h2>
       <p class="mx-auto mt-4 max-w-2xl text-xl text-white/85">
         Te ayudamos a diseñar un viaje tranquilo, profesional y con experiencias locales únicas. Empieza con una consulta personalizada.
       </p>
       <div class="mt-8 flex flex-col justify-center gap-4 sm:flex-row">
-        <a href="#contacto" class="inline-flex items-center justify-center gap-2 rounded-full bg-white px-8 py-4 font-semibold text-primary transition hover:bg-slate-100">
-          Cotizar mi viaje gratis
+        <a href="https://wa.me/{{ whatsappNumber }}" class="btn-cta-pulse group inline-flex items-center justify-center gap-2 rounded-full bg-white px-8 py-4 font-semibold text-primary transition hover:bg-slate-100">
+          <span>Cotizar mi viaje gratis</span>
+          <i class="ri-whatsapp-line transition-transform duration-200 group-hover:translate-x-1"></i>
         </a>
-        <a href="https://wa.me/{{ whatsappNumber }}" class="inline-flex items-center justify-center gap-2 rounded-full border border-white px-8 py-4 font-semibold text-white transition hover:bg-white hover:text-primary">
+        <a href="https://wa.me/{{ whatsappNumber }}" class="inline-flex items-center justify-center gap-2 rounded-full border-2 border-white px-8 py-4 font-semibold text-white transition-all hover:bg-white hover:text-primary">
           <i class="ri-whatsapp-line"></i> Consultar por WhatsApp
         </a>
       </div>
-      <div class="mt-8 flex flex-col items-center justify-center gap-6 text-sm text-white/85 sm:flex-row">
-        <div class="flex items-center gap-2"><i class="ri-check-line"></i><span>Respuesta en 2 horas</span></div>
-        <div class="flex items-center gap-2"><i class="ri-check-line"></i><span>Sin compromiso</span></div>
-        <div class="flex items-center gap-2"><i class="ri-check-line"></i><span>Asesoría gratuita</span></div>
+      <div class="mt-10 flex flex-col items-center justify-center gap-6 text-sm text-white/75 sm:flex-row">
+        <div class="flex items-center gap-2"><i class="ri-check-line"></i> Respuesta en 2 horas</div>
+        <div class="flex items-center gap-2"><i class="ri-check-line"></i> Sin compromiso</div>
+        <div class="flex items-center gap-2"><i class="ri-check-line"></i> Asesoría gratuita</div>
       </div>
     </div>
   </div>
