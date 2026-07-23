@@ -2,8 +2,8 @@ import { Component, OnInit, OnDestroy, inject, ChangeDetectionStrategy, ChangeDe
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { Meta, Title } from '@angular/platform-browser';
-import { Subscription } from 'rxjs';
-import { Tour } from '../../../services/travel-api.service';
+import { Subscription, firstValueFrom } from 'rxjs';
+import { Tour, TravelApiService } from '../../../services/travel-api.service';
 import { TourStateService } from '../../../services/tour-state.service';
 import { environment } from '../../../../environments/environment';
 
@@ -27,11 +27,12 @@ export class TourDetail implements OnInit, OnDestroy {
   private readonly meta = inject(Meta);
   private readonly title = inject(Title);
   private readonly tourState = inject(TourStateService);
+  private readonly travelApi = inject(TravelApiService);
   private readonly cdr = inject(ChangeDetectorRef);
 
   tour: Tour | null = null;
   tours: Tour[] = [];
-  isLoading = false;
+  isLoading = true;
   error = '';
   whatsappNumber = environment.whatsappNumber;
 
@@ -44,7 +45,7 @@ export class TourDetail implements OnInit, OnDestroy {
   private dataSub?: Subscription;
 
   ngOnInit(): void {
-    this.dataSub = this.route.data.subscribe(data => {
+    this.dataSub = this.route.data.subscribe(async data => {
       const tour = data['tour'] as Tour | null;
       if (tour) {
         this.transitioning.set(true);
@@ -54,17 +55,34 @@ export class TourDetail implements OnInit, OnDestroy {
         this.openFaqIndex.set(null);
         this.lightboxOpen.set(false);
         this.error = '';
-        this.tours = this.tourState.getTours().filter(t => t.slug !== tour.slug).slice(0, 6);
+
+        const cached = this.tourState.getTours();
+        if (cached.length) {
+          this.tours = cached.filter(t => t.slug !== tour.slug).slice(0, 6);
+        } else {
+          try {
+            const res = await firstValueFrom(this.travelApi.getTours());
+            this.tours = res.items.filter(t => t.slug !== tour.slug).slice(0, 6);
+          } catch {
+            this.tours = [];
+          }
+        }
+
         setTimeout(() => this.transitioning.set(false), 300);
       } else {
         this.error = 'No se pudo cargar la información del tour.';
       }
+      this.isLoading = false;
       this.cdr.markForCheck();
     });
   }
 
   ngOnDestroy(): void {
     this.dataSub?.unsubscribe();
+  }
+
+  get categoryName(): string {
+    return this.tour?.category?.name ?? '';
   }
 
   trackByIndex(index: number): number {
@@ -114,12 +132,9 @@ export class TourDetail implements OnInit, OnDestroy {
 
   currencySymbol(cur?: string): string {
     switch (cur) {
-      case 'PEN':
-        return 'S/';
-      case 'EUR':
-        return '€';
-      default:
-        return '$';
+      case 'PEN': return 'S/';
+      case 'EUR': return '€';
+      default: return '$';
     }
   }
 
@@ -169,6 +184,12 @@ export class TourDetail implements OnInit, OnDestroy {
 
   onImgError(event: Event): void {
     (event.target as HTMLImageElement).style.opacity = '0';
+  }
+
+  tourImageUrl(t: Tour, index: number = 0): string {
+    const url = t.images?.[index]?.url;
+    if (url) return `${url}?v=${t.updatedAt}`;
+    return '/images/dest1.webp?v=2';
   }
 
   private setSeo(tour: Tour): void {

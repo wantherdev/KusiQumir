@@ -46,6 +46,14 @@
           <span *ngIf="passwordInput.invalid && passwordInput.touched" class="mt-1 text-xs text-red-500">
             La contraseña debe tener al menos 6 caracteres
           </span>
+          @if (password && passwordInput.valid) {
+            <div class="mt-2">
+              <div class="h-1.5 w-full overflow-hidden rounded-full bg-slate-200">
+                <div class="h-full rounded-full transition-all duration-300" [class]="passwordStrength.color" [style.width]="passwordStrength.percent"></div>
+              </div>
+              <p class="mt-0.5 text-right text-[11px] text-slate-400">{{ passwordStrength.label }}</p>
+            </div>
+          }
         </label>
 
         <label class="block">

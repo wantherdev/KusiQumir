@@ -1,17 +1,22 @@
 <section class="page-shell px-4 py-20 sm:px-6 lg:px-8">
   <div class="mx-auto flex max-w-7xl flex-col gap-10">
-    <app-page-hero
-      variant="light"
-      eyebrow="Paquetes turísticos"
-      title="Itinerarios a medida para descubrir el Perú con comodidad"
-      description="Diseñamos viajes completos con transporte, alojamiento, guías y logística para que cada día sea claro, seguro y memorable."
-    >
-      <div class="flex flex-wrap gap-3">
-        <span class="rounded-full border border-primary/20 bg-white/70 px-4 py-2 text-sm font-semibold text-primary">Transporte incluido</span>
-        <span class="rounded-full border border-primary/20 bg-white/70 px-4 py-2 text-sm font-semibold text-primary">Guías locales</span>
-        <span class="rounded-full border border-primary/20 bg-white/70 px-4 py-2 text-sm font-semibold text-primary">Asistencia 24/7</span>
+    <header data-section="hero" class="relative overflow-hidden rounded-[2rem] bg-linear-to-r from-primary to-primary-dark px-8 py-12 text-white shadow-lg shadow-primary/20 sm:px-14 sm:py-16">
+      <div class="dot-pattern pointer-events-none absolute inset-0 opacity-40"></div>
+      <div class="relative">
+        <p class="text-sm font-semibold uppercase tracking-[0.35em] text-white/80">Paquetes turísticos</p>
+        <h1 class="mt-3 max-w-3xl text-4xl font-bold leading-tight sm:text-5xl">
+          Itinerarios a medida para descubrir el Perú con comodidad
+        </h1>
+        <p class="mt-4 max-w-3xl text-lg text-white/85">
+          Diseñamos viajes completos con transporte, alojamiento, guías y logística para que cada día sea claro, seguro y memorable.
+        </p>
+        <div class="mt-7 flex flex-wrap gap-3">
+          <span class="rounded-full bg-white/15 px-4 py-1.5 text-sm font-semibold text-white backdrop-blur-sm">Transporte incluido</span>
+          <span class="rounded-full bg-white/15 px-4 py-1.5 text-sm font-semibold text-white backdrop-blur-sm">Guías locales</span>
+          <span class="rounded-full bg-white/15 px-4 py-1.5 text-sm font-semibold text-white backdrop-blur-sm">Asistencia 24/7</span>
+        </div>
       </div>
-    </app-page-hero>
+    </header>
 
     @if (isLoading()) {
       <div class="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
@@ -26,7 +31,7 @@
     }
 
     @if (!isLoading() && !errorMessage()) {
-      <div class="panel p-6">
+      <div data-section="filters" class="panel p-6" [class.fade-in-up]="isVisible('filters')">
         <div class="grid gap-4 lg:grid-cols-[1.3fr_0.7fr_0.6fr]">
           <label class="block text-sm font-semibold text-slate-700">
             <span class="mb-2 block">Buscar paquete</span>
@@ -61,7 +66,7 @@
     }
 
     @if (!isLoading() && !errorMessage()) {
-      <div class="grid gap-6 lg:grid-cols-[1.1fr_0.9fr]">
+      <div data-section="packages" class="grid gap-6 lg:grid-cols-[1.1fr_0.9fr]" [class.fade-in-up]="isVisible('packages')">
         <div class="grid gap-6 lg:grid-cols-2">
           @for (pkg of visiblePackages(); track pkg.id) {
             <article

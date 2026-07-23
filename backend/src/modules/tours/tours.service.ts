@@ -12,10 +12,17 @@ const tourListSelect = {
   durationHours: true,
   difficulty: true,
   groupType: true,
+  serviceType: true,
   featured: true,
   active: true,
   categoryId: true,
   createdAt: true,
+  updatedAt: true,
+  category: true,
+  prices: true,
+  images: { orderBy: { sortOrder: "asc" } },
+  destinations: { include: { destination: true }, orderBy: { sortOrder: "asc" } },
+  reviews: { orderBy: { createdAt: "desc" } },
 } satisfies Prisma.TourSelect;
 
 const tourDetailSelect = {

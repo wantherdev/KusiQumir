@@ -1,27 +1,39 @@
 <section class="page-shell px-4 py-16 sm:px-6 lg:px-8">
   <div class="mx-auto flex max-w-7xl flex-col gap-10">
 
-    <!-- ===== Hero ===== -->
-    <header class="relative overflow-hidden rounded-[2rem] bg-linear-to-r from-primary to-primary-dark p-8 text-white shadow-lg shadow-primary/20 sm:p-12">
-      <div class="pointer-events-none absolute inset-0 opacity-20" style="background-image: radial-gradient(circle at 18% 22%, rgba(255,255,255,0.9) 1px, transparent 1px); background-size: 26px 26px;"></div>
-      <div class="relative">
+    <!-- ===== HERO ===== -->
+    <header data-section="hero" class="relative overflow-hidden rounded-[2rem] bg-linear-to-r from-primary to-primary-dark px-8 py-12 text-white shadow-lg shadow-primary/20 sm:px-14 sm:py-16">
+      <div class="floating-circle circle-1"></div>
+      <div class="floating-circle circle-2"></div>
+
+      <div class="relative z-10">
         <p class="text-sm font-semibold uppercase tracking-[0.35em] text-white/80">Destinos</p>
-        <h1 class="mt-3 max-w-3xl text-4xl font-bold leading-tight sm:text-5xl">
+        <h1 class="mt-3 max-w-3xl text-4xl font-bold leading-tight sm:text-5xl" [class.fade-in-up]="isVisible('hero')">
           Explora los lugares más emblemáticos del Perú
         </h1>
-        <p class="mt-4 max-w-3xl text-lg text-white/85">
+        <p class="mt-4 max-w-3xl text-lg text-white/85" [class.fade-in-up]="isVisible('hero')">
           Desde la majestuosidad de Cusco hasta la selva amazónica, cada ruta está diseñada para que
           vivas una experiencia auténtica y bien guiada.
         </p>
-        <div class="mt-7 flex flex-wrap gap-2.5">
-          <span class="rounded-full bg-white/15 px-4 py-1.5 text-sm font-semibold text-white backdrop-blur">Cultura</span>
-          <span class="rounded-full bg-white/15 px-4 py-1.5 text-sm font-semibold text-white backdrop-blur">Naturaleza</span>
-          <span class="rounded-full bg-white/15 px-4 py-1.5 text-sm font-semibold text-white backdrop-blur">Aventura</span>
+
+        <!-- Search in hero -->
+        <div class="mt-7" [class.fade-in-up]="isVisible('hero')">
+          <div class="relative max-w-md">
+            <i class="ri-search-line absolute left-4 top-1/2 -translate-y-1/2 text-white/50"></i>
+            <input
+              type="text"
+              [ngModel]="searchTerm()"
+              (ngModelChange)="searchTerm.set($event); onFilterChange()"
+              name="tourSearch"
+              placeholder="Buscar destino…"
+              class="w-full rounded-full border border-white/20 bg-white/10 py-3 pl-11 pr-4 text-sm text-white placeholder-white/50 outline-none backdrop-blur-sm transition focus:border-white/40 focus:bg-white/20 focus:ring-2 focus:ring-white/20"
+            />
+          </div>
         </div>
       </div>
     </header>
 
-    <!-- ===== Loading ===== -->
+    <!-- ===== LOADING ===== -->
     @if (isLoading()) {
       <div class="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
         <app-skeleton *ngFor="let _ of [].constructor(6)" variant="card" />
@@ -29,160 +41,154 @@
     }
 
     @if (!isLoading()) {
-      <!-- ===== Filters ===== -->
-      <div class="panel p-6">
-        <div class="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
-          <label class="block w-full lg:max-w-md">
-            <span class="mb-2 block text-sm font-semibold text-slate-700">Buscar destino</span>
-            <div class="relative">
-              <i class="ri-search-line absolute left-4 top-1/2 -translate-y-1/2 text-slate-400"></i>
-              <input
-                type="text"
-                [ngModel]="searchTerm()"
-                (ngModelChange)="searchTerm.set($event); onFilterChange()"
-                name="tourSearch"
-                placeholder="Cusco, Titicaca, Machu Picchu…"
-                class="w-full rounded-2xl border border-slate-200 bg-slate-50 py-3 pl-11 pr-4 text-sm outline-none transition focus:border-primary/50 focus:ring-2 focus:ring-primary/5"
-              />
-            </div>
-          </label>
-          <p class="text-sm text-slate-500">
-            Mostrando <span class="font-semibold text-slate-700">{{ visibleTours().length }}</span> de {{ tours().length }} destinos.
-          </p>
-        </div>
-
-        @if (availableCategories().length) {
-          <div class="mt-5 flex flex-wrap gap-2 border-t border-slate-100 pt-5">
+      <!-- ===== FILTER BAR ===== -->
+      <div data-section="filters" class="flex flex-col gap-5 sm:flex-row sm:items-center sm:justify-between" [class.fade-in-up]="isVisible('filters')">
+        <div class="flex flex-wrap items-center gap-2">
+          <button
+            type="button"
+            (click)="selectedCategory.set('all'); onFilterChange()"
+            [class.bg-primary]="selectedCategory() === 'all'"
+            [class.text-white]="selectedCategory() === 'all'"
+            [class.bg-white]="selectedCategory() !== 'all'"
+            [class.text-slate-600]="selectedCategory() !== 'all'"
+            [class.border-slate-200]="selectedCategory() !== 'all'"
+            [class.shadow-sm]="selectedCategory() === 'all'"
+            class="rounded-full border px-4 py-2 text-sm font-medium transition-all hover:border-primary/40"
+          >
+            Todos
+          </button>
+          @for (cat of availableCategories(); track cat) {
             <button
               type="button"
-              (click)="selectedCategory.set('all'); onFilterChange()"
-              [class.bg-primary]="selectedCategory() === 'all'"
-              [class.text-white]="selectedCategory() === 'all'"
-              [class.bg-white]="selectedCategory() !== 'all'"
-              [class.text-slate-600]="selectedCategory() !== 'all'"
-              [class.border-slate-200]="selectedCategory() !== 'all'"
-              class="rounded-full border px-4 py-2 text-sm font-medium transition hover:border-primary/40"
+              (click)="selectedCategory.set(cat); onFilterChange()"
+              [class.bg-primary]="selectedCategory() === cat"
+              [class.text-white]="selectedCategory() === cat"
+              [class.bg-white]="selectedCategory() !== cat"
+              [class.text-slate-600]="selectedCategory() !== cat"
+              [class.border-slate-200]="selectedCategory() !== cat"
+              [class.shadow-sm]="selectedCategory() === cat"
+              class="rounded-full border px-4 py-2 text-sm font-medium transition-all hover:border-primary/40"
             >
-              Todos
+              {{ cat }}
             </button>
-            @for (cat of availableCategories(); track cat) {
-              <button
-                type="button"
-                (click)="selectedCategory.set(cat); onFilterChange()"
-                [class.bg-primary]="selectedCategory() === cat"
-                [class.text-white]="selectedCategory() === cat"
-                [class.bg-white]="selectedCategory() !== cat"
-                [class.text-slate-600]="selectedCategory() !== cat"
-                [class.border-slate-200]="selectedCategory() !== cat"
-                class="rounded-full border px-4 py-2 text-sm font-medium transition hover:border-primary/40"
-              >
-                {{ cat }}
-              </button>
-            }
+          }
+        </div>
+        <p class="text-sm text-slate-500">
+          Mostrando <span class="font-semibold text-slate-700">{{ visibleTours().length }}</span> de {{ tours().length }} destinos
+        </p>
+      </div>
+
+      <!-- ===== TOUR CARDS ===== -->
+      <div data-section="cards" class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+        @for (tour of visibleTours(); track tour.id; let i = $index) {
+          <div
+            class="stagger-card"
+            [style.animation-delay]="(i % 6) * 0.08 + 's'"
+          >
+            <app-tour-card [tour]="tour" (cardClick)="navigateToTour(tour)" />
           </div>
         }
       </div>
 
-      <!-- ===== Grid + Detail ===== -->
-      <div class="grid gap-8 lg:grid-cols-[1.6fr_1fr]">
-        <!-- Tour cards -->
-        <div class="grid gap-6 sm:grid-cols-2">
-          @for (tour of visibleTours(); track tour.id) {
-            <app-tour-card [tour]="tour" (cardClick)="selectTour(tour.id)" />
-          }
-        </div>
-
-        <!-- Detail panel -->
-        <aside class="lg:sticky lg:top-6 h-fit panel p-6">
-          <p class="text-sm font-semibold uppercase tracking-[0.35em] text-primary">Detalle del tour</p>
-          @if (selectedTour(); as tour) {
-            <div class="mt-4 overflow-hidden rounded-2xl border border-slate-100">
-              <div class="relative h-44">
-                <div class="absolute inset-0 bg-linear-to-br from-primary/25 to-tertiary/25"></div>
-                <img
-                  [src]="tour.images?.[0]?.url || '/images/dest1.webp?v=2'"
-                  [alt]="tour.title"
-                  (error)="onImgError($event)"
-                  class="absolute inset-0 h-full w-full object-cover"
-                  loading="lazy"
-                />
-              </div>
-            </div>
-            <h2 class="mt-4 text-2xl font-bold text-tertiary">{{ tour.title }}</h2>
-            <p class="mt-3 text-sm leading-relaxed text-slate-600">{{ tour.description }}</p>
-
-            @if (tour.includes?.length) {
-              <div class="mt-5 rounded-2xl bg-secondary-soft p-4">
-                <p class="text-xs font-semibold uppercase tracking-[0.3em] text-primary">Incluye</p>
-                <ul class="mt-3 space-y-2">
-                  @for (inc of tour.includes; track inc.id) {
-                    <li class="flex items-start gap-2 text-sm text-slate-700">
-                      <i class="ri-checkbox-circle-fill mt-0.5 text-primary"></i>
-                      <span><span class="font-medium">{{ inc.title }}</span>@if (inc.description) { — {{ inc.description }} }</span>
-                    </li>
-                  }
-                </ul>
-              </div>
-            }
-
-            <div class="mt-5 flex items-center justify-between rounded-2xl border border-slate-200 px-5 py-4">
-              <div>
-                <p class="text-xs text-slate-400">Desde</p>
-                <p class="text-xl font-bold text-tertiary">{{ priceLabel(tour) }}</p>
-              </div>
-              <a [routerLink]="['/destinos/tour', tour.slug]" class="rounded-full bg-primary px-5 py-2 text-sm font-semibold text-white transition hover:bg-primary-dark">
-                Ver detalle
-              </a>
-            </div>
-          } @else {
-            <p class="mt-4 text-sm text-slate-500">Selecciona un tour para ver sus detalles.</p>
-          }
-        </aside>
-      </div>
-
-      <!-- Empty state -->
+      <!-- ===== EMPTY STATE ===== -->
       @if (!visibleTours().length) {
-        <div class="rounded-[2rem] border border-dashed border-slate-300 bg-white p-12 text-center">
+        <div data-section="empty" class="rounded-[2rem] border border-dashed border-slate-300 bg-white p-12 text-center" [class.fade-in-up]="isVisible('empty')">
           <div class="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-secondary-soft text-primary">
             <i class="ri-map-pin-line text-3xl"></i>
           </div>
           <p class="mt-4 text-lg font-semibold text-slate-700">No encontramos destinos con esos filtros</p>
           <p class="mt-1 text-sm text-slate-400">Prueba con otra búsqueda o categoría.</p>
+          <button
+            type="button"
+            (click)="clearFilters()"
+            class="mt-6 inline-flex items-center gap-2 rounded-full bg-primary px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-primary-dark"
+          >
+            <i class="ri-close-line"></i> Limpiar filtros
+          </button>
         </div>
       }
     }
 
-    <!-- ===== Recommended route ===== -->
+    <!-- ===== RECOMMENDED ROUTE ===== -->
     @if (!isLoading()) {
-      <div class="grid gap-6 panel p-8 lg:grid-cols-[1fr_1fr]">
-        <div>
-          <p class="text-sm font-semibold uppercase tracking-[0.35em] text-primary">Ruta recomendada</p>
-          <h2 class="mt-3 text-3xl font-bold text-tertiary">El Perú en una sola experiencia</h2>
-          <p class="mt-4 text-lg text-slate-600">
-            Puedes combinar varios destinos en un mismo viaje para vivir más de una faceta del país:
-            historia, naturaleza, cultura y gastronomía.
+      <section data-section="route" class="panel overflow-hidden p-0" [class.fade-in-up]="isVisible('route')">
+        <div class="grid lg:grid-cols-[1.2fr_1fr]">
+          <div class="flex flex-col justify-center p-8 sm:p-10">
+            <p class="text-sm font-semibold uppercase tracking-[0.35em] text-primary">Ruta recomendada</p>
+            <h2 class="mt-3 text-3xl font-bold text-tertiary">El Perú en una sola experiencia</h2>
+            <p class="mt-4 text-lg text-slate-600">
+              Puedes combinar varios destinos en un mismo viaje para vivir más de una faceta del país:
+              historia, naturaleza, cultura y gastronomía.
+            </p>
+            <a routerLink="/paquetes" class="mt-6 inline-flex w-fit items-center gap-2 rounded-full bg-primary px-6 py-3 text-sm font-semibold text-white transition hover:bg-primary-dark">
+              Ver paquetes <i class="ri-arrow-right-line"></i>
+            </a>
+          </div>
+          <div class="relative overflow-hidden bg-gradient-to-br from-primary/5 to-primary/10 p-8 sm:p-10">
+            <div class="dot-pattern pointer-events-none absolute inset-0 opacity-30"></div>
+            <div class="relative z-10 space-y-4">
+              <div class="flex items-start gap-4 rounded-2xl bg-white/90 p-5 shadow-sm backdrop-blur-sm transition hover:shadow-md">
+                <span class="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-primary/10 text-xl text-primary">
+                  <i class="ri-landscape-line"></i>
+                </span>
+                <div>
+                  <p class="font-semibold text-slate-800">Cusco y Valle Sagrado</p>
+                  <p class="mt-0.5 text-sm text-slate-500">Patrimonio inca y paisajes andinos.</p>
+                </div>
+              </div>
+              <div class="flex items-start gap-4 rounded-2xl bg-white/90 p-5 shadow-sm backdrop-blur-sm transition hover:shadow-md">
+                <span class="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-primary/10 text-xl text-primary">
+                  <i class="ri-building-line"></i>
+                </span>
+                <div>
+                  <p class="font-semibold text-slate-800">Arequipa y Colca</p>
+                  <p class="mt-0.5 text-sm text-slate-500">Arquitectura y grandes cañones.</p>
+                </div>
+              </div>
+              <div class="flex items-start gap-4 rounded-2xl bg-white/90 p-5 shadow-sm backdrop-blur-sm transition hover:shadow-md">
+                <span class="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-primary/10 text-xl text-primary">
+                  <i class="ri-water-flash-line"></i>
+                </span>
+                <div>
+                  <p class="font-semibold text-slate-800">Titicaca y Selva</p>
+                  <p class="mt-0.5 text-sm text-slate-500">Visión más amplia del Perú.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    }
+
+    <!-- ===== CTA ===== -->
+    @if (!isLoading()) {
+      <section data-section="cta" class="relative overflow-hidden rounded-[2rem] bg-linear-to-r from-primary to-primary-dark px-8 py-16 text-center text-white sm:px-16" [class.fade-in-up]="isVisible('cta')">
+        <div class="dot-pattern absolute inset-0"></div>
+        <div class="relative z-10 mx-auto max-w-3xl">
+          <h2 class="text-3xl font-bold sm:text-4xl">¿Listo para tu próxima aventura?</h2>
+          <p class="mx-auto mt-4 max-w-2xl text-lg text-white/85">
+            Contáctanos sin compromiso. Te ayudamos a elegir el tour ideal, resolver tus dudas y
+            preparar todo para que solo disfrutes.
           </p>
-          <a routerLink="/paquetes" class="mt-6 inline-flex items-center gap-2 rounded-full bg-primary px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-primary-dark">
-            Ver paquetes <i class="ri-arrow-right-line"></i>
-          </a>
+          <div class="mt-8 flex flex-col items-center justify-center gap-4 sm:flex-row">
+            <a href="https://wa.me/{{ whatsappNumber }}"
+              class="btn-cta-pulse group inline-flex items-center justify-center gap-2 rounded-full bg-white px-8 py-4 font-semibold text-primary transition hover:bg-slate-100">
+              <i class="ri-whatsapp-line text-xl transition-transform duration-200 group-hover:scale-110"></i>
+              <span>Consultar por WhatsApp</span>
+            </a>
+            <a routerLink="/paquetes"
+              class="inline-flex items-center justify-center gap-2 rounded-full border-2 border-white px-8 py-4 font-semibold text-white transition hover:bg-white hover:text-primary">
+              <i class="ri-gift-line text-xl"></i>
+              <span>Ver paquetes</span>
+            </a>
+          </div>
+          <div class="mt-8 flex flex-wrap items-center justify-center gap-6 text-sm text-white/70">
+            <span class="flex items-center gap-2"><i class="ri-check-line"></i> Respuesta rápida</span>
+            <span class="flex items-center gap-2"><i class="ri-check-line"></i> Sin compromiso</span>
+            <span class="flex items-center gap-2"><i class="ri-check-line"></i> Asesoría personalizada</span>
+          </div>
         </div>
-        <div class="rounded-[1.75rem] bg-secondary-soft p-6">
-          <ul class="space-y-3 text-slate-700">
-            <li class="flex items-start gap-3 rounded-2xl bg-white p-4 shadow-sm">
-              <i class="ri-landscape-line mt-0.5 text-xl text-primary"></i>
-              <span>Cusco y Valle Sagrado para patrimonio inca y paisajes andinos.</span>
-            </li>
-            <li class="flex items-start gap-3 rounded-2xl bg-white p-4 shadow-sm">
-              <i class="ri-building-line mt-0.5 text-xl text-primary"></i>
-              <span>Arequipa y Colca para arquitectura y grandes cañones.</span>
-            </li>
-            <li class="flex items-start gap-3 rounded-2xl bg-white p-4 shadow-sm">
-              <i class="ri-water-flash-line mt-0.5 text-xl text-primary"></i>
-              <span>Titicaca y selva para una visión más amplia del Perú.</span>
-            </li>
-          </ul>
-        </div>
-      </div>
+      </section>
     }
   </div>
 </section>

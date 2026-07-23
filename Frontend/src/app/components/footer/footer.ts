@@ -16,6 +16,7 @@ import { environment } from '../../../environments/environment';
 export class Footer {
   email = '';
   readonly social = environment.social;
+  readonly whatsappNumber = environment.whatsappNumber;
 
   private readonly notify = inject(NotificationService);
   private readonly travelApi = inject(TravelApiService);

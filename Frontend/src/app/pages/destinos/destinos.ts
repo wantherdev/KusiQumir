@@ -1,4 +1,4 @@
-import { Component, OnInit, inject, signal, computed } from '@angular/core';
+import { Component, OnInit, OnDestroy, inject, signal, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
@@ -6,26 +6,28 @@ import { Meta, Title } from '@angular/platform-browser';
 import { Skeleton } from '../../components/skeleton/skeleton';
 import { TourCard } from '../../components/tour-card/tour-card';
 import { Tour } from '../../services/travel-api.service';
+import { environment } from '../../../environments/environment';
 
 @Component({
   selector: 'app-destinos',
   imports: [CommonModule, FormsModule, RouterLink, Skeleton, TourCard],
   templateUrl: './destinos.html',
-  styleUrl: '../page.css',
+  styleUrls: ['../page.css', './destinos.css'],
 })
-export class Destinos implements OnInit {
+export class Destinos implements OnInit, OnDestroy {
   readonly tours = signal<Tour[]>([]);
-  readonly isLoading = signal(false);
+  readonly isLoading = signal(true);
   readonly searchTerm = signal('');
   readonly selectedCategory = signal('all');
-  readonly selectedTourId = signal<string | null>(null);
+  readonly visibleSections = signal<Set<string>>(new Set());
+  readonly whatsappNumber = environment.whatsappNumber;
 
   readonly visibleTours = computed(() => {
     const term = this.searchTerm().trim().toLowerCase();
     return this.tours().filter((tour) => {
       const matchesSearch =
         !term ||
-        `${tour.title} ${tour.description} ${tour.durationDays} ${tour.category?.name ?? ''}`
+        `${tour.title} ${tour.shortDescription} ${tour.durationDays} ${tour.category?.name ?? ''}`
           .toLowerCase()
           .includes(term);
       const matchesCategory =
@@ -40,14 +42,11 @@ export class Destinos implements OnInit {
     ),
   );
 
-  readonly selectedTour = computed(() =>
-    this.tours().find((tour) => tour.id === this.selectedTourId()) ?? null,
-  );
-
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
   private readonly meta = inject(Meta);
   private readonly title = inject(Title);
+  private observer?: IntersectionObserver;
 
   ngOnInit(): void {
     this.title.setTitle('Destinos | Kusi Q\'umir');
@@ -69,13 +68,45 @@ export class Destinos implements OnInit {
     const data = this.route.snapshot.data['tours'] as Tour[] | undefined;
     if (data?.length) {
       this.tours.set(data);
-      this.selectedTourId.set(this.tours()[0]?.id ?? null);
     }
+    this.isLoading.set(false);
 
     this.route.queryParams.subscribe((params) => {
       if (params['search']) this.searchTerm.set(params['search']);
       if (params['category']) this.selectedCategory.set(params['category']);
     });
+
+    this.setupScrollObserver();
+  }
+
+  ngOnDestroy(): void {
+    this.observer?.disconnect();
+  }
+
+  private setupScrollObserver(): void {
+    if (typeof IntersectionObserver === 'undefined') return;
+    this.observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            const id = entry.target.getAttribute('data-section');
+            if (id) this.visibleSections.update((s) => new Set(s).add(id));
+          }
+        });
+      },
+      { threshold: 0.15 },
+    );
+    setTimeout(() => {
+      document.querySelectorAll('[data-section]').forEach((el) => this.observer?.observe(el));
+    });
+  }
+
+  isVisible(section: string): boolean {
+    return this.visibleSections().has(section);
+  }
+
+  navigateToTour(tour: Tour): void {
+    this.router.navigate(['/destinos/tour', tour.slug]);
   }
 
   onFilterChange(): void {
@@ -90,16 +121,9 @@ export class Destinos implements OnInit {
     });
   }
 
-  selectTour(tourId: string): void {
-    this.selectedTourId.set(tourId);
-  }
-
-  priceLabel(tour: Tour): string {
-    const adult = tour.prices?.[0]?.adult;
-    return adult != null ? `$${adult.toLocaleString('en-US')}` : 'Consultar';
-  }
-
-  onImgError(event: Event): void {
-    (event.target as HTMLImageElement).style.opacity = '0';
+  clearFilters(): void {
+    this.searchTerm.set('');
+    this.selectedCategory.set('all');
+    this.router.navigate([], { queryParams: {}, replaceUrl: true });
   }
 }

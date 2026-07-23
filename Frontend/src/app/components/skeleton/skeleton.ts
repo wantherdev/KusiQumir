@@ -9,7 +9,7 @@ import { CommonModule } from '@angular/common';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class Skeleton {
-  @Input() variant: 'card' | 'text' | 'table-row' | 'hero' = 'text';
+  @Input() variant: 'card' | 'text' | 'table-row' = 'text';
   @Input() rows = 3;
   @Input() cols = 4;
   @Input() className = '';

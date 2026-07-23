@@ -1,0 +1,59 @@
+/* ============ FLOATING CIRCLES ============ */
+.floating-circle {
+  position: absolute;
+  border-radius: 50%;
+  opacity: 0.08;
+  pointer-events: none;
+}
+
+.circle-1 {
+  width: 400px;
+  height: 400px;
+  background: radial-gradient(circle, #00abaa, transparent);
+  top: -120px;
+  right: -80px;
+  animation: float1 8s ease-in-out infinite;
+}
+
+.circle-2 {
+  width: 240px;
+  height: 240px;
+  background: radial-gradient(circle, #647bab, transparent);
+  bottom: -60px;
+  left: -40px;
+  animation: float2 10s ease-in-out infinite;
+}
+
+@keyframes float1 {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  50% { transform: translate(25px, -25px) scale(1.05); }
+}
+
+@keyframes float2 {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  50% { transform: translate(-15px, 15px) scale(1.08); }
+}
+
+/* ============ CARD STAGGER ============ */
+.stagger-card {
+  animation: fadeInUp 0.5s ease both;
+}
+
+/* ============ HERO SHINE ============ */
+.btn-hero-shine {
+  position: relative;
+  overflow: hidden;
+}
+
+.btn-hero-shine::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(120deg, transparent 30%, rgba(255,255,255,0.1) 50%, transparent 70%);
+  transform: translateX(-100%);
+  transition: transform 0.6s ease;
+}
+
+.btn-hero-shine:hover::after {
+  transform: translateX(100%);
+}

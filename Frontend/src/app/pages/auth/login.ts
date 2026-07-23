@@ -4,6 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
 import { NotificationService } from '../../services/notification.service';
+import { environment } from '../../../environments/environment';
 
 @Component({
   selector: 'app-login',
@@ -19,6 +20,7 @@ export class Login implements OnInit {
   errorMessage = '';
   isSubmitting = false;
   showPassword = false;
+  readonly whatsappNumber = environment.whatsappNumber;
 
   constructor(
     private readonly authService: AuthService,

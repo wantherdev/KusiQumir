@@ -23,7 +23,7 @@
           </div>
           <div class="flex items-center space-x-3">
             <i aria-hidden="true" class="ri-phone-line text-primary"></i>
-            <p>+51 987 654 321</p>
+            <p>{{ whatsappNumber }}</p>
           </div>
           <div class="flex items-center space-x-3">
             <i aria-hidden="true" class="ri-mail-line text-primary"></i>
@@ -41,40 +41,20 @@
         <h4 class="text-lg font-semibold mb-6">Destinos Principales</h4>
         <ul class="space-y-3 text-slate-300">
           <li>
-            <a
-              routerLink="/destinos/cusco-machu-picchu"
-              class="hover:text-primary transition-colors cursor-pointer"
-              >Cusco y Machu Picchu</a
-             >
-           </li>
-           <li>
-             <a
-               routerLink="/destinos/valle-sagrado"
-               class="hover:text-primary transition-colors cursor-pointer"
-               >Valle Sagrado</a
-             >
-           </li>
-           <li>
-             <a
-               routerLink="/destinos/arequipa"
-               class="hover:text-primary transition-colors cursor-pointer"
-               >Arequipa y Colca</a
-             >
-           </li>
-           <li>
-             <a
-               routerLink="/destinos/lago-titicaca"
-               class="hover:text-primary transition-colors cursor-pointer"
-               >Lago Titicaca</a
-             >
-           </li>
-           <li>
-             <a
-               routerLink="/destinos/selva-amazonica"
-               class="hover:text-primary transition-colors cursor-pointer"
-               >Selva Amazónica</a
-             >
-           </li>
+            <a routerLink="/destinos/tour/machu-picchu-full-day" class="hover:text-primary transition-colors">Cusco y Machu Picchu</a>
+          </li>
+          <li>
+            <a routerLink="/destinos/tour/valle-sagrado" class="hover:text-primary transition-colors">Valle Sagrado</a>
+          </li>
+          <li>
+            <a routerLink="/destinos/tour/valle-sur" class="hover:text-primary transition-colors">Arequipa y Colca</a>
+          </li>
+          <li>
+            <a routerLink="/destinos" class="hover:text-primary transition-colors">Lago Titicaca</a>
+          </li>
+          <li>
+            <a routerLink="/destinos" class="hover:text-primary transition-colors">Selva Amazónica</a>
+          </li>
            <li>
              <a
                routerLink="/paquetes"

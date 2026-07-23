@@ -1,20 +1,19 @@
-import { Component, OnInit, signal, computed } from '@angular/core';
+import { Component, OnInit, OnDestroy, signal, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
 import { Meta, Title } from '@angular/platform-browser';
 import { Skeleton } from '../../components/skeleton/skeleton';
-import { PageHero } from '../../components/page-hero/page-hero';
 import { NotificationService } from '../../services/notification.service';
 import { TravelApiService, TravelPackage } from '../../services/travel-api.service';
 
 @Component({
   selector: 'app-paquetes',
-  imports: [CommonModule, FormsModule, RouterLink, Skeleton, PageHero],
+  imports: [CommonModule, FormsModule, RouterLink, Skeleton],
   templateUrl: './paquetes.html',
   styleUrl: '../page.css',
 })
-export class Paquetes implements OnInit {
+export class Paquetes implements OnInit, OnDestroy {
   readonly packages = signal<TravelPackage[]>([]);
   readonly selectedPackageId = signal<string | null>(null);
   readonly isLoading = signal(true);
@@ -23,6 +22,7 @@ export class Paquetes implements OnInit {
   readonly message = signal('');
   readonly searchTerm = signal('');
   readonly selectedMode = signal<'all' | 'featured' | 'standard'>('all');
+  readonly visibleSections = signal<Set<string>>(new Set());
   reservationForm = {
     fullName: '',
     email: '',
@@ -63,6 +63,8 @@ export class Paquetes implements OnInit {
       : [],
   );
 
+  private observer?: IntersectionObserver;
+
   constructor(
     private readonly travelApiService: TravelApiService,
     private readonly notification: NotificationService,
@@ -71,6 +73,7 @@ export class Paquetes implements OnInit {
   ) {}
 
   ngOnInit(): void {
+    this.setupScrollObserver();
     this.title.setTitle('Paquetes | Kusi Q\'umir');
     this.meta.updateTag({
       name: 'description',
@@ -142,5 +145,31 @@ export class Paquetes implements OnInit {
           this.notification.show('No se pudo enviar la reserva. Intenta nuevamente.', 'error');
         },
       });
+  }
+
+  ngOnDestroy(): void {
+    this.observer?.disconnect();
+  }
+
+  isVisible(section: string): boolean {
+    return this.visibleSections().has(section);
+  }
+
+  private setupScrollObserver(): void {
+    if (typeof IntersectionObserver === 'undefined') return;
+    this.observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            const id = entry.target.getAttribute('data-section');
+            if (id) this.visibleSections.update((s) => new Set(s).add(id));
+          }
+        });
+      },
+      { threshold: 0.15 },
+    );
+    setTimeout(() => {
+      document.querySelectorAll('[data-section]').forEach((el) => this.observer?.observe(el));
+    });
   }
 }
