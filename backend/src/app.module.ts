@@ -21,6 +21,8 @@ import { NotificationsModule } from "./modules/notifications/notifications.modul
 import { BillingModule } from "./modules/billing/billing.module";
 import { ArticlesModule } from "./modules/articles/articles.module";
 import { ExperiencesModule } from "./modules/experiences/experiences.module";
+import { ContactModule } from "./modules/contact/contact.module";
+import { ClaimsModule } from "./modules/claims/claims.module";
 import { CategoriesModule } from "./modules/categories/categories.module";
 import { DestinationsModule } from "./modules/destinations/destinations.module";
 import { TestimonialsModule } from "./modules/testimonials/testimonials.module";
@@ -76,6 +78,8 @@ import { PrismaModule } from "./prisma/prisma.module";
     CsrfModule,
     UploadsModule,
     TestimonialsModule,
+    ContactModule,
+    ClaimsModule,
     CategoriesModule,
     DestinationsModule,
   ],

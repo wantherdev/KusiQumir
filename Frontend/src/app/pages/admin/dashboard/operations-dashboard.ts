@@ -251,21 +251,26 @@ export class OperationsDashboard implements OnInit {
     }
 
     this.saving = true;
-    this.api.createOperation({
-      bookingId: this.form.bookingId,
+    const payload = {
       guideId: this.form.guideId || undefined,
       transport: this.form.transport,
       pickupTime: this.form.pickupTime,
       status: this.form.status,
-    }).subscribe({
+    };
+
+    const request = this.editingOp
+      ? this.api.updateOperation(this.editingOp.id, payload)
+      : this.api.createOperation({ bookingId: this.form.bookingId, ...payload });
+
+    request.subscribe({
       next: () => {
-        this.notification.show('Operación creada correctamente.', 'success');
+        this.notification.show(this.editingOp ? 'Operación actualizada.' : 'Operación creada correctamente.', 'success');
         this.closeForm();
         this.load();
         this.cdr.markForCheck();
       },
       error: (err: any) => {
-        this.notification.show(err.error?.message || 'Error al crear operación.', 'error');
+        this.notification.show(err.error?.message || 'Error al guardar operación.', 'error');
         this.saving = false;
         this.cdr.markForCheck();
       },

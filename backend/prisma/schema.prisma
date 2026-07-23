@@ -99,6 +99,7 @@ model Tour {
   serviceType      ServiceType
   featured         Boolean        @default(false)
   active           Boolean        @default(true)
+  recommendedFor   String[]
   categoryId       String
   category         Category       @relation(fields: [categoryId], references: [id])
 
@@ -447,4 +448,29 @@ model Log {
   action    String
   details   String?
   createdAt DateTime @default(now())
+}
+
+model Contact {
+  id        String   @id @default(cuid())
+  name      String
+  email     String
+  phone     String?
+  message   String
+  createdAt DateTime @default(now())
+}
+
+model Claim {
+  id               String   @id @default(cuid())
+  nombre           String
+  documento        String
+  correo           String
+  telefono         String?
+  servicio         String?
+  reserva          String?
+  fechaServicio    String?
+  motivo           String
+  descripcion      String
+  documentos       String?
+  permitirContacto Boolean  @default(true)
+  createdAt        DateTime @default(now())
 }

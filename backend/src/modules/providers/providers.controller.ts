@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Param, UseGuards } from "@nestjs/common";
+import { Controller, Get, Post, Patch, Delete, Body, Param, UseGuards } from "@nestjs/common";
 import { ApiTags, ApiOperation, ApiBearerAuth } from "@nestjs/swagger";
 import { ProvidersService } from "./providers.service";
 import { JwtAuthGuard } from "../auth/jwt-auth.guard";
@@ -32,5 +32,19 @@ export class ProvidersController {
   @ApiOperation({ summary: "Obtener proveedor por ID" })
   findOne(@Param("id") id: string) {
     return this.providersService.findOne(id);
+  }
+
+  @Patch(":id")
+  @Roles("ADMIN")
+  @ApiOperation({ summary: "Actualizar proveedor" })
+  update(@Param("id") id: string, @Body() body: Partial<CreateProviderDto>) {
+    return this.providersService.update(id, body);
+  }
+
+  @Delete(":id")
+  @Roles("ADMIN")
+  @ApiOperation({ summary: "Eliminar proveedor" })
+  remove(@Param("id") id: string) {
+    return this.providersService.remove(id);
   }
 }

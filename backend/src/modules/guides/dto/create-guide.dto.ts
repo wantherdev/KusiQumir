@@ -1,5 +1,5 @@
 import { ApiProperty } from "@nestjs/swagger";
-import { IsArray, ArrayNotEmpty, IsNotEmpty, IsString } from "class-validator";
+import { IsArray, ArrayNotEmpty, IsNotEmpty, IsString, IsBoolean, IsNumber, Min, Max, IsOptional } from "class-validator";
 
 export class CreateGuideDto {
   @ApiProperty({ description: "Nombre del guía", required: true })
@@ -15,4 +15,16 @@ export class CreateGuideDto {
   @ApiProperty({ description: "Credencial del guía", required: true })
   @IsNotEmpty()
   credential!: string;
+
+  @ApiProperty({ description: "Disponible", required: false })
+  @IsOptional()
+  @IsBoolean()
+  availability?: boolean;
+
+  @ApiProperty({ description: "Valoración (0-5)", required: false })
+  @IsOptional()
+  @IsNumber()
+  @Min(0)
+  @Max(5)
+  rating?: number;
 }

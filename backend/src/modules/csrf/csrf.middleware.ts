@@ -11,14 +11,15 @@ export class CsrfMiddleware implements NestMiddleware {
     private readonly csrf: CsrfService,
     private readonly config: ConfigService,
   ) {
-    this.skipSegments = (this.config.get<string>("CSRF_SKIP_PATHS") || "auth/csrf,auth/login,auth/register,health")
-      .split(",")
-      .map((s) => s.trim())
-      .filter(Boolean);
+    const configPaths = this.config.get<string>("CSRF_SKIP_PATHS") || "auth/csrf,auth/login,auth/register,health";
+    this.skipSegments = [...configPaths.split(",").map((s: string) => s.trim()).filter(Boolean), "contact", "claims"];
   }
 
   use(req: Request, _res: Response, next: NextFunction) {
-    if (this.skipSegments.some((s) => req.path.includes(s))) {
+    const url = req.path || req.originalUrl || req.url || "";
+    const apiUrl = req.originalUrl || req.url || "";
+
+    if (this.skipSegments.some((s) => url.includes(s) || apiUrl.includes(s))) {
       return next();
     }
 

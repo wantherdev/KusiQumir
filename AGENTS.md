@@ -228,7 +228,9 @@ src/
 │   ├── analytics/      → Métricas dashboard
 │   ├── uploads/        → Subida de imágenes
 │   ├── health/         → Health check
-│   └── csrf/           → CSRF protection
+│   ├── csrf/           → CSRF protection
+│   ├── contact/        → Formulario de contacto público
+│   └── claims/         → Libro de reclamaciones público
 ├── prisma/
 │   ├── schema.prisma
 │   ├── seed.ts              → 10 tours, 4 packages, 4 testimonials, 2 roles, 1 admin
@@ -252,7 +254,7 @@ src/
 - **Swagger**: `http://localhost:3000/api/v1/docs` (solo disponible en desarrollo)
 - **Autenticación**: JWT en httpOnly cookie + CSRF token
 - **CSRF**: Token obtenido de `GET /api/auth/csrf` al iniciar la app (en `APP_INITIALIZER`)
-- **Endpoints públicos**: tours publicados, articles publicados, experiences publicados, packages, categories, destinations, health, auth (login/register/csrf)
+- **Endpoints públicos**: tours publicados, articles publicados, experiences publicados, packages, categories, destinations, health, auth (login/register/csrf), contact (POST), claims (POST)
 - **Endpoints admin**: requieren rol ADMIN (guard)
 - **Endpoints cliente**: requieren auth (authGuard), ej: `/bookings/me`, `/customers/me`
 - **Global guards**: ThrottlerGuard (rate limiting), JwtAuthGuard (protección global), RolesGuard (role-based)
@@ -293,6 +295,8 @@ src/
 - **DocumentAcceptance**: id, documentId → Document, customerId → Customer, ip, version, acceptedAt
 - **Notification**: id, channel, recipient, message, status, sentAt
 - **Log**: id, action, details?, createdAt
+- **Contact**: id, name, email, phone?, message, createdAt
+- **Claim**: id, nombre, documento, correo, telefono?, servicio?, reserva?, fechaServicio?, motivo, descripcion, documentos?, permitirContacto, createdAt
 
 ---
 
@@ -596,3 +600,69 @@ bash scripts/deploy.sh staging
 - **pnpm 9.15**: package manager estricto (frozen-lockfile, workspace)
 - **ESLint 10**: linting con `typescript-eslint`
 - **Prettier**: formateo consistente
+
+---
+
+## Changelog — Cambios implementados (Jul 2026)
+
+### Nuevos módulos backend
+
+| Módulo | Ruta | Descripción |
+|--------|------|-------------|
+| `modules/contact/` | `POST /api/v1/contact` (público) | Formulario de contacto, guarda en tabla `Contact` |
+| `modules/claims/` | `POST /api/v1/claims` (público) | Libro de reclamaciones, guarda en tabla `Claim` |
+
+### Provider — fixes y endpoints nuevos
+
+| Método | Ruta | Cambio |
+|--------|------|--------|
+| `PATCH` | `/providers/:id` | Nuevo: actualizar proveedor |
+| `DELETE` | `/providers/:id` | Nuevo: eliminar proveedor |
+| `POST` | `/providers` | Fix: ahora persiste `contract`, `commission`, `services` |
+| `GET` | `/providers` | Fix: select incluye `contract`, `commission`, `services`, `createdAt` |
+
+### Guide — fixes y endpoints nuevos
+
+| Método | Ruta | Cambio |
+|--------|------|--------|
+| `PATCH` | `/guides/:id` | Nuevo: actualizar guía (toggle availability, etc.) |
+| `DELETE` | `/guides/:id` | Nuevo: eliminar guía |
+| `POST` | `/guides` | Fix: `create()` acepta `availability` y `rating` opcionales |
+| `GET` | `/guides` | Fix: select incluye `availability`, `rating`, `createdAt` |
+
+### Operation — PATCH + frontend fix
+
+| Método | Ruta | Cambio |
+|--------|------|--------|
+| `PATCH` | `/operations/:id` | Nuevo: actualizar operación |
+| Frontend | `operations-dashboard.ts` | Fix: `save()` ahora llama `PATCH` si está editando, `POST` si es creación |
+| Frontend | `travel-api.service.ts` | Nuevo: `updateOperation(id, payload)` |
+
+### CSRF middleware
+
+| Archivo | Cambio |
+|---------|--------|
+| `csrf.middleware.ts` | Fix: usa `req.originalUrl` para matchear skip paths (además de `req.path`) |
+| | Agregados `contact` y `claims` a `skipSegments` |
+
+### Frontend — unificación de dashboards
+
+| Dashboard | Cambio |
+|-----------|--------|
+| `providers-dashboard.ts` | Eliminado `HttpClient` + `API_URL` directo. Usa `TravelApiService.deleteProvider()` |
+| `guides-dashboard.ts` | Eliminado `HttpClient` + `API_URL` directo. Usa `TravelApiService.updateGuide()` y `TravelApiService.deleteGuide()` |
+| `travel-api.service.ts` | Nuevos métodos: `updateProvider`, `deleteProvider`, `updateGuide`, `deleteGuide` |
+
+### Prisma schema
+
+| Modelo | Campos |
+|--------|--------|
+| `Contact` | id, name, email, phone?, message, createdAt |
+| `Claim` | id, nombre, documento, correo, telefono?, servicio?, reserva?, fechaServicio?, motivo, descripcion, documentos?, permitirContacto, createdAt |
+| `Tour` | Campo `recommendedFor String[]` agregado vía `prisma db push` |
+
+### ⚠️ Advertencias para la próxima IA
+
+1. **CSRF no respeta `@Public()`**: el middleware CSRF no usa Reflector. Toda nueva ruta pública debe agregarse manualmente al array `skipSegments` en `csrf.middleware.ts` línea ~15.
+2. **Prisma sin migraciones**: `Contact`, `Claim`, y `recommendedFor` en Tour se agregaron con `prisma db push`. No hay archivos de migración. Si se necesita rollback, usar `prisma db push --force-reset` (destructivo).
+3. **Provider/Guide create DTOs**: el frontend envía `{contract, commission, services}` para Provider y `{availability, rating}` para Guide. Asegurar que los DTOs y services los persistan.

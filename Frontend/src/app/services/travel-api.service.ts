@@ -644,6 +644,14 @@ export class TravelApiService {
     return this.http.post<Provider>(`${this.apiUrl}/providers`, payload);
   }
 
+  updateProvider(id: string, payload: Partial<{ name: string; type: string; contact: string; contract?: string; commission?: string; services?: string }>): Observable<Provider> {
+    return this.http.patch<Provider>(`${this.apiUrl}/providers/${id}`, payload);
+  }
+
+  deleteProvider(id: string): Observable<void> {
+    return this.http.delete<void>(`${this.apiUrl}/providers/${id}`);
+  }
+
   // --- Guides ---
   getGuides(): Observable<Guide[]> {
     return this.http.get<Guide[]>(`${this.apiUrl}/guides`);
@@ -657,6 +665,14 @@ export class TravelApiService {
     return this.http.post<Guide>(`${this.apiUrl}/guides`, payload);
   }
 
+  updateGuide(id: string, payload: Partial<{ name: string; languages: string; credential: string; availability?: boolean; rating?: number }>): Observable<Guide> {
+    return this.http.patch<Guide>(`${this.apiUrl}/guides/${id}`, payload);
+  }
+
+  deleteGuide(id: string): Observable<void> {
+    return this.http.delete<void>(`${this.apiUrl}/guides/${id}`);
+  }
+
   // --- Operations ---
   getOperations(): Observable<Operation[]> {
     return this.http.get<Operation[]>(`${this.apiUrl}/operations`);
@@ -668,6 +684,10 @@ export class TravelApiService {
 
   createOperation(payload: { bookingId: string; guideId?: string; transport: string; pickupTime: string; status?: string }): Observable<Operation> {
     return this.http.post<Operation>(`${this.apiUrl}/operations`, payload);
+  }
+
+  updateOperation(id: string, payload: { guideId?: string; transport?: string; pickupTime?: string; status?: string }): Observable<Operation> {
+    return this.http.patch<Operation>(`${this.apiUrl}/operations/${id}`, payload);
   }
 
   // --- Payments ---

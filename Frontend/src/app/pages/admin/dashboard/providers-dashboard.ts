@@ -1,4 +1,3 @@
-import { HttpClient } from '@angular/common/http';
 import { Component, OnInit, ChangeDetectionStrategy, ChangeDetectorRef, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
@@ -7,7 +6,6 @@ import { Provider, TravelApiService } from '../../../services/travel-api.service
 import { Skeleton } from '../../../components/skeleton/skeleton';
 import { ConfirmDialog } from '../../../components/confirm-dialog/confirm-dialog';
 import { NotificationService } from '../../../services/notification.service';
-import { API_URL } from '../../../tokens/api-url';
 
 @Component({
   selector: 'app-providers-dashboard',
@@ -198,8 +196,6 @@ import { API_URL } from '../../../tokens/api-url';
 })
 export class ProvidersDashboard implements OnInit {
   private readonly api = inject(TravelApiService);
-  private readonly http = inject(HttpClient);
-  private readonly apiUrl = inject(API_URL);
   private readonly cdr = inject(ChangeDetectorRef);
   private readonly notification = inject(NotificationService);
 
@@ -311,7 +307,7 @@ export class ProvidersDashboard implements OnInit {
     this.showConfirm = false;
     this.isLoading = true;
     try {
-      await firstValueFrom(this.http.delete<void>(`${this.apiUrl}/providers/${this.pendingDelete.id}`));
+      await firstValueFrom(this.api.deleteProvider(this.pendingDelete.id));
       this.notification.show('Proveedor eliminado.', 'success');
       this.pendingDelete = null;
       await this.load();
