@@ -1,5 +1,11 @@
 # WhatsApp Cloud API — Integración
 
+> ⚠️ **DOCUMENTO DE PLAN — NO IMPLEMENTADO**
+>
+> Este documento describe una integración futura con WhatsApp Cloud API.
+> Actualmente el backend no tiene implementado el envío automatizado de WhatsApp.
+> El módulo `notifications` existe pero usa un stub; no hay módulo `whatsapp` ni webhook.
+
 ## Objetivo
 
 Cuando un cliente crea una reserva desde el frontend:

@@ -9,7 +9,7 @@ Plataforma web completa para una agencia de viajes peruana con gestión de tours
 | Frontend | **Angular 22** + SSR + Service Worker (PWA) |
 | Estilos | **Tailwind CSS v4** + `@tailwindcss/typography` |
 | Backend | **NestJS 10** + Express |
-| ORM | **Prisma 5** + PostgreSQL 18 |
+| ORM | **Prisma 5** + PostgreSQL 17 (PostGIS) |
 | Auth | JWT (httpOnly cookie) + CSRF + Passport |
 | API Docs | Swagger en `/api/v1/docs` |
 | Monitoreo | Sentry + Grafana / Loki / Promtail |

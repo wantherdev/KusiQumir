@@ -1,60 +1,67 @@
-# Kusi Q'umir Travel
+# Kusi Q'umir Travel — Frontend
 
-Plataforma web de agencia de viajes en Cusco y Perú, construida con Angular 20, NestJS, Prisma y PostgreSQL.
+Plataforma web de agencia de viajes en Cusco y Perú, construida con Angular 22, NestJS, Prisma y PostgreSQL.
 
 ## Requisitos
 
-- Node.js 20+
-- pnpm
-- PostgreSQL en ejecución
+- Node.js 22+
+- pnpm 9.15
+- PostgreSQL 17+ en ejecución (o Docker)
 
 ## Variables de entorno
 
-Crea un archivo .env en la raíz del backend con:
+Backend (`.env` en `backend/`):
 
 ```env
 DATABASE_URL=postgresql://postgres:postgres@localhost:5432/kusiqumir
+JWT_SECRET=your-secret-key-min-16-chars
+CSRF_SECRET=your-csrf-secret-min-16-chars
+CORS_ORIGIN=http://localhost:4200
 PORT=3000
 ```
 
 ## Instalación
 
 ```bash
-cd /home/k3rnyx/Documents/Proyect/pages/kusiqumir_page
-pnpm install
+# Instalar dependencias
+cd Frontend && pnpm install
+cd ../backend && pnpm install
+cd ..
+
+# Iniciar BD con Docker
+docker compose up -d postgres
+
+# Migrar y seed
 cd backend
-pnpm install
 pnpm prisma generate
 pnpm prisma migrate dev --name init
 pnpm prisma db seed
+cd ..
 ```
 
 ## Ejecución
 
-Frontend (desde la raíz del proyecto):
-
 ```bash
-cd /home/k3rnyx/Documents/Proyect/pages/kusiqumir_page
-pnpm frontend:start
+# Terminal 1 — Backend (http://localhost:3000)
+pnpm --prefix Frontend backend:start
+
+# Terminal 2 — Frontend (http://localhost:4200)
+pnpm --prefix Frontend frontend:start
 ```
 
-Backend (desde la raíz del proyecto):
+O desde sus respectivas carpetas:
 
 ```bash
-cd /home/k3rnyx/Documents/Proyect/pages/kusiqumir_page
-pnpm backend:start
-```
-
-También puedes ejecutar comandos específicos del backend desde su carpeta:
-
-```bash
-cd /home/k3rnyx/Documents/Proyect/pages/kusiqumir_page/backend
-pnpm start:dev
+cd backend && pnpm start:dev
+cd Frontend && pnpm start
 ```
 
 ## Estado actual
 
-- Catálogo público de destinos y paquetes
-- Páginas de inicio, paquetes y blog con contenido inicial
-- API de destinos, paquetes y reservas
+- Catálogo público de destinos, tours, paquetes, experiencias y blog
+- Páginas legales (términos, privacidad, cancelaciones, libro de reclamaciones, contrato)
+- Panel admin con 12 dashboards (tours, blog, experiencias, paquetes, reservas, clientes, proveedores, guías, testimonios, operaciones, pagos, facturación)
+- Autenticación JWT + CSRF
+- SSR con Angular 22
+- API NestJS con 20+ módulos
 - Seed con datos originales de viajes en Cusco y Perú

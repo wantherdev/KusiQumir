@@ -1,4 +1,19 @@
-# 🏔️ Backend Architecture - Digital Travel Agency PRO
+# 🏔️ Backend Architecture - Kusi Q'umir
+
+> ⚠️ **ESTADO REAL DEL PROYECTO**
+>
+> Este documento es un plano arquitectónico original. Algunas secciones describen funcionalidades
+> **aún no implementadas**. Para ver el estado actual preciso, revisar:
+> - `DATABASE_SCHEMA.md` — esquema real de Prisma
+> - `API_ROUTES.md` — rutas actuales
+> - `/src/modules/` — módulos implementados
+>
+> **Implementado**: Auth (JWT+CSRF), Tours, Bookings, Customers, Articles, Experiences,
+> Packages, Categories, Destinations, Testimonials, Providers, Guides, Operations,
+> Payments, Billing, Legal, Contact, Claims, Uploads, Analytics, Notifications (stub), Health.
+>
+> **NO implementado**: Redis, OAuth Google, WhatsApp Login, 2FA, pagos reales
+> (Culqi/Niubiz/Stripe/PayPal), SUNAT, marketplace, IA, apps móviles, Refresh Tokens.
 
 ## 📌 Contexto del Proyecto
 

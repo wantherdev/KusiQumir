@@ -1,249 +1,139 @@
-# 🚀 Guía Correcta para Levantar los Servicios
+# Guía para Levantar los Servicios
 
 ## Requisitos Previos
 
-1. **Node.js** (v20+) y **pnpm** instalados
-2. **PostgreSQL** corriendo localmente en `localhost:5432`
-3. Credenciales PostgreSQL: usuario `postgres`, contraseña `postgres`
+1. **Node.js 22+** y **pnpm 9.15** instalados
+2. **Docker & Docker Compose** (para PostgreSQL)
+3. Puerto `5432` libre
 
 ---
 
-## 📋 Orden Correcto de Arranque
+## Orden Correcto de Arranque
 
 ### Paso 1: Levantar la Base de Datos (PostgreSQL)
 
-Asegúrate de que PostgreSQL esté corriendo:
-
 ```bash
-# En Linux/Mac
-brew services start postgresql
-
-# En Windows (si está instalado)
-net start PostgreSQL
+docker compose up -d postgres
 ```
 
 Verifica que está disponible:
+
 ```bash
-psql -U postgres -h localhost
+docker compose exec postgres psql -U postgres -d kusiqumir -c "SELECT 1"
 ```
 
 ---
 
 ### Paso 2: Preparar el Backend
 
-#### 2a. Instalar dependencias del backend
 ```bash
 cd backend
 pnpm install
-```
-
-#### 2b. Generar cliente Prisma
-```bash
-pnpm run prisma:generate
-```
-
-#### 2c. Ejecutar migraciones (crea tablas)
-```bash
-pnpm run prisma:migrate
-```
-
-#### 2d. Seed de datos (opcional - carga datos iniciales)
-```bash
-pnpm run prisma:seed
+pnpm prisma:generate
+pnpm db:migrate
+pnpm db:seed    # Opcional — carga datos iniciales
+cd ..
 ```
 
 ---
 
 ### Paso 3: Levantar Backend (NestJS)
 
-**Opción A - Desarrollo (con hot reload):**
 ```bash
-cd backend
-pnpm run start:dev
-```
+# Desarrollo (con hot reload)
+cd backend && pnpm start:dev
 
-**Opción B - Producción:**
-```bash
-cd backend
-pnpm run build
-pnpm run start:prod
+# El backend estará en: http://localhost:3000
 ```
-
-✅ El backend estará disponible en: **http://localhost:3000**
 
 ---
 
-### Paso 4: Preparar el Frontend (en otra terminal)
+### Paso 4: Preparar el Frontend
 
-#### 4a. Instalar dependencias del frontend
 ```bash
-# Vuelve a la raíz del proyecto
-cd ..
+cd Frontend
 pnpm install
+cd ..
 ```
 
 ---
 
 ### Paso 5: Levantar Frontend (Angular)
 
-**Opción A - Desarrollo (con hot reload):**
 ```bash
-pnpm start
-```
+# Desarrollo (con hot reload)
+cd Frontend && pnpm start
 
-**Opción B - Build y servir:**
-```bash
-pnpm run build
-pnpm run serve:ssr:kusiqumir_page
+# El frontend estará en: http://localhost:4200
 ```
-
-✅ El frontend estará disponible en: **http://localhost:4200**
 
 ---
 
-## 🔗 Acceso a Servicios
+## Acceso a Servicios
 
 | Servicio | URL | Puerto |
 |----------|-----|--------|
-| Frontend (Angular) | http://localhost:4200 | 4200 |
+| Frontend (Angular dev) | http://localhost:4200 | 4200 |
 | Backend (NestJS) | http://localhost:3000 | 3000 |
-| API Docs (Swagger) | http://localhost:3000/api | 3000 |
+| API Docs (Swagger) | http://localhost:3000/api/v1/docs | 3000 |
 | Base de Datos | localhost:5432 | 5432 |
-| Prisma Studio | http://localhost:5555 | 5555 |
+| Prisma Studio | `cd backend && pnpm prisma studio` | 5555 |
 
 ---
 
-## 📱 Dashboard de Tours (después de levantar)
+## Dashboard de Administración
 
 Una vez ambos servicios están corriendo:
 
-1. Ve a **http://localhost:4200**
-2. Navega a **http://localhost:4200/admin/tours**
-3. Login si es necesario
-4. ¡Gestiona tours!
+1. Ve a **http://localhost:4200/admin**
+2. Login con credenciales del seed (`admin@example.com` / `password123`)
+3. La autenticación usa **httpOnly cookie JWT + CSRF** (no Bearer token manual)
 
 ---
 
-## 🛠️ Solución de Problemas
+## Solución de Problemas
 
 ### Error: "ENOENT: no such file or directory"
+
 ```bash
-# Regenerar prisma client
-cd backend
-pnpm run prisma:generate
+cd backend && pnpm prisma:generate
 ```
 
 ### Error: "connect ECONNREFUSED 127.0.0.1:5432"
+
 ```bash
 # PostgreSQL no está corriendo
-# Reinicia PostgreSQL:
-brew services restart postgresql  # Mac
-# o sudo systemctl restart postgresql  # Linux
+docker compose up -d postgres
 ```
 
 ### Error: "Unknown column in field list"
+
 ```bash
-# Tablas no existen, ejecuta migraciones:
-cd backend
-pnpm run prisma:migrate
+cd backend && pnpm db:migrate
 ```
 
 ### Error: "Cannot find module"
-```bash
-# Dependencias no instaladas
-pnpm install
-cd backend && pnpm install
-```
-
----
-
-## 🔑 Generar Token JWT para Dashboard
-
-El dashboard requiere autenticación. Para obtener token:
 
 ```bash
-# 1. Login
-curl -X POST http://localhost:3000/api/auth/login \
-  -H "Content-Type: application/json" \
-  -d '{
-    "email": "admin@example.com",
-    "password": "password123"
-  }'
-
-# Respuesta:
-# {
-#   "access_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
-# }
-
-# 2. Copiar el token y usarlo en requests:
-curl http://localhost:4200/admin/tours \
-  -H "Authorization: Bearer YOUR_TOKEN_HERE"
+pnpm install && cd Frontend && pnpm install && cd ../backend && pnpm install
 ```
 
 ---
 
-## 🎯 Configuración de Puertos
-
-Si necesitas cambiar puertos:
-
-**Backend (.env):**
-```env
-PORT=3001  # Cambiar a otro puerto
-DATABASE_URL="postgresql://postgres:postgres@localhost:5432/kusiqumir"
-```
-
-**Frontend (package.json):**
-```json
-{
-  "scripts": {
-    "start": "ng serve --host 0.0.0.0 --port 4300"  // Cambiar puerto
-  }
-}
-```
-
----
-
-## ✅ Checklist de Arranque Rápido
-
-```bash
-# Terminal 1 - Backend
-cd backend
-pnpm install
-pnpm run prisma:generate
-pnpm run prisma:migrate
-pnpm run start:dev
-
-# Terminal 2 - Frontend  
-pnpm install
-pnpm start
-
-# Terminal 3 - (Opcional) Prisma Studio para ver DB
-cd backend && pnpm run prisma:studio
-```
-
----
-
-## 📌 Comandos Útiles
+## Comandos Útiles
 
 ```bash
 # Ver todos los scripts disponibles
 pnpm run
 
 # Limpiar y reinstalar
-rm -rf node_modules pnpm-lock.yaml
-pnpm install
+rm -rf node_modules pnpm-lock.yaml Frontend/node_modules backend/node_modules
+pnpm install && cd Frontend && pnpm install && cd ../backend && pnpm install && cd ..
 
 # Ver estado de la base de datos
-cd backend && pnpm run prisma:studio
+cd backend && pnpm prisma studio
 
 # Ejecutar tests
-pnpm run test           # Frontend
-cd backend && pnpm run test  # Backend
-
-# Generar documentación API (Swagger)
-# Disponible automáticamente en http://localhost:3000/api
+pnpm --prefix Frontend frontend:test     # Frontend (Vitest)
+pnpm --prefix backend test               # Backend (Jest)
 ```
-
----
-
-¡Listo! 🎉 Ya tienes todo configurado para desarrollar.

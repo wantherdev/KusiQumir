@@ -4,176 +4,201 @@ Base path: `/api/v1`
 
 ## Auth
 
-- `GET /auth/health`
-  - Health check del módulo de autenticación.
+| Método | Ruta | Auth | Roles | Descripción |
+|--------|------|------|-------|-------------|
+| `GET` | `/auth/csrf` | Público | - | Obtener token CSRF |
+| `GET` | `/auth/health` | Público | - | Health check de auth |
+| `POST` | `/auth/register` | Público | - | Registrar usuario (rate limit: 5/min) |
+| `POST` | `/auth/login` | Público | - | Login, setea cookie httpOnly JWT (rate limit: 5/min) |
+| `GET` | `/auth/me` | JWT | - | Obtener usuario actual |
+| `POST` | `/auth/logout` | Público | - | Cerrar sesión (limpia cookie) |
 
-- `POST /auth/register`
-  - Crea un usuario nuevo.
-  - Body: `{ email, password }`
+## Health
 
-- `POST /auth/login`
-  - Genera token JWT.
-  - Body: `{ email, password }`
-
-## Customers
-
-- `GET /customers`
-  - Lista clientes.
-  - Requiere JWT.
-  - Roles: `ADMIN`.
-
-- `POST /customers`
-  - Crea un cliente.
-  - Body: `{ name, email, nationality? }`
-  - Requiere JWT.
-  - Roles: `ADMIN`.
-
-- `GET /customers/:id`
-  - Obtiene cliente por ID.
-  - Requiere JWT.
-  - Roles: `ADMIN`.
+| Método | Ruta | Auth | Roles | Descripción |
+|--------|------|------|-------|-------------|
+| `GET` | `/health` | Público | - | Health check global (verifica conexión BD) |
 
 ## Tours
 
-- `GET /tours`
-  - Lista tours.
-  - Requiere JWT.
-
-- `POST /tours`
-  - Crea un tour.
-  - Body: `{ name, description, price, duration }`
-  - Requiere JWT.
-  - Roles: `ADMIN`.
-
-- `GET /tours/:id`
-  - Obtiene tour por ID.
-  - Requiere JWT.
+| Método | Ruta | Auth | Roles | Descripción |
+|--------|------|------|-------|-------------|
+| `GET` | `/tours` | Público | - | Listar tours publicados (query: take, cursor, difficulty) |
+| `GET` | `/tours/admin` | JWT | ADMIN | Listar todos los tours |
+| `GET` | `/tours/slug/:slug` | Público | - | Obtener tour por slug |
+| `GET` | `/tours/:id` | Público | - | Obtener tour por ID |
+| `POST` | `/tours` | JWT | ADMIN | Crear tour |
+| `POST` | `/tours/bulk` | JWT | ADMIN | Crear tours en masa |
+| `PATCH` | `/tours/:id` | JWT | ADMIN | Actualizar tour |
+| `DELETE` | `/tours/:id` | JWT | ADMIN | Eliminar tour |
 
 ## Bookings
 
-- `GET /bookings`
-  - Lista reservas.
-  - Requiere JWT.
-  - Roles: `ADMIN`.
+| Método | Ruta | Auth | Roles | Descripción |
+|--------|------|------|-------|-------------|
+| `GET` | `/bookings` | JWT | ADMIN | Listar reservas (query: take, cursor, status, customerId) |
+| `GET` | `/bookings/me` | JWT | ADMIN, CLIENTE | Mis reservas |
+| `POST` | `/bookings` | JWT | ADMIN, CLIENTE | Crear reserva |
+| `GET` | `/bookings/:id` | JWT | ADMIN, CLIENTE | Obtener reserva por ID |
+| `POST` | `/bookings/:id/cancel` | JWT | ADMIN, CLIENTE | Cancelar reserva |
+| `PATCH` | `/bookings/:id/status` | JWT | ADMIN | Actualizar estado de reserva |
 
-- `POST /bookings`
-  - Crea una reserva.
-  - Body: `{ customerId, travelers, tourId? , packageId? }`
-  - Requiere JWT.
-  - Roles: `ADMIN`, `CLIENTE`.
+## Customers
 
-- `GET /bookings/:id`
-  - Obtiene reserva por ID.
-  - Requiere JWT.
-  - Roles: `ADMIN`.
+| Método | Ruta | Auth | Roles | Descripción |
+|--------|------|------|-------|-------------|
+| `GET` | `/customers` | JWT | ADMIN | Listar clientes |
+| `POST` | `/customers` | JWT | ADMIN | Crear cliente |
+| `GET` | `/customers/me` | JWT | ADMIN, CLIENTE | Mi perfil de cliente |
+| `PATCH` | `/customers/me` | JWT | ADMIN, CLIENTE | Actualizar mi perfil |
+| `GET` | `/customers/:id` | JWT | ADMIN | Obtener cliente por ID |
 
-## Payments
+## Articles
 
-- `GET /payments`
-  - Lista pagos.
-  - Requiere JWT.
-  - Roles: `ADMIN`.
+| Método | Ruta | Auth | Roles | Descripción |
+|--------|------|------|-------|-------------|
+| `GET` | `/articles` | Público | - | Listar artículos publicados (query: take, cursor, category) |
+| `GET` | `/articles/:slug` | Público | - | Obtener artículo por slug |
+| `GET` | `/articles/admin` | JWT | ADMIN | Listar todos los artículos |
+| `GET` | `/articles/admin/:id` | JWT | ADMIN | Obtener artículo por ID |
+| `POST` | `/articles/admin` | JWT | ADMIN | Crear artículo |
+| `PATCH` | `/articles/admin/:id` | JWT | ADMIN | Actualizar artículo |
+| `DELETE` | `/articles/admin/:id` | JWT | ADMIN | Eliminar artículo |
 
-- `POST /payments`
-  - Registra un pago.
-  - Body: `{ bookingId, amount, currency }`
-  - Requiere JWT.
-  - Roles: `ADMIN`, `CLIENTE`.
+## Experiences
 
-- `GET /payments/:id`
-  - Obtiene pago por ID.
-  - Requiere JWT.
-  - Roles: `ADMIN`.
+| Método | Ruta | Auth | Roles | Descripción |
+|--------|------|------|-------|-------------|
+| `GET` | `/experiences` | Público | - | Listar experiencias publicadas (query: take, cursor, featured, location) |
+| `GET` | `/experiences/:slug` | Público | - | Obtener experiencia por slug |
+| `GET` | `/experiences/admin` | JWT | ADMIN | Listar todas las experiencias |
+| `GET` | `/experiences/admin/:id` | JWT | ADMIN | Obtener experiencia por ID |
+| `POST` | `/experiences/admin` | JWT | ADMIN | Crear experiencia |
+| `PATCH` | `/experiences/admin/:id` | JWT | ADMIN | Actualizar experiencia |
+| `DELETE` | `/experiences/admin/:id` | JWT | ADMIN | Eliminar experiencia |
 
 ## Packages
 
-- `GET /packages`
-  - Lista paquetes turísticos.
-  - Requiere JWT.
+| Método | Ruta | Auth | Roles | Descripción |
+|--------|------|------|-------|-------------|
+| `GET` | `/packages` | Público | - | Listar paquetes turísticos |
+| `GET` | `/packages/:id` | Público | - | Obtener paquete por ID |
+| `GET` | `/packages/admin` | JWT | ADMIN | Listar paquetes (admin) |
+| `POST` | `/packages/admin` | JWT | ADMIN | Crear paquete |
+| `PATCH` | `/packages/admin/:id` | JWT | ADMIN | Actualizar paquete |
+| `DELETE` | `/packages/admin/:id` | JWT | ADMIN | Eliminar paquete |
 
-- `POST /packages`
-  - Crea un paquete.
-  - Body: `{ name, description, tours, price }`
-  - Requiere JWT.
+## Categories
 
-- `GET /packages/:id`
-  - Obtiene paquete por ID.
-  - Requiere JWT.
+| Método | Ruta | Auth | Roles | Descripción |
+|--------|------|------|-------|-------------|
+| `GET` | `/categories` | Público | - | Listar categorías |
+| `POST` | `/categories` | JWT | ADMIN | Crear categoría |
+
+## Destinations
+
+| Método | Ruta | Auth | Roles | Descripción |
+|--------|------|------|-------|-------------|
+| `GET` | `/destinations` | Público | - | Listar destinos |
+
+## Testimonials
+
+| Método | Ruta | Auth | Roles | Descripción |
+|--------|------|------|-------|-------------|
+| `GET` | `/testimonials/featured` | Público | - | Listar testimonios destacados |
+| `GET` | `/testimonials/tags` | Público | - | Listar todos los tags disponibles |
+| `POST` | `/testimonials` | Público | - | Enviar testimonio desde formulario público |
+| `GET` | `/testimonials/admin` | JWT | ADMIN | Listar todos los testimonios |
+| `GET` | `/testimonials/admin/:id` | JWT | ADMIN | Obtener testimonio por ID |
+| `POST` | `/testimonials/admin` | JWT | ADMIN | Crear testimonio |
+| `PATCH` | `/testimonials/admin/:id` | JWT | ADMIN | Actualizar testimonio |
+| `DELETE` | `/testimonials/admin/:id` | JWT | ADMIN | Eliminar testimonio |
 
 ## Providers
 
-- `GET /providers`
-  - Lista proveedores.
-  - Requiere JWT.
+| Método | Ruta | Auth | Roles | Descripción |
+|--------|------|------|-------|-------------|
+| `GET` | `/providers` | JWT | ADMIN | Listar proveedores |
+| `POST` | `/providers` | JWT | ADMIN | Crear proveedor |
+| `GET` | `/providers/:id` | JWT | ADMIN | Obtener proveedor por ID |
+| `PATCH` | `/providers/:id` | JWT | ADMIN | Actualizar proveedor |
+| `DELETE` | `/providers/:id` | JWT | ADMIN | Eliminar proveedor |
 
-- `POST /providers`
-  - Crea un proveedor.
-  - Body: `{ name, type, contact }`
-  - Requiere JWT.
+## Guides
 
-- `GET /providers/:id`
-  - Obtiene proveedor por ID.
-  - Requiere JWT.
+| Método | Ruta | Auth | Roles | Descripción |
+|--------|------|------|-------|-------------|
+| `GET` | `/guides` | JWT | ADMIN | Listar guías turísticos |
+| `POST` | `/guides` | JWT | ADMIN | Crear guía turístico |
+| `GET` | `/guides/:id` | JWT | ADMIN | Obtener guía por ID |
+| `PATCH` | `/guides/:id` | JWT | ADMIN | Actualizar guía |
+| `DELETE` | `/guides/:id` | JWT | ADMIN | Eliminar guía |
 
 ## Operations
 
-- `GET /operations`
-  - Lista operaciones.
-  - Requiere JWT.
+| Método | Ruta | Auth | Roles | Descripción |
+|--------|------|------|-------|-------------|
+| `GET` | `/operations` | JWT | ADMIN | Listar operaciones |
+| `POST` | `/operations` | JWT | ADMIN | Crear operación de reserva |
+| `GET` | `/operations/:id` | JWT | ADMIN | Obtener operación por ID |
+| `PATCH` | `/operations/:id` | JWT | ADMIN | Actualizar operación |
 
-- `POST /operations`
-  - Crea una operación.
-  - Body: `{ bookingId, transport, pickupTime, guideId? }`
-  - Requiere JWT.
+## Payments
 
-- `GET /operations/:id`
-  - Obtiene operación por ID.
-  - Requiere JWT.
-
-## Notifications
-
-- `POST /notifications/send`
-  - Envía una notificación.
-  - Body: `{ channel, recipient, message }`
-  - Requiere JWT.
+| Método | Ruta | Auth | Roles | Descripción |
+|--------|------|------|-------|-------------|
+| `GET` | `/payments` | JWT | ADMIN | Listar pagos |
+| `POST` | `/payments` | JWT | ADMIN, CLIENTE | Registrar pago |
+| `GET` | `/payments/:id` | JWT | ADMIN | Obtener pago por ID |
 
 ## Billing
 
-- `GET /billing/invoices`
-  - Lista facturas.
-  - Requiere JWT.
+| Método | Ruta | Auth | Roles | Descripción |
+|--------|------|------|-------|-------------|
+| `GET` | `/billing/invoices` | JWT | ADMIN | Listar facturas |
+| `POST` | `/billing/invoices` | JWT | ADMIN | Crear factura |
+| `GET` | `/billing/invoices/:id` | JWT | ADMIN | Obtener factura por ID |
 
-- `POST /billing/invoices`
-  - Crea una factura.
-  - Body: `{ bookingId, amount, currency, customerId }`
-  - Requiere JWT.
+## Notifications
 
-- `GET /billing/invoices/:id`
-  - Obtiene factura por ID.
-  - Requiere JWT.
+| Método | Ruta | Auth | Roles | Descripción |
+|--------|------|------|-------|-------------|
+| `POST` | `/notifications/send` | JWT | ADMIN | Enviar notificación |
 
 ## Legal
 
-- `GET /legal/documents`
-  - Lista documentos legales.
-  - Requiere JWT.
-
-- `POST /legal/accept`
-  - Acepta un documento.
-  - Body: `{ documentId, clientId, ip, version }`
-  - Requiere JWT.
-
-- `GET /legal/acceptances/:id`
-  - Obtiene aceptación por ID.
-  - Requiere JWT.
+| Método | Ruta | Auth | Roles | Descripción |
+|--------|------|------|-------|-------------|
+| `GET` | `/legal/documents` | Público | - | Listar documentos legales |
+| `POST` | `/legal/accept` | JWT | CLIENTE | Aceptar documento legal |
+| `GET` | `/legal/acceptances/:id` | JWT | ADMIN | Obtener aceptación por ID |
 
 ## Analytics
 
-- `GET /analytics/dashboard`
-  - Obtiene métricas de ventas y reservas.
-  - Requiere JWT.
+| Método | Ruta | Auth | Roles | Descripción |
+|--------|------|------|-------|-------------|
+| `GET` | `/analytics/dashboard` | JWT | ADMIN | Obtener métricas de ventas y reservas |
 
-## Otros
+## Contact (público)
 
-- `GET /docs`
-  - Swagger UI generado automáticamente.
+| Método | Ruta | Auth | Roles | Descripción |
+|--------|------|------|-------|-------------|
+| `POST` | `/contact` | Público | - | Enviar mensaje de contacto |
+
+## Claims (público)
+
+| Método | Ruta | Auth | Roles | Descripción |
+|--------|------|------|-------|-------------|
+| `POST` | `/claims` | Público | - | Enviar reclamo (Libro de Reclamaciones) |
+
+## Uploads
+
+| Método | Ruta | Auth | Roles | Descripción |
+|--------|------|------|-------|-------------|
+| `POST` | `/uploads` | JWT | ADMIN | Subir imagen (multipart, máx 10MB) |
+
+## Documentación
+
+| Recurso | URL |
+|---------|-----|
+| Swagger UI | `/api/v1/docs` (solo en desarrollo) |
