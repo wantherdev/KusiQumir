@@ -21,8 +21,16 @@ app.use(
     target: API_TARGET,
     changeOrigin: true,
     pathRewrite: {
-      '^/': '/api/v1/',
+      '^/api': '/api/v1',
     },
+  }),
+);
+
+app.use(
+  '/uploads',
+  createProxyMiddleware({
+    target: API_TARGET,
+    changeOrigin: true,
   }),
 );
 

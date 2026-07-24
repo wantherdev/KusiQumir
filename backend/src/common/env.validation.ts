@@ -61,6 +61,12 @@ export const envValidationSchema = Joi.object({
   CSRF_SKIP_PATHS: Joi.string().default("auth/csrf,auth/login,auth/register,health").messages({
     "string.base": "CSRF_SKIP_PATHS debe ser un string de rutas separadas por coma",
   }),
+  CSRF_SECURE: Joi.boolean().default(false).messages({
+    "boolean.base": "CSRF_SECURE debe ser true o false",
+  }),
+  SENTRY_DSN: Joi.string().uri().optional().allow("").messages({
+    "string.uri": "SENTRY_DSN debe ser una URL válida",
+  }),
 });
 
 export type EnvConfig = {
@@ -79,4 +85,5 @@ export type EnvConfig = {
   PRISMA_RETRY_DELAY: number;
   NOTIFICATIONS_ENABLED: boolean;
   CSRF_SKIP_PATHS: string;
+  CSRF_SECURE: boolean;
 };

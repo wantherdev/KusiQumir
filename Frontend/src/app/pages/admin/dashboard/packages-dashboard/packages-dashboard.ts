@@ -65,8 +65,8 @@ export class PackagesDashboard implements OnInit {
 
   ngOnInit(): void {
     this.load();
-    this.api.getTours().subscribe({
-      next: (res) => { this.tours = res.items; this.cdr.markForCheck(); },
+    this.api.getToursAdmin().subscribe({
+      next: (items) => { this.tours = items; this.cdr.markForCheck(); },
     });
   }
 

@@ -58,7 +58,7 @@ import { TravelApiService } from '../../../services/travel-api.service';
                       <div class="h-full rounded-full transition-all" [style.width.%]="maxCount ? (b.count / maxCount * 100) : 0"
                         [class.bg-yellow-400]="b.status === 'PENDIENTE'"
                         [class.bg-green-500]="b.status === 'CONFIRMADA'"
-                        [class.bg-secondary-soft0]="b.status === 'COMPLETADA'"
+                        [class.bg-blue-500]="b.status === 'COMPLETADA'"
                         [class.bg-red-500]="b.status === 'CANCELADA'"></div>
                     </div>
                     <span class="w-8 text-right text-sm font-semibold text-slate-700">{{ b.count }}</span>
@@ -76,7 +76,7 @@ import { TravelApiService } from '../../../services/travel-api.service';
                 <div *ngFor="let b of analytics.recentBookings.slice(0, 6)" class="flex items-center justify-between border-b border-slate-100 py-2.5 last:border-0">
                   <div class="min-w-0 flex-1">
                     <p class="truncate text-sm font-medium text-tertiary">{{ b.customerName || 'Anónimo' }}</p>
-                    <p class="text-xs text-slate-500">{{ b.tour?.name || b.package?.name || '-' }}</p>
+                    <p class="text-xs text-slate-500">{{ b.tour?.title || b.package?.name || '-' }}</p>
                   </div>
                   <span class="ml-3 inline-flex items-center gap-1.5 rounded-full px-2.5 py-0.5 text-xs font-medium"
                     [class.bg-yellow-50]="b.status === 'PENDIENTE'" [class.text-yellow-700]="b.status === 'PENDIENTE'"

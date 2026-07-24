@@ -3,11 +3,12 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Operation, Guide, Booking, TravelApiService } from '../../../services/travel-api.service';
 import { NotificationService } from '../../../services/notification.service';
+import { Skeleton } from '../../../components/skeleton/skeleton';
 
 @Component({
   selector: 'app-operations-dashboard',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, Skeleton],
   template: `
     <div class="min-h-screen bg-linear-to-br from-slate-50 to-secondary-soft px-4 py-8 sm:px-6 lg:px-8">
       <div class="mx-auto max-w-7xl">
@@ -24,10 +25,10 @@ import { NotificationService } from '../../../services/notification.service';
                 <h1 class="mt-1 flex items-center gap-2 text-2xl font-bold sm:text-3xl">
                   <i class="ri-settings-3-line"></i> Operaciones
                 </h1>
-                <p class="mt-1 text-sm text-white/85">{{ operations.length }} operación(es) registradas</p>
+                <p class="mt-1 text-sm text-white/85">{{ filtered.length }} de {{ operations.length }} operación(es)</p>
               </div>
               <div class="flex items-center gap-2">
-                <button *ngIf="activeView === 'list'" (click)="openForm()" class="admin-btn-hero">
+                <button (click)="openForm()" class="admin-btn-hero">
                   <i class="ri-add-line text-lg"></i>
                   Nueva operación
                 </button>
@@ -35,15 +36,33 @@ import { NotificationService } from '../../../services/notification.service';
             </div>
           </header>
 
+          <!-- Search -->
+          <div class="mb-5">
+            <div class="relative w-full max-w-md">
+              <i class="ri-search-line absolute left-4 top-1/2 -translate-y-1/2 text-slate-400"></i>
+              <input [(ngModel)]="searchQuery" (ngModelChange)="onSearch()" placeholder="Buscar por cliente, guía, transporte o estado…"
+                class="w-full rounded-xl border border-slate-200 bg-white py-3 pl-11 pr-10 text-sm outline-none transition-all focus:border-primary/40 focus:ring-2 focus:ring-primary/5 placeholder:text-slate-400" />
+              <button *ngIf="searchQuery" (click)="searchQuery=''; onSearch()" class="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 transition hover:text-slate-700">
+                <i class="ri-close-line text-lg"></i>
+              </button>
+            </div>
+          </div>
+
           <!-- Loading / Table -->
           <ng-container *ngIf="isLoading; else loaded">
-            <div class="space-y-2">
-              <div *ngFor="let _ of [].constructor(5)" class="h-14 animate-pulse rounded-2xl bg-white shadow-sm"></div>
+            <div class="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
+              <app-skeleton variant="table-row" [rows]="5" [cols]="6"></app-skeleton>
             </div>
           </ng-container>
 
           <ng-template #loaded>
-            <div *ngIf="operations.length === 0" class="animate-slide-up flex flex-col items-center gap-4 rounded-2xl border border-dashed border-slate-300 bg-white py-16 shadow-sm">
+            <div *ngIf="error" class="flex flex-col items-center gap-3 py-12 text-center">
+              <i class="ri-error-warning-line text-4xl text-red-400"></i>
+              <p class="text-sm text-slate-600">{{ error }}</p>
+              <button (click)="load()" class="admin-btn-ghost">Reintentar</button>
+            </div>
+
+            <div *ngIf="!error && filtered.length === 0" class="flex flex-col items-center gap-4 rounded-2xl border border-dashed border-slate-300 bg-white py-16 shadow-sm">
               <div class="flex h-20 w-20 items-center justify-center rounded-full bg-secondary-soft text-primary">
                 <i class="ri-settings-3-line text-4xl"></i>
               </div>
@@ -54,7 +73,7 @@ import { NotificationService } from '../../../services/notification.service';
               </button>
             </div>
 
-            <div *ngIf="operations.length > 0" class="animate-slide-up overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
+            <div *ngIf="filtered.length > 0" class="animate-slide-up overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
               <div class="overflow-x-auto">
                 <table class="w-full text-left text-sm">
                   <thead>
@@ -68,7 +87,7 @@ import { NotificationService } from '../../../services/notification.service';
                     </tr>
                   </thead>
                   <tbody class="divide-y divide-slate-50">
-                    <tr *ngFor="let op of operations; trackBy: trackByFn" class="transition hover:bg-secondary-soft">
+                    <tr *ngFor="let op of pagedItems; trackBy: trackByFn" class="transition hover:bg-secondary-soft">
                       <td class="px-5 py-4 font-medium text-tertiary">
                         {{ op.booking?.customerName || op.booking?.customer?.name || op.bookingId?.slice(0, 8) || '-' }}
                       </td>
@@ -100,6 +119,16 @@ import { NotificationService } from '../../../services/notification.service';
                     </tr>
                   </tbody>
                 </table>
+              </div>
+
+              <div *ngIf="totalPages > 1" class="flex items-center justify-between border-t border-slate-100 px-5 py-3">
+                <button (click)="prevPage()" [class.invisible]="currentPage === 1" class="inline-flex items-center gap-1 rounded-lg border border-slate-200 px-3.5 py-2 text-xs font-medium text-slate-600 transition hover:border-primary/30 hover:text-primary">
+                  <i class="ri-arrow-left-s-line"></i> Anterior
+                </button>
+                <span class="text-xs text-slate-500">Pág. {{ currentPage }} de {{ totalPages }}</span>
+                <button (click)="nextPage()" [class.invisible]="currentPage === totalPages" class="inline-flex items-center gap-1 rounded-lg border border-slate-200 px-3.5 py-2 text-xs font-medium text-slate-600 transition hover:border-primary/30 hover:text-primary">
+                  Siguiente <i class="ri-arrow-right-s-line"></i>
+                </button>
               </div>
             </div>
           </ng-template>
@@ -180,6 +209,10 @@ export class OperationsDashboard implements OnInit {
   guides: Guide[] = [];
   bookings: Booking[] = [];
   isLoading = false;
+  error = '';
+  searchQuery = '';
+  pageSize = 10;
+  currentPage = 1;
   saving = false;
   activeView: 'list' | 'form' = 'list';
   editingOp: Operation | null = null;
@@ -192,12 +225,35 @@ export class OperationsDashboard implements OnInit {
     status: 'Pendiente',
   };
 
+  get filtered(): Operation[] {
+    const q = this.searchQuery.toLowerCase().trim();
+    if (!q) return this.operations;
+    return this.operations.filter(
+      op =>
+        (op.booking?.customerName?.toLowerCase().includes(q) ?? false) ||
+        (op.guide?.name?.toLowerCase().includes(q) ?? false) ||
+        op.transport.toLowerCase().includes(q) ||
+        op.status.toLowerCase().includes(q),
+    );
+  }
+
+  get pagedItems(): Operation[] {
+    const start = (this.currentPage - 1) * this.pageSize;
+    return this.filtered.slice(start, start + this.pageSize);
+  }
+
+  get totalPages(): number {
+    return Math.max(1, Math.ceil(this.filtered.length / this.pageSize));
+  }
+
   ngOnInit(): void {
     this.load();
   }
 
   load(): void {
     this.isLoading = true;
+    this.error = '';
+    this.currentPage = 1;
     this.api.getOperations().subscribe({
       next: (items) => {
         this.operations = items;
@@ -205,11 +261,23 @@ export class OperationsDashboard implements OnInit {
         this.cdr.markForCheck();
       },
       error: () => {
-        this.notification.show('Error al cargar operaciones.', 'error');
+        this.error = 'No se pudieron cargar las operaciones.';
         this.isLoading = false;
         this.cdr.markForCheck();
       },
     });
+  }
+
+  onSearch(): void {
+    this.currentPage = 1;
+  }
+
+  prevPage(): void {
+    this.currentPage = Math.max(1, this.currentPage - 1);
+  }
+
+  nextPage(): void {
+    this.currentPage = Math.min(this.totalPages, this.currentPage + 1);
   }
 
   openForm(op?: Operation): void {

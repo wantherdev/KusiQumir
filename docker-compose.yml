@@ -39,6 +39,8 @@ services:
   backend:
     build: ./backend
     restart: unless-stopped
+    volumes:
+      - uploads:/app/uploads
     environment:
       NODE_ENV: production
       PORT: 3000
@@ -80,3 +82,4 @@ services:
 
 volumes:
   pgdata:
+  uploads:

@@ -140,9 +140,11 @@ model TourDestination {
   id            String      @id @default(cuid())
   tourId        String
   destinationId String
-  sortOrder     Int
+  sortOrder     Int         @default(0)
   tour          Tour        @relation(fields: [tourId], references: [id], onDelete: Cascade)
   destination   Destination @relation(fields: [destinationId], references: [id])
+
+  @@unique([tourId, destinationId])
 }
 
 model ItineraryDay {
@@ -333,6 +335,7 @@ model Experience {
 model Package {
   id           String    @id @default(cuid())
   name         String
+  slug         String    @unique
   description  String
   price        Float
   featured     Boolean   @default(false)
@@ -341,6 +344,8 @@ model Package {
   imageUrl     String?
   included     String?
   excluded     String?
+  seoTitle     String?
+  seoDescription String?
   tours        Tour[]
   bookings     Booking[]
   createdAt    DateTime  @default(now())

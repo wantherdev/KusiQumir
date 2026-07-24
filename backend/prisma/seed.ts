@@ -764,9 +764,10 @@ async function main() {
   const allTours = await prisma.tour.findMany();
   const tourMap = Object.fromEntries(allTours.map((t) => [t.slug, t.id]));
 
-  const packagesData = [
+const packagesData = [
     {
       name: "Ruta Inca Clásica",
+      slug: "ruta-inca-clasica",
       description: "Cusco, Valle Sagrado y Machu Picchu en un solo viaje. Historia, cultura y paisajes inolvidables.",
       price: 1890,
       durationDays: 5,
@@ -778,6 +779,7 @@ async function main() {
     },
     {
       name: "Aventura Andina",
+      slug: "aventura-andina",
       description: "Explora la laguna Humantay y el Valle Sur en una travesía por los Andes del Cusco.",
       price: 1680,
       durationDays: 6,
@@ -789,6 +791,7 @@ async function main() {
     },
     {
       name: "Perú Esencial",
+      slug: "peru-esencial",
       description: "Una experiencia completa que combina historia, naturaleza y aventura en el Cusco profundo.",
       price: 2200,
       durationDays: 8,
@@ -800,6 +803,7 @@ async function main() {
     },
     {
       name: "Escapada Andina",
+      slug: "escapada-andina",
       description: "Conoce el Valle Sur y Maras Moray en una escapada corta pero completa.",
       price: 680,
       durationDays: 3,

@@ -72,8 +72,8 @@ export class ExperiencesDashboard implements OnInit {
 
   ngOnInit(): void {
     this.loadItems();
-    this.api.getTours().subscribe({
-      next: (res) => { this.tours = res.items; this.cdr.markForCheck(); },
+    this.api.getToursAdmin().subscribe({
+      next: (items) => { this.tours = items; this.cdr.markForCheck(); },
     });
   }
 

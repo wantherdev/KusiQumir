@@ -1,4 +1,3 @@
-import { HttpClient } from '@angular/common/http';
 import { Component, OnInit, ChangeDetectionStrategy, ChangeDetectorRef, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
@@ -7,7 +6,6 @@ import { Testimonial, TravelApiService } from '../../../services/travel-api.serv
 import { Skeleton } from '../../../components/skeleton/skeleton';
 import { ConfirmDialog } from '../../../components/confirm-dialog/confirm-dialog';
 import { NotificationService } from '../../../services/notification.service';
-import { API_URL } from '../../../tokens/api-url';
 
 @Component({
   selector: 'app-testimonials-dashboard',
@@ -236,8 +234,6 @@ import { API_URL } from '../../../tokens/api-url';
 })
 export class TestimonialsDashboard implements OnInit {
   private readonly api = inject(TravelApiService);
-  private readonly http = inject(HttpClient);
-  private readonly apiUrl = inject(API_URL);
   private readonly cdr = inject(ChangeDetectorRef);
   private readonly notification = inject(NotificationService);
 
@@ -318,7 +314,7 @@ export class TestimonialsDashboard implements OnInit {
   async toggleActive(t: Testimonial): Promise<void> {
     try {
       const updated = await firstValueFrom(
-        this.http.patch<Testimonial>(`${this.apiUrl}/testimonials/admin/${t.id}`, { active: !t.active }),
+        this.api.updateTestimonial(t.id, { active: !t.active }),
       );
       Object.assign(t, updated);
       this.cdr.markForCheck();
@@ -373,7 +369,7 @@ export class TestimonialsDashboard implements OnInit {
     this.showConfirm = false;
     this.isLoading = true;
     try {
-      await firstValueFrom(this.http.delete<void>(`${this.apiUrl}/testimonials/admin/${this.pendingDelete.id}`));
+      await firstValueFrom(this.api.deleteTestimonial(this.pendingDelete.id));
       this.notification.show('Testimonio eliminado.', 'success');
       this.pendingDelete = null;
       await this.load();
